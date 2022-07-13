@@ -10,4 +10,9 @@ object MockData {
         Ingredient(3, "Tomato Sauce", 1, "litre", 10.00),
         Ingredient(4, "Sugar", 100, "grams", 3.00),
     )
+
+    val lowIngredients = arrayListOf(
+        Ingredient(0, "Banana", 3, "unit", 0.50),
+        Ingredient(1, "Apple", 1, "unit", 0.20),
+    )
 }
