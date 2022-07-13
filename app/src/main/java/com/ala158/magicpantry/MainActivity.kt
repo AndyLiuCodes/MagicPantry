@@ -3,15 +3,28 @@ package com.ala158.magicpantry
 import android.os.Bundle
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
+import com.ala158.magicpantry.dao.IngredientDAO
+import com.ala158.magicpantry.database.MagicPantryDatabase
 import com.ala158.magicpantry.databinding.ActivityMainBinding
+import com.ala158.magicpantry.repository.MagicPantryRepository
+import com.ala158.magicpantry.viewModel.IngredientViewModel
+import com.ala158.magicpantry.viewModel.ViewModelFactory
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+
+    // Example setup to database for ingredients
+    private lateinit var database: MagicPantryDatabase
+    private lateinit var ingredientDAO: IngredientDAO
+    private lateinit var repository: MagicPantryRepository
+    private lateinit var viewModelFactory: ViewModelFactory
+    private lateinit var ingredientViewModel: IngredientViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,5 +44,13 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
+
+
+        database = MagicPantryDatabase.getInstance(this)
+        ingredientDAO = database.ingredientDAO
+        repository = MagicPantryRepository(ingredientDAO)
+        viewModelFactory = ViewModelFactory(repository)
+        ingredientViewModel =
+            ViewModelProvider(this, viewModelFactory).get(IngredientViewModel::class.java)
     }
 }
