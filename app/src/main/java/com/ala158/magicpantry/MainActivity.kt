@@ -45,7 +45,6 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-
         database = MagicPantryDatabase.getInstance(this)
         ingredientDAO = database.ingredientDAO
         repository = MagicPantryRepository(ingredientDAO)

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginHorizontal="10dp"
+    android:layout_marginBottom="0dp"
+    android:orientation="vertical"
+    tools:context=".ui.ReviewIngredientsFragment">
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="10dp"
+        android:background="@drawable/rounded_bg_yellow"
+        android:padding="10dp"
+        android:text="@string/review_ingredients_header"
+        android:textColor="#FFFFFF"
+        tools:ignore="TextContrastCheck" />
+
+    <ListView
+        android:id="@+id/reviewIngredientsList"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@android:color/transparent"
+        android:dividerHeight="10sp" />
+
+</LinearLayout>

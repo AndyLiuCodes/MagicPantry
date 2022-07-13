@@ -4,6 +4,14 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/layout/activity_main.xml" value="0.3546875" />
+        <entry key="app/src/main/res/drawable/ic_dashboard_black_24dp.xml" value="0.4895" />
+        <entry key="app/src/main/res/drawable/ic_pen_to_square_solid.xml" value="0.4895" />
+        <entry key="app/src/main/res/drawable/rounded_bg.xml" value="0.4895" />
+        <entry key="app/src/main/res/drawable/rounded_bg_white.xml" value="0.4895" />
+        <entry key="app/src/main/res/drawable/rounded_bg_yellow.xml" value="0.4755" />
+        <entry key="app/src/main/res/layout/activity_main.xml" value="0.5463541666666667" />
+        <entry key="app/src/main/res/layout/fragment_review_ingredients.xml" value="0.5463541666666667" />
+        <entry key="app/src/main/res/layout/list_item_ingredient.xml" value="0.75" />
       </map>
     </option>
   </component>
