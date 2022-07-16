@@ -2,5 +2,9 @@
 <resources>
     <string-array name="simple_items">
         <item>kg</item>
+        <item>g</item>
+        <item>mL</item>
+        <item>L</item>
+        <item>unit</item>
     </string-array>
 </resources>

@@ -16,4 +16,12 @@ class ReviewIngredientsViewModel(private val repository: MagicPantryRepository) 
             repository.insertIngredient(ingredient)
     }
 
+    fun updateIngredient(position: Int, ingredient: Ingredient) {
+        if (_ingredientList.value != null) {
+            val oldIngredientList = _ingredientList.value!!.toMutableList()
+            oldIngredientList[position] = ingredient
+            _ingredientList.value = oldIngredientList
+        }
+    }
+
 }
