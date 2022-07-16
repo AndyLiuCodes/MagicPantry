@@ -6,7 +6,7 @@ import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.DialogInterface
 import android.content.Intent
-import android.graphics.Bitmap
+import android.graphics.*
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -25,7 +25,6 @@ import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 
-
 @Suppress("DEPRECATION")
 class DashboardFragment : Fragment() {
 
@@ -34,11 +33,11 @@ class DashboardFragment : Fragment() {
     private var checkIfPicTaken = 0
 
     private lateinit var imageUri: Uri
-    private lateinit var bitmap : Bitmap
+    private var bitmap : Bitmap? = null
 
     private val requestCamera = 1888
     private val requestGallery = 2222
-    private var imageView: ImageView? = null
+    private var imageView : ImageView? = null
     private lateinit var textView : TextView
 
     // This property is only valid between onCreateView and
@@ -110,9 +109,9 @@ class DashboardFragment : Fragment() {
         val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
         textView.text = "ok?"
 
-        if (imageView != null) {
+        if (bitmap != null) {
             // process image
-            val image = InputImage.fromBitmap(bitmap, 0)
+            val image = InputImage.fromBitmap(bitmap!!, 0)
             recognizer.process(image)
                 .addOnSuccessListener { visionText ->
                     // Task completed successfully
@@ -131,12 +130,16 @@ class DashboardFragment : Fragment() {
     // successfully processed image
     private fun success(result : Text) {
         val resultText = result.text
+        val mutableBitmap = bitmap!!.copy(bitmap!!.config, true)
+        var filteredArray = mutableListOf<String>()
 
         for (block in result.textBlocks) {
             val blockText = block.text
             val blockCornerPoints = block.cornerPoints
             val blockFrame = block.boundingBox
-            textView.text = "${textView.text} \n block: $blockText \n"
+            // textView.text = "${textView.text} \n block: $blockText \n"
+
+            drawRect(mutableBitmap, blockFrame!!)
 
             for (line in block.lines) {
                 val lineText = line.text
@@ -144,16 +147,30 @@ class DashboardFragment : Fragment() {
                 val lineFrame = line.boundingBox
                 textView.text = "${textView.text} \n line: $lineText \n"
 
+                if (lineText.contains("."))
+                    filteredArray.add(lineText)
+
                 for (element in line.elements) {
                     val elementText = element.text
                     val elementCornerPoints = element.cornerPoints
                     val elementFrame = element.boundingBox
-                    textView.text = "${textView.text} \n element: $elementText \n"
+                    // textView.text = "${textView.text} \n element: $elementText \n"
                 }
             }
         }
-        textView.text = "${textView.text} \n result: $resultText"
+        textView.text = "${textView.text} \n result: $filteredArray"
         textView.movementMethod = ScrollingMovementMethod()
+        imageView!!.setImageBitmap(mutableBitmap)
+    }
+
+    // add rect around text blocks
+    private fun drawRect(mutableBitmap : Bitmap, location : Rect) {
+        val paint = Paint()
+        paint.color = Color.RED
+        paint.style = Paint.Style.STROKE
+        with(Canvas(mutableBitmap)) {
+            drawRect(location, paint)
+        }
     }
 
     // when camera or gallery chosen, update photo
