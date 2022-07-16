@@ -51,27 +51,6 @@
             </LinearLayout>
 
             <TextView
-                android:id="@+id/header_low_stock"
-                android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:layout_marginTop="15dp"
-                android:background="@drawable/rounded_bg_red"
-                android:paddingLeft="15dp"
-                android:text="@string/low_stock_header"
-                android:textColor="@color/white"
-                android:gravity="center_vertical"
-                android:textSize="22sp"
-                android:textStyle="bold"/>
-
-            <ListView
-                android:id="@+id/listview_pantry_low_stock"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:divider="@android:color/transparent"
-                android:dividerHeight="10sp"
-                android:layout_weight="1"/>
-
-            <TextView
                 android:id="@+id/header_review_ingredients"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"

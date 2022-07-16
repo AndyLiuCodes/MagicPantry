@@ -11,27 +11,29 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.ala158.magicpantry.MockData
 import com.ala158.magicpantry.R
+import com.ala158.magicpantry.arrayAdapter.IngredientsArrayAdapter
 import com.ala158.magicpantry.arrayAdapter.PantryIngredientsArrayAdapter
 import com.ala158.magicpantry.dao.IngredientDAO
 import com.ala158.magicpantry.database.MagicPantryDatabase
 import com.ala158.magicpantry.repository.MagicPantryRepository
 import com.ala158.magicpantry.ui.manualingredientinput.ManualIngredientInputActivity
+import com.ala158.magicpantry.viewModel.ViewModelFactory
 
 class PantryFragment : Fragment() {
     private lateinit var pantryViewModel: PantryViewModel
-    private lateinit var pantryViewModelFactory: PantryViewModelFactory
+    private lateinit var pantryViewModelFactory: ViewModelFactory
     private lateinit var magicPantryDatabase: MagicPantryDatabase
     private lateinit var ingredientDAO: IngredientDAO
     private lateinit var magicPantryRepository: MagicPantryRepository
     private lateinit var allIngredientsListView: ListView
-    private lateinit var lowStockListView: ListView
+    private lateinit var pantryIngredientsArrayAdapter: PantryIngredientsArrayAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         magicPantryDatabase = MagicPantryDatabase.getInstance(requireActivity())
         ingredientDAO = magicPantryDatabase.ingredientDAO
         magicPantryRepository = MagicPantryRepository(ingredientDAO)
-        pantryViewModelFactory = PantryViewModelFactory(magicPantryRepository)
+        pantryViewModelFactory = ViewModelFactory(magicPantryRepository)
         pantryViewModel = ViewModelProvider(this, pantryViewModelFactory)
             .get(PantryViewModel::class.java)
     }
@@ -45,10 +47,14 @@ class PantryFragment : Fragment() {
 
 
         allIngredientsListView = view.findViewById(R.id.listview_pantry_all_ingredients)
-        allIngredientsListView.adapter = PantryIngredientsArrayAdapter(requireActivity(), MockData.ingredients)
+        pantryIngredientsArrayAdapter =
+            PantryIngredientsArrayAdapter(requireActivity(), ArrayList())
+        allIngredientsListView.adapter = pantryIngredientsArrayAdapter
 
-        lowStockListView = view.findViewById(R.id.listview_pantry_low_stock)
-        lowStockListView.adapter = PantryIngredientsArrayAdapter(requireActivity(), MockData.lowIngredients)
+        pantryViewModel.allIngredientsLiveData.observe(requireActivity()) {
+            pantryIngredientsArrayAdapter.replace(it)
+            pantryIngredientsArrayAdapter.notifyDataSetChanged()
+        }
 
         val btnAddIngredient = view.findViewById<Button>(R.id.btn_add_ingredient)
         btnAddIngredient.setOnClickListener {

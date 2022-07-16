@@ -20,4 +20,11 @@ data class Ingredient(
 
     @ColumnInfo(name = "price")
     var price: Double = 0.0,
-)
+) {
+    constructor(name: String, amount: Int, unit: String, price: Double) : this() {
+        this.name = name
+        this.amount = amount
+        this.unit = unit
+        this.price = price
+    }
+}
