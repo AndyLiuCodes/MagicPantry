@@ -4,26 +4,60 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginHorizontal="10dp"
-    android:layout_marginBottom="0dp"
+    android:layout_marginBottom="60dp"
     android:orientation="vertical"
-    tools:context=".ui.ReviewIngredientsFragment">
-
+    tools:context=".ui.reviewingredients.ReviewIngredientsFragment">
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/header_review_ingredients"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="10dp"
-        android:background="@drawable/rounded_bg_yellow"
-        android:padding="10dp"
+        android:layout_height="55dp"
+        android:layout_marginTop="15dp"
+        android:layout_marginBottom="15dp"
+        android:background="@drawable/rounded_bg_blue"
+        android:paddingStart="15dp"
         android:text="@string/review_ingredients_header"
-        android:textColor="#FFFFFF"
-        tools:ignore="TextContrastCheck" />
+        android:textColor="@color/white"
+        android:gravity="center_vertical"
+        android:textSize="22sp"
+        android:textStyle="bold"/>
 
     <ListView
         android:id="@+id/reviewIngredientsList"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         android:divider="@android:color/transparent"
-        android:dividerHeight="10sp" />
+        android:dividerHeight="10sp">
+
+    </ListView>
+
+    <LinearLayout
+        android:id="@+id/reviewButtons"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/reviewCancelButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="@color/mp_grey"
+            android:text="@string/cancel_button_text"
+            android:textColor="@color/black" />
+
+        <Space
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1" />
+
+        <Button
+            android:id="@+id/reviewAddAllButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:backgroundTint="@color/mp_blue"
+            android:text="@string/add_all_button_text" />
+    </LinearLayout>
 
 </LinearLayout>
