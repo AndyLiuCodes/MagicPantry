@@ -21,5 +21,7 @@
     <string name="manual_add_item_btn">Add to Pantry</string>
     <string name="add_all_button_text">Add All</string>
     <string name="cancel_button_text">Cancel</string>
+    <string name="add_button">Add</string>
+    <string name="review_finish_button">Finish</string>
 
 </resources>
