@@ -1,4 +1,4 @@
-package com.ala158.magicpantry.ui
+package com.ala158.magicpantry.ui.reviewingredients
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -11,7 +11,6 @@ import com.ala158.magicpantry.MockData
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.arrayAdapter.IngredientsArrayAdapter
 import com.ala158.magicpantry.dao.IngredientDAO
-import com.ala158.magicpantry.data.Ingredient
 import com.ala158.magicpantry.database.MagicPantryDatabase
 import com.ala158.magicpantry.repository.MagicPantryRepository
 import com.ala158.magicpantry.viewModel.IngredientViewModel

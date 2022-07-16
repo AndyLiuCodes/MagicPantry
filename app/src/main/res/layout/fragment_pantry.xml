@@ -72,7 +72,7 @@
                 android:layout_weight="1"/>
 
             <TextView
-                android:id="@+id/header_all_ingredients"
+                android:id="@+id/header_review_ingredients"
                 android:layout_width="match_parent"
                 android:layout_height="55dp"
                 android:layout_marginTop="15dp"
