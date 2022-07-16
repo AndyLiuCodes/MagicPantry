@@ -1,0 +1,19 @@
+package com.ala158.magicpantry.ui.reviewingredients
+
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import com.ala158.magicpantry.MockData
+import com.ala158.magicpantry.data.Ingredient
+import com.ala158.magicpantry.repository.MagicPantryRepository
+
+class ReviewIngredientsViewModel(private val repository: MagicPantryRepository) : ViewModel() {
+    private val _ingredientList = MutableLiveData<List<Ingredient>>(MockData.lowIngredients)
+    val ingredientList: LiveData<List<Ingredient>> = _ingredientList
+
+    fun insertAll() {
+        for (ingredient in ingredientList.value!!)
+            repository.insertIngredient(ingredient)
+    }
+
+}

@@ -10,7 +10,7 @@
         <entry key="app/src/main/res/drawable/rounded_bg_yellow.xml" value="0.4755" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.5463541666666667" />
         <entry key="app/src/main/res/layout/activity_manual_ingredient_input.xml" value="0.5463541666666667" />
-        <entry key="app/src/main/res/layout/fragment_pantry.xml" value="0.5463541666666667" />
+        <entry key="app/src/main/res/layout/fragment_pantry.xml" value="0.49722222222222223" />
         <entry key="app/src/main/res/layout/fragment_review_ingredients.xml" value="0.43072916666666666" />
         <entry key="app/src/main/res/layout/fragment_settings.xml" value="0.5463541666666667" />
         <entry key="app/src/main/res/layout/list_item_ingredient.xml" value="0.75" />
