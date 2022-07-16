@@ -110,6 +110,7 @@
                         app:boxStrokeWidthFocused="4dp">
 
                         <AutoCompleteTextView
+                            android:id="@+id/editUnitDropdown"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="none"
