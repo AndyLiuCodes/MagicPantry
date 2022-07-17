@@ -23,5 +23,4 @@ class ReviewIngredientsViewModel(private val repository: MagicPantryRepository) 
             _ingredientList.value = oldIngredientList
         }
     }
-
 }

@@ -50,18 +50,45 @@
 
             </LinearLayout>
 
-            <TextView
-                android:id="@+id/header_review_ingredients"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:layout_marginTop="15dp"
-                android:background="@drawable/rounded_bg_blue"
-                android:paddingLeft="15dp"
-                android:text="@string/all_ingredients_header"
-                android:textColor="@color/white"
-                android:gravity="center_vertical"
-                android:textSize="22sp"
-                android:textStyle="bold"/>
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:id="@+id/header_review_ingredients"
+                    android:layout_width="match_parent"
+                    android:layout_height="55dp"
+                    android:layout_marginTop="15dp"
+                    android:background="@drawable/rounded_bg_blue"
+                    android:paddingLeft="15dp"
+                    android:text="@string/all_ingredients_header"
+                    android:textColor="@color/white"
+                    android:gravity="center_vertical"
+                    android:textSize="22sp"
+                    android:textStyle="bold" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal"
+                    android:layout_centerVertical="true"
+                    android:paddingTop="15dp">
+
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:layout_weight="15" />
+                    <CheckBox
+                        android:id="@+id/checkbox_filter_low_stock"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/checkbox_filter_low_stock_text"
+                        android:layout_weight="1"
+                        android:buttonTint="@color/mp_yellow"/>
+
+                </LinearLayout>
+
+            </RelativeLayout>
 
             <ListView
                 android:id="@+id/listview_pantry_all_ingredients"
