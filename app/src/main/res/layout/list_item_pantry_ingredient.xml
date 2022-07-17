@@ -15,6 +15,15 @@
         android:layout_weight="1"
         android:gravity="center">
 
+        <ImageView
+            android:id="@+id/pantry_low_stock_icon"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_marginRight="5dp"
+            android:visibility="invisible"
+            android:src="@drawable/low_stock"
+        />
+
         <TextView
             android:id="@+id/ingredient_amount"
             android:layout_width="wrap_content"

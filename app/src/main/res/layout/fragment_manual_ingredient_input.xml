@@ -36,6 +36,7 @@
                 app:boxStrokeWidthFocused="4dp">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/manual_input_ingredient_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="text"
@@ -72,6 +73,7 @@
                         app:boxStrokeWidthFocused="4dp">
 
                         <com.google.android.material.textfield.TextInputEditText
+                            android:id="@+id/manual_input_amount"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="number"
@@ -109,6 +111,7 @@
                         app:boxStrokeWidthFocused="4dp">
 
                         <AutoCompleteTextView
+                            android:id="@+id/manual_input_unit"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
                             android:inputType="none"
@@ -137,6 +140,7 @@
                 app:boxStrokeWidthFocused="4dp">
 
                 <com.google.android.material.textfield.TextInputEditText
+                    android:id="@+id/manual_input_price"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:inputType="numberDecimal"
@@ -176,7 +180,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="1"
             android:backgroundTint="@color/mp_blue"
-            android:text="@string/add_all_button_text" />
+            android:text="@string/add_button" />
     </LinearLayout>
 
 </RelativeLayout>
