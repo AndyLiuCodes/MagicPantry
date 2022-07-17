@@ -4,9 +4,11 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.ContentValues
+import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.*
+import android.media.ExifInterface
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
@@ -26,6 +28,9 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
+import java.io.IOException
+import java.io.InputStream
+
 
 @Suppress("DEPRECATION")
 class DashboardFragment : Fragment() {
@@ -251,9 +256,9 @@ class DashboardFragment : Fragment() {
         if (requestCode == requestCamera && resultCode == Activity.RESULT_OK) {
 
             // get image uri and set imageBitmap to display it
-            val myBitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, imageUri)
+            var myBitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, imageUri)
+            myBitmap = handleSamplingAndRotationBitmap(requireActivity(),imageUri)
             imageView!!.setImageBitmap(myBitmap)
-
             bitmap = myBitmap
         }
 
@@ -267,6 +272,84 @@ class DashboardFragment : Fragment() {
 
             bitmap = myBitmap
         }
+    }
+
+    @Throws(IOException::class)
+    fun handleSamplingAndRotationBitmap(context: Context, selectedImage: Uri?): Bitmap? {
+        val MAX_HEIGHT = 1024
+        val MAX_WIDTH = 1024
+
+        // First decode with inJustDecodeBounds=true to check dimensions
+        val options = BitmapFactory.Options()
+        options.inJustDecodeBounds = true
+        var imageStream: InputStream? = selectedImage?.let {
+            context.contentResolver.openInputStream(
+                it
+            )
+        }
+        BitmapFactory.decodeStream(imageStream, null, options)
+        imageStream?.close()
+
+        // Calculate inSampleSize
+        options.inSampleSize = calculateInSampleSize(options, MAX_WIDTH, MAX_HEIGHT)
+
+        // Decode bitmap with inSampleSize set
+        options.inJustDecodeBounds = false
+        imageStream = selectedImage?.let { context.contentResolver.openInputStream(it) }
+        var img = BitmapFactory.decodeStream(imageStream, null, options)
+        img = selectedImage?.let { img?.let { it1 -> rotateImageIfRequired(context, it1, it) } }
+        return img
+    }
+
+    private fun calculateInSampleSize(
+        options: BitmapFactory.Options,
+        reqWidth: Int, reqHeight: Int
+    ): Int {
+        // Raw height and width of image
+        val height = options.outHeight
+        val width = options.outWidth
+        var inSampleSize = 1
+        if (height > reqHeight || width > reqWidth) {
+
+            // Calculate ratios of height and width to requested height and width
+            val heightRatio = Math.round(height.toFloat() / reqHeight.toFloat())
+            val widthRatio = Math.round(width.toFloat() / reqWidth.toFloat())
+
+            // Choose the smallest ratio as inSampleSize value, this will guarantee a final image
+            // with both dimensions larger than or equal to the requested height and width.
+            inSampleSize = if (heightRatio < widthRatio) heightRatio else widthRatio
+
+            // This offers some additional logic in case the image has a strange
+            // aspect ratio.
+            val totalPixels = (width * height).toFloat()
+
+            // Anything more than 2x the requested pixels we'll sample down further
+            val totalReqPixelsCap = (reqWidth * reqHeight * 2).toFloat()
+            while (totalPixels / (inSampleSize * inSampleSize) > totalReqPixelsCap) {
+                inSampleSize++
+            }
+        }
+        return inSampleSize
+    }
+
+    @Throws(IOException::class)
+    private fun rotateImageIfRequired(context: Context, img: Bitmap, selectedImage: Uri): Bitmap? {
+        val input = context.contentResolver.openInputStream(selectedImage)
+        val ei: ExifInterface = if (Build.VERSION.SDK_INT > 23) input?.let { ExifInterface(it) }!! else selectedImage.path?.let { ExifInterface(it) }!!
+        return when (ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)) {
+            ExifInterface.ORIENTATION_ROTATE_90 -> rotateImage(img, 90)
+            ExifInterface.ORIENTATION_ROTATE_180 -> rotateImage(img, 180)
+            ExifInterface.ORIENTATION_ROTATE_270 -> rotateImage(img, 270)
+            else -> img
+        }
+    }
+
+    private fun rotateImage(img: Bitmap, degree: Int): Bitmap? {
+        val matrix = Matrix()
+        matrix.postRotate(degree.toFloat())
+        val rotatedImg = Bitmap.createBitmap(img, 0, 0, img.width, img.height, matrix, true)
+        img.recycle()
+        return rotatedImg
     }
 
     // on destroy remove binding
