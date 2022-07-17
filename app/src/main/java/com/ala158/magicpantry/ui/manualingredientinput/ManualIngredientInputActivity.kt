@@ -1,18 +1,12 @@
 package com.ala158.magicpantry.ui.manualingredientinput
 
+import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
 import android.widget.Button
-import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
-import com.ala158.magicpantry.IngredientEntry
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.dao.IngredientDAO
 import com.ala158.magicpantry.database.MagicPantryDatabase
@@ -20,8 +14,7 @@ import com.ala158.magicpantry.repository.MagicPantryRepository
 import com.ala158.magicpantry.viewModel.ViewModelFactory
 import com.google.android.material.textfield.TextInputEditText
 
-
-class ManualIngredientInputFragment : Fragment() {
+class ManualIngredientInputActivity : AppCompatActivity() {
     private lateinit var btnAddToPantry: Button
     private lateinit var btnCancel: Button
     private lateinit var ingredientNameTextField: TextInputEditText
@@ -34,45 +27,36 @@ class ManualIngredientInputFragment : Fragment() {
     private lateinit var viewModelFactory: ViewModelFactory
     private lateinit var manualIngredientsInputViewModel: ManualIngredientInputViewModel
 
-    override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
-        val view = inflater.inflate(R.layout.fragment_manual_ingredient_input, container, false)
-        btnAddToPantry = view.findViewById(R.id.btn_add_to_pantry)
-        btnCancel = view.findViewById(R.id.btn_cancel_pantry)
-        ingredientNameTextField = view.findViewById(R.id.manual_input_ingredient_name)
-        amountTextField = view.findViewById(R.id.manual_input_amount)
-        unitEditDropdown = view.findViewById(R.id.manual_input_unit)
-        priceTextField = view.findViewById(R.id.manual_input_price)
 
-        database = MagicPantryDatabase.getInstance(requireActivity())
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_manual_ingredient_input)
+        btnAddToPantry = findViewById(R.id.btn_add_to_pantry)
+        btnCancel = findViewById(R.id.btn_cancel_pantry)
+        ingredientNameTextField = findViewById(R.id.manual_input_ingredient_name)
+        amountTextField = findViewById(R.id.manual_input_amount)
+        unitEditDropdown = findViewById(R.id.manual_input_unit)
+        priceTextField = findViewById(R.id.manual_input_price)
+
+        database = MagicPantryDatabase.getInstance(this)
         ingredientDAO = database.ingredientDAO
         repository = MagicPantryRepository(ingredientDAO)
         viewModelFactory = ViewModelFactory(repository)
         manualIngredientsInputViewModel =
             ViewModelProvider(
-                requireActivity(),
+                this,
                 viewModelFactory
             ).get(ManualIngredientInputViewModel::class.java)
 
         initTextWatchers()
 
-        manualIngredientsInputViewModel.ingredient.observe(requireActivity()) {
-            ingredientNameTextField.setText(it.getName())
-            amountTextField.setText(it.getAmount().toString())
-            unitEditDropdown.listSelection = UNIT_DROPDOWN_MAPPING[it.getUnit()]!!
-            priceTextField.setText(it.getPrice().toString())
-        }
         btnAddToPantry.setOnClickListener {
             addItemToPantry()
         }
 
         btnCancel.setOnClickListener {
-            view.findNavController().navigate(R.id.navigation_pantry)
+            finish()
         }
-        return view
     }
 
     private fun initTextWatchers() {
@@ -148,9 +132,7 @@ class ManualIngredientInputFragment : Fragment() {
     private fun addItemToPantry() {
         // Add error checking
         manualIngredientsInputViewModel.insertIngredient()
-        // TODO swap fragment to a activity because pressing Add Item, does not remove the entry
-        manualIngredientsInputViewModel.ingredient.value = IngredientEntry()
-        requireActivity().supportFragmentManager.popBackStack()
+        finish()
     }
 
     companion object {

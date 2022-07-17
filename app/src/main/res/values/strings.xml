@@ -12,6 +12,7 @@
     <string name="button_text_add_item">Add Item</string>
     <string name="low_stock_header">Low Stock</string>
     <string name="all_ingredients_header">All Ingredients</string>
+    <string name="checkbox_filter_low_stock_text">Filter Low Stock</string>
 
     <!-- Manual Ingredient Input Activity -->
     <string name="manual_ingredient_name_label">Ingredient Name</string>
