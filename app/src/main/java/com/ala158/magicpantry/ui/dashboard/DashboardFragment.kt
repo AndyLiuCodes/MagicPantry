@@ -12,11 +12,13 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.method.ScrollingMovementMethod
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import com.ala158.magicpantry.databinding.FragmentDashboardBinding
@@ -29,8 +31,6 @@ import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 class DashboardFragment : Fragment() {
 
     private var _binding: FragmentDashboardBinding? = null
-
-    private var checkIfPicTaken = 0
 
     private lateinit var imageUri: Uri
     private var bitmap : Bitmap? = null
@@ -65,7 +65,6 @@ class DashboardFragment : Fragment() {
             val choices = arrayOf("Open Camera", "Select from Gallery")
 
             val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
-            builder.setTitle("Pick Profile Picture")
                 .setCancelable(true)
 
                 // set 2 choices, open camera or open gallery
@@ -81,7 +80,7 @@ class DashboardFragment : Fragment() {
                             MediaStore.Images.Media.DESCRIPTION,
                             "Photo taken on " + System.currentTimeMillis()
                         )
-                        imageUri = requireActivity().contentResolver.insert(
+                        imageUri = requireContext().contentResolver.insert(
                             MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)!!
 
                         // open camera and add image to photo gallery if one is taken
@@ -129,9 +128,12 @@ class DashboardFragment : Fragment() {
 
     // successfully processed image
     private fun success(result : Text) {
-        val resultText = result.text
+        val resultBlocks = mutableListOf<Text.TextBlock>()
+        val helperProducts = mutableListOf<String>()
+        val helperPrice = mutableListOf<String>()
+        val filteredList = mutableListOf<String>()
+
         val mutableBitmap = bitmap!!.copy(bitmap!!.config, true)
-        var filteredArray = mutableListOf<String>()
 
         for (block in result.textBlocks) {
             val blockText = block.text
@@ -139,16 +141,14 @@ class DashboardFragment : Fragment() {
             val blockFrame = block.boundingBox
             // textView.text = "${textView.text} \n block: $blockText \n"
 
+            resultBlocks.add(block)
             drawRect(mutableBitmap, blockFrame!!)
 
             for (line in block.lines) {
                 val lineText = line.text
                 val lineCornerPoints = line.cornerPoints
                 val lineFrame = line.boundingBox
-                textView.text = "${textView.text} \n line: $lineText \n"
-
-                if (lineText.contains("."))
-                    filteredArray.add(lineText)
+                // textView.text = "${textView.text} \n line: $lineText \n"
 
                 for (element in line.elements) {
                     val elementText = element.text
@@ -158,7 +158,74 @@ class DashboardFragment : Fragment() {
                 }
             }
         }
-        textView.text = "${textView.text} \n result: $filteredArray"
+
+        for (i in 0 until resultBlocks.size) {
+            if (resultBlocks[i].text.contains(".")
+                && !resultBlocks[i].text.lowercase().contains("phone")
+                && !resultBlocks[i].text.contains("/")
+                && !resultBlocks[i].text.lowercase().contains("sav")) {
+
+                for (line in resultBlocks[i - 1].lines) {
+                    helperProducts.add(line.text)
+                }
+                for (line in resultBlocks[i].lines) {
+                    helperPrice.add(line.text)
+                }
+            }
+        }
+
+        if (helperProducts.size != helperPrice.size) {
+            for (i in 0 until helperProducts.size) {
+                Log.d("product", "${helperProducts.size}  =  ${helperProducts[i]}")
+                Log.d("price", "${helperPrice.size}")
+
+                    if (helperProducts[i] == helperProducts[i].uppercase()) {
+                        /*if (helperProducts[i].lowercase().contains("subtotal")) {
+                            Log.d("line", "continued")
+                            continue
+                        }
+                        else {*/
+                            helperProducts.removeAt(i)
+                            Log.d("line", "removed 1")
+//                        }
+                    }
+                    else if (helperProducts[i].lowercase().contains("gluten free item")) {
+                        helperProducts.removeAt(i)
+                        Log.d("line", "removed 2")
+                    }
+                    else if (helperProducts[i].uppercase() == "C") {
+                        helperProducts.removeAt(i)
+                        Log.d("line", "removed 3")
+                    }
+                    else if (helperProducts[i].contains("/") && helperProducts[i].contains(Regex("[^A-Za-z]"))) {
+                        //helperProducts[i][line - 1].text.plus(helperProducts[i][line])
+                        //Toast.makeText(requireContext(), helperProducts[i], Toast.LENGTH_SHORT).show()
+
+                        helperProducts[i - 1] = helperProducts[i - 1] + " quantity: " + helperProducts[i]
+                        Toast.makeText(requireContext(), helperProducts[i - 1], Toast.LENGTH_SHORT).show()
+                        helperProducts.removeAt(i)
+                        Log.d("line", "removed 4")
+                    }
+                    if (i + 1 == helperPrice.size) {
+                        break
+                    }
+                }
+            }
+            for (item in 0 until helperProducts.size) {
+                Log.d("product line", "${helperProducts.size}")
+                Log.d("price line", "${helperPrice.size}")
+
+                filteredList.add(helperProducts[item])
+                filteredList.add(helperPrice[item])
+            }
+
+        for (i in 0 until filteredList.size) {
+            if (filteredList[i].lowercase().contains("subtotal") || filteredList[i].lowercase() == "c")
+                filteredList.subList(0, i)
+        }
+
+        textView.text = "${textView.text} \n list: $filteredList"
+
         textView.movementMethod = ScrollingMovementMethod()
         imageView!!.setImageBitmap(mutableBitmap)
     }
@@ -179,13 +246,12 @@ class DashboardFragment : Fragment() {
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        checkIfPicTaken += 1
 
         // if camera selected, check request code
-        if (requestCode == requestCamera && resultCode == Activity.RESULT_OK && data != null) {
+        if (requestCode == requestCamera && resultCode == Activity.RESULT_OK) {
 
             // get image uri and set imageBitmap to display it
-            val myBitmap = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, imageUri)
+            val myBitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, imageUri)
             imageView!!.setImageBitmap(myBitmap)
 
             bitmap = myBitmap
@@ -196,7 +262,7 @@ class DashboardFragment : Fragment() {
 
             // get image uri and set imageBitmap to display it
             val myData = data.data
-            val myBitmap = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, myData)
+            val myBitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, myData)
             imageView!!.setImageBitmap(myBitmap)
 
             bitmap = myBitmap
