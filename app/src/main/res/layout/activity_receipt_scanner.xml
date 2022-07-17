@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".ui.receiptscanner.ReceiptScannerActivity">
+
+    <ImageView
+        android:id="@+id/imageview_receipt"
+        android:layout_width="match_parent"
+        android:layout_height="300dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toTopOf="@+id/textview_receipt"
+        android:gravity="top" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:scrollbars="vertical"
+        android:id="@+id/textview_receipt"
+        app:layout_constraintTop_toBottomOf="@id/imageview_receipt" />
+
+    <LinearLayout
+        app:layout_constraintTop_toBottomOf="@+id/textview_receipt"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:orientation="vertical"
+        android:gravity="bottom"
+        android:paddingBottom="55dp"
+        app:layout_constraintStart_toStartOf="parent">>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:id="@+id/MyButtons"
+            app:layout_constraintStart_toStartOf="parent">
+
+            <Button
+                android:id="@+id/cameraButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginStart="10dp"
+                android:layout_marginEnd="5dp"
+                android:text="Select image" />
+
+            <Button
+                android:id="@+id/scanButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:layout_marginEnd="10dp"
+                android:layout_marginStart="5dp"
+                android:text="Scan" />
+        </LinearLayout>
+
+        <Button
+            android:id="@+id/btn_review_scanner_items"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Review Receipt Items" />
+
+    </LinearLayout>
+</androidx.constraintlayout.widget.ConstraintLayout>
