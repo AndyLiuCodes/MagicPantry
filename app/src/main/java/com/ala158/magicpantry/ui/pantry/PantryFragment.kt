@@ -5,19 +5,15 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.CheckBox
-import android.widget.CompoundButton
-import android.widget.ListView
+import android.widget.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.arrayAdapter.PantryIngredientsArrayAdapter
 import com.ala158.magicpantry.dao.IngredientDAO
 import com.ala158.magicpantry.database.MagicPantryDatabase
 import com.ala158.magicpantry.repository.MagicPantryRepository
-import com.ala158.magicpantry.ui.manualingredientinput.ManualIngredientInputFragment
+import com.ala158.magicpantry.ui.manualingredientinput.ManualIngredientInputActivity
 import com.ala158.magicpantry.viewModel.ViewModelFactory
 
 class PantryFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
@@ -30,6 +26,7 @@ class PantryFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
     private lateinit var pantryIngredientsArrayAdapter: PantryIngredientsArrayAdapter
     private lateinit var btnAddIngredient: Button
     private lateinit var filterLowStockCheckbox: CheckBox
+    private lateinit var textViewPantryHeader: TextView
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,6 +47,8 @@ class PantryFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
         filterLowStockCheckbox = view.findViewById(R.id.checkbox_filter_low_stock)
         btnAddIngredient = view.findViewById(R.id.btn_add_ingredient)
         allIngredientsListView = view.findViewById(R.id.listview_pantry_all_ingredients)
+        textViewPantryHeader = view.findViewById(R.id.header_pantry)
+
         pantryIngredientsArrayAdapter =
             PantryIngredientsArrayAdapter(requireActivity(), ArrayList())
         allIngredientsListView.adapter = pantryIngredientsArrayAdapter
@@ -73,19 +72,33 @@ class PantryFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
         }
 
         btnAddIngredient.setOnClickListener {
-            view.findNavController().navigate(R.id.navigation_manual_ingredient_input)
+            val intent = Intent(activity, ManualIngredientInputActivity::class.java)
+            startActivity(intent)
         }
 
         filterLowStockCheckbox.setOnCheckedChangeListener(this)
+
         return view
     }
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
         if (filterLowStockCheckbox.isChecked) {
             pantryIngredientsArrayAdapter.replace(pantryViewModel.lowStockIngredients.value!!)
+            setHeaderLowStock()
         } else {
             pantryIngredientsArrayAdapter.replace(pantryViewModel.allIngredientsLiveData.value!!)
+            setHeaderAllIngredients()
         }
         pantryIngredientsArrayAdapter.notifyDataSetChanged()
+    }
+
+    private fun setHeaderAllIngredients() {
+        textViewPantryHeader.setBackgroundResource(R.drawable.rounded_bg_blue)
+        textViewPantryHeader.setText(R.string.all_ingredients_header)
+    }
+
+    private fun setHeaderLowStock() {
+        textViewPantryHeader.setBackgroundResource(R.drawable.rounded_bg_red)
+        textViewPantryHeader.setText(R.string.low_stock_header)
     }
 }

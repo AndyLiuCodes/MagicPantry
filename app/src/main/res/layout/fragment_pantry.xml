@@ -55,7 +55,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:id="@+id/header_review_ingredients"
+                    android:id="@+id/header_pantry"
                     android:layout_width="match_parent"
                     android:layout_height="55dp"
                     android:layout_marginTop="15dp"
@@ -84,7 +84,8 @@
                         android:layout_height="wrap_content"
                         android:text="@string/checkbox_filter_low_stock_text"
                         android:layout_weight="1"
-                        android:buttonTint="@color/mp_yellow"/>
+                        android:buttonTint="@color/mp_yellow"
+                        android:textColor="@color/white"/>
 
                 </LinearLayout>
 
