@@ -1,5 +1,8 @@
-package com.ala158.magicpantry.ui.dashboard
+package com.ala158.magicpantry.ui.receiptscanner
 
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import com.ala158.magicpantry.R
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
@@ -9,28 +12,19 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
-import android.os.Bundle
 import android.provider.MediaStore
 import android.text.method.ScrollingMovementMethod
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
-import androidx.fragment.app.Fragment
-import com.ala158.magicpantry.databinding.FragmentDashboardBinding
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 
 
-@Suppress("DEPRECATION")
-class DashboardFragment : Fragment() {
-
-    private var _binding: FragmentDashboardBinding? = null
-
+class ReceiptScannerActivity : AppCompatActivity() {
     private var checkIfPicTaken = 0
 
     private lateinit var imageUri: Uri
@@ -40,32 +34,24 @@ class DashboardFragment : Fragment() {
     private val requestGallery = 2222
     private var imageView: ImageView? = null
     private lateinit var textView : TextView
+    private lateinit var cameraBtn: Button
+    private lateinit var scanBtn: Button
+    private lateinit var reviewItemsBtn: Button
 
-    // This property is only valid between onCreateView and
-    // onDestroyView.
-    private val binding get() = _binding!!
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        setContentView(R.layout.activity_receipt_scanner)
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View {
+        imageView = findViewById(R.id.imageview_receipt)
+        textView = findViewById(R.id.textview_receipt)
+        cameraBtn = findViewById(R.id.cameraButton)
+        scanBtn = findViewById(R.id.scanButton)
+        reviewItemsBtn = findViewById(R.id.btn_review_scanner_items)
 
-        _binding = FragmentDashboardBinding.inflate(inflater, container, false)
-        return binding.root
-
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
-
-        imageView = binding.imageviewReceipt
-        textView = binding.textviewReceipt
-
-        // button to select receipt image
-        binding.cameraButton.setOnClickListener {
+        cameraBtn.setOnClickListener {
             val choices = arrayOf("Open Camera", "Select from Gallery")
 
-            val builder: AlertDialog.Builder = AlertDialog.Builder(requireContext())
+            val builder: AlertDialog.Builder = AlertDialog.Builder(this)
             builder.setTitle("Pick Profile Picture")
                 .setCancelable(true)
 
@@ -82,7 +68,7 @@ class DashboardFragment : Fragment() {
                             MediaStore.Images.Media.DESCRIPTION,
                             "Photo taken on " + System.currentTimeMillis()
                         )
-                        imageUri = requireActivity().contentResolver.insert(
+                        imageUri = this.contentResolver.insert(
                             MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)!!
 
                         // open camera and add image to photo gallery if one is taken
@@ -99,9 +85,12 @@ class DashboardFragment : Fragment() {
             alert.show()
         }
 
-        // scan text
-        binding.scanButton.setOnClickListener {
+        scanBtn.setOnClickListener {
             recognize()
+        }
+
+        reviewItemsBtn.setOnClickListener {
+
         }
     }
 
@@ -168,7 +157,7 @@ class DashboardFragment : Fragment() {
         if (requestCode == requestCamera && resultCode == Activity.RESULT_OK && data != null) {
 
             // get image uri and set imageBitmap to display it
-            val myBitmap = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, imageUri)
+            val myBitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, imageUri)
             imageView!!.setImageBitmap(myBitmap)
 
             bitmap = myBitmap
@@ -179,16 +168,10 @@ class DashboardFragment : Fragment() {
 
             // get image uri and set imageBitmap to display it
             val myData = data.data
-            val myBitmap = MediaStore.Images.Media.getBitmap(requireActivity().contentResolver, myData)
+            val myBitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, myData)
             imageView!!.setImageBitmap(myBitmap)
 
             bitmap = myBitmap
         }
-    }
-
-    // on destroy remove binding
-    override fun onDestroyView() {
-        super.onDestroyView()
-        _binding = null
     }
 }
