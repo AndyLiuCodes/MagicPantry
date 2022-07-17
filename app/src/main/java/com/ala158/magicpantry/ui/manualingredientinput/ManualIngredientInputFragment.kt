@@ -153,11 +153,13 @@ class ManualIngredientInputFragment : Fragment() {
         requireActivity().supportFragmentManager.popBackStack()
     }
 
-    private val UNIT_DROPDOWN_MAPPING = mapOf<String, Int>(
-        "kg"    to 0,
-        "g"     to 1,
-        "ml"    to 3,
-        "L"     to 4,
-        "unit"  to 5
-    )
+    companion object {
+        val UNIT_DROPDOWN_MAPPING = mapOf<String, Int>(
+            "kg"    to 0,
+            "g"     to 1,
+            "ml"    to 3,
+            "L"     to 4,
+            "unit"  to 5
+        )
+    }
 }
