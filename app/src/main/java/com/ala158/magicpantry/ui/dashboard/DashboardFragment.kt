@@ -135,6 +135,7 @@ class DashboardFragment : Fragment() {
     private fun success(result : Text) {
         val resultBlocks = mutableListOf<Text.TextBlock>()
         val helperProducts = mutableListOf<String>()
+        val filteredProducts = mutableListOf<String>()
         val helperPrice = mutableListOf<String>()
         val filteredList = mutableListOf<String>()
 
@@ -184,12 +185,19 @@ class DashboardFragment : Fragment() {
                 Log.d("product", "${helperProducts.size}  =  ${helperProducts[i]}")
                 Log.d("price", "${helperPrice.size}")
 
-                    if (helperProducts[i] == helperProducts[i].uppercase()) {
-                        /*if (helperProducts[i].lowercase().contains("subtotal")) {
+                if ((helperProducts[i] != helperProducts[i].uppercase())
+                    && !(helperProducts[i].lowercase().contains("gluten free item"))
+                    && !(helperProducts[i].contains("/") && helperProducts[i].contains(Regex("[^A-Za-z]")))
+                ) {
+                    filteredProducts.add(helperProducts[i])
+                }
+
+                /*if (helperProducts[i] == helperProducts[i].uppercase()) {
+                        *//*if (helperProducts[i].lowercase().contains("subtotal")) {
                             Log.d("line", "continued")
                             continue
                         }
-                        else {*/
+                        else {*//*
                             helperProducts.removeAt(i)
                             Log.d("line", "removed 1")
 //                        }
@@ -198,14 +206,7 @@ class DashboardFragment : Fragment() {
                         helperProducts.removeAt(i)
                         Log.d("line", "removed 2")
                     }
-                    else if (helperProducts[i].uppercase() == "C") {
-                        helperProducts.removeAt(i)
-                        Log.d("line", "removed 3")
-                    }
                     else if (helperProducts[i].contains("/") && helperProducts[i].contains(Regex("[^A-Za-z]"))) {
-                        //helperProducts[i][line - 1].text.plus(helperProducts[i][line])
-                        //Toast.makeText(requireContext(), helperProducts[i], Toast.LENGTH_SHORT).show()
-
                         helperProducts[i - 1] = helperProducts[i - 1] + " quantity: " + helperProducts[i]
                         Toast.makeText(requireContext(), helperProducts[i - 1], Toast.LENGTH_SHORT).show()
                         helperProducts.removeAt(i)
@@ -213,16 +214,18 @@ class DashboardFragment : Fragment() {
                     }
                     if (i + 1 == helperPrice.size) {
                         break
-                    }
-                }
+                    }*/
             }
-            for (item in 0 until helperProducts.size) {
-                Log.d("product line", "${helperProducts.size}")
-                Log.d("price line", "${helperPrice.size}")
+        }
+        for (item in 0 until filteredProducts.size) {
+            Log.d("product size", "${filteredProducts.size}")
+            Log.d("price size", "${helperPrice.size}")
 
-                filteredList.add(helperProducts[item])
-                filteredList.add(helperPrice[item])
-            }
+            Toast.makeText(requireContext(), "${filteredProducts.size} and {helperPrice.size}", Toast.LENGTH_SHORT).show()
+
+            filteredList.add(filteredProducts[item])
+            filteredList.add(helperPrice[item])
+        }
 
         for (i in 0 until filteredList.size) {
             if (filteredList[i].lowercase().contains("subtotal") || filteredList[i].lowercase() == "c")
