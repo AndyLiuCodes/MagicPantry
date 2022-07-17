@@ -1,6 +1,11 @@
 package com.ala158.magicpantry
 
+import android.Manifest
+import android.content.pm.PackageManager
+import android.os.Build
 import android.os.Bundle
+import android.util.Log
+import androidx.annotation.RequiresApi
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -25,6 +30,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var repository: MagicPantryRepository
     private lateinit var viewModelFactory: ViewModelFactory
     private lateinit var ingredientViewModel: IngredientViewModel
+
+    private val permissionCode = 200
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -54,5 +61,40 @@ class MainActivity : AppCompatActivity() {
         viewModelFactory = ViewModelFactory(repository)
         ingredientViewModel =
             ViewModelProvider(this, viewModelFactory).get(IngredientViewModel::class.java)
+
+        // check camera permissions
+        checkMyPermission()
+    }
+
+    // whenever request camera permissions check if permission granted, if not request again
+    @RequiresApi(Build.VERSION_CODES.M)
+    @Deprecated("Deprecated in Java")
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+
+        // requestCode == cameraPermissionCode
+        when (requestCode) {
+            permissionCode -> {
+                // if permission granted, continue
+                if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
+                    Log.d("permission", "granted")
+                }
+                // if permission not granted, request again
+                else {
+                    Log.d("permission", "denied")
+                    checkMyPermission()
+                }
+            }
+        }
+    }
+
+    // check camera, gallery
+    @RequiresApi(Build.VERSION_CODES.M)
+    private fun checkMyPermission(){
+        // if not granted, request permissions
+        if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
+            checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
+            requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA), permissionCode)
+        }
     }
 }

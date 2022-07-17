@@ -14,6 +14,7 @@ import com.ala158.magicpantry.dao.IngredientDAO
 import com.ala158.magicpantry.database.MagicPantryDatabase
 import com.ala158.magicpantry.repository.MagicPantryRepository
 import com.ala158.magicpantry.ui.manualingredientinput.ManualIngredientInputActivity
+import com.ala158.magicpantry.ui.receiptscanner.ReceiptScannerActivity
 import com.ala158.magicpantry.viewModel.ViewModelFactory
 
 class PantryFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
@@ -25,6 +26,7 @@ class PantryFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
     private lateinit var allIngredientsListView: ListView
     private lateinit var pantryIngredientsArrayAdapter: PantryIngredientsArrayAdapter
     private lateinit var btnAddIngredient: Button
+    private lateinit var btnScanReceipt: Button
     private lateinit var filterLowStockCheckbox: CheckBox
     private lateinit var textViewPantryHeader: TextView
 
@@ -46,6 +48,7 @@ class PantryFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
         val view = inflater.inflate(R.layout.fragment_pantry, container, false)
         filterLowStockCheckbox = view.findViewById(R.id.checkbox_filter_low_stock)
         btnAddIngredient = view.findViewById(R.id.btn_add_ingredient)
+        btnScanReceipt = view.findViewById(R.id.btn_scan_receipt)
         allIngredientsListView = view.findViewById(R.id.listview_pantry_all_ingredients)
         textViewPantryHeader = view.findViewById(R.id.header_pantry)
 
@@ -73,6 +76,11 @@ class PantryFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
 
         btnAddIngredient.setOnClickListener {
             val intent = Intent(activity, ManualIngredientInputActivity::class.java)
+            startActivity(intent)
+        }
+
+        btnScanReceipt.setOnClickListener {
+            val intent = Intent(activity, ReceiptScannerActivity::class.java)
             startActivity(intent)
         }
 
