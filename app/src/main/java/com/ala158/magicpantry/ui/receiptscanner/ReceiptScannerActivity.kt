@@ -14,14 +14,10 @@ import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
 import android.text.method.ScrollingMovementMethod
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
-import androidx.fragment.app.Fragment
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
@@ -40,6 +36,7 @@ class ReceiptScannerActivity : AppCompatActivity() {
     private lateinit var textView : TextView
     private lateinit var cameraBtn: Button
     private lateinit var scanBtn: Button
+    private lateinit var reviewItemsBtn: Button
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +46,7 @@ class ReceiptScannerActivity : AppCompatActivity() {
         textView = findViewById(R.id.textview_receipt)
         cameraBtn = findViewById(R.id.cameraButton)
         scanBtn = findViewById(R.id.scanButton)
+        reviewItemsBtn = findViewById(R.id.btn_review_scanner_items)
 
         cameraBtn.setOnClickListener {
             val choices = arrayOf("Open Camera", "Select from Gallery")
@@ -89,6 +87,10 @@ class ReceiptScannerActivity : AppCompatActivity() {
 
         scanBtn.setOnClickListener {
             recognize()
+        }
+
+        reviewItemsBtn.setOnClickListener {
+
         }
     }
 
