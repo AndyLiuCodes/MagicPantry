@@ -48,7 +48,6 @@ class PantryEditIngredientActivity : AppCompatActivity() {
             // Had help from https://stackoverflow.com/a/57119977 for setting the dropdown value
             autoCompleteUnitDropdown.setText(it.getUnit(), false)
             textInputEditPrice.setText(it.getPrice().toString())
-            println(pantryEditIngredientViewModel.ingredientEntry.value!!.getPrice())
         }
 
         if (pantryEditIngredientViewModel.ingredientEntry.value == null) {
