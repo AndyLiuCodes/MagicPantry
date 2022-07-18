@@ -10,7 +10,7 @@ import android.content.ContentValues
 import android.content.DialogInterface
 import android.content.Intent
 import android.database.Cursor
-import android.graphics.Bitmap
+import android.graphics.*
 import android.net.Uri
 import android.os.Build
 import android.provider.MediaStore
@@ -18,6 +18,7 @@ import android.text.method.ScrollingMovementMethod
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import com.ala158.magicpantry.Util
 import com.google.mlkit.vision.common.InputImage
@@ -122,30 +123,76 @@ class ReceiptScannerActivity : AppCompatActivity() {
 
     // successfully processed image
     private fun success(result : Text) {
-        val resultText = result.text
+        val resultBlocks = mutableListOf<Text.TextBlock>()
+        val helperProducts = mutableListOf<String>()
+        val filteredProducts = mutableListOf<String>()
+        val helperPrice = mutableListOf<String>()
+        val filteredList = mutableListOf<String>()
 
+        val mutableBitmap = bitmap!!.copy(bitmap!!.config, true)
+
+        // for blocks in result text
         for (block in result.textBlocks) {
             val blockText = block.text
             val blockCornerPoints = block.cornerPoints
             val blockFrame = block.boundingBox
-            textView.text = "${textView.text} \n block: $blockText \n"
 
-            for (line in block.lines) {
-                val lineText = line.text
-                val lineCornerPoints = line.cornerPoints
-                val lineFrame = line.boundingBox
-                textView.text = "${textView.text} \n line: $lineText \n"
+            // add all blocks into a list
+            resultBlocks.add(block)
+            drawRect(mutableBitmap, blockFrame!!)
+        }
 
-                for (element in line.elements) {
-                    val elementText = element.text
-                    val elementCornerPoints = element.cornerPoints
-                    val elementFrame = element.boundingBox
-                    textView.text = "${textView.text} \n element: $elementText \n"
+        // if line in block has "." and does not have
+        //  "phone", "save" or "/"
+        //  then add block to price list and add block before to product list
+        for (i in 0 until resultBlocks.size) {
+            if (resultBlocks[i].text.contains(".")
+                && !resultBlocks[i].text.lowercase().contains("phone")
+                && !resultBlocks[i].text.contains("/")
+                && !resultBlocks[i].text.lowercase().contains("sav")) {
+
+                for (line in resultBlocks[i - 1].lines) {
+                    helperProducts.add(line.text)
+                }
+                for (line in resultBlocks[i].lines) {
+                    helperPrice.add(line.text)
                 }
             }
         }
-        textView.text = "${textView.text} \n result: $resultText"
+        // if product list size is not equal to price list size then
+        //  if product item is not all uppercase and does not have "gluten free item"
+        //  and does not have ("/" and anything other than letters) add to filtered product list
+        if (helperProducts.size != helperPrice.size) {
+            for (i in 0 until helperProducts.size) {
+                if ((helperProducts[i] != helperProducts[i].uppercase())
+                    && !(helperProducts[i].lowercase().contains("gluten free item"))
+                    && !(helperProducts[i].contains("/") && helperProducts[i].contains(Regex("[^A-Za-z]")))
+                ) {
+                    filteredProducts.add(helperProducts[i])
+                }
+            }
+        }
+        // add the two lists to make one
+        for (item in 0 until filteredProducts.size) {
+            Toast.makeText( this, "${filteredProducts.size} and ${helperPrice.size}", Toast.LENGTH_SHORT).show()
+
+            filteredList.add(filteredProducts[item])
+            filteredList.add(helperPrice[item])
+        }
+        textView.text = "${textView.text} \n list: $filteredList"
+
         textView.movementMethod = ScrollingMovementMethod()
+        imageView!!.setImageBitmap(mutableBitmap)
+    }
+
+    // add rect around text blocks
+    private fun drawRect(mutableBitmap : Bitmap, location : Rect) {
+        val paint = Paint()
+        paint.color = Color.RED
+        paint.style = Paint.Style.STROKE
+        with(Canvas(mutableBitmap)) {
+            drawRect(location, paint)
+        }
     }
 
     // when camera or gallery chosen, update photo
