@@ -4,17 +4,14 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.ContentValues
-import android.content.Context
 import android.content.DialogInterface
 import android.content.Intent
 import android.graphics.*
-import android.media.ExifInterface
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.method.ScrollingMovementMethod
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -28,8 +25,6 @@ import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
-import java.io.IOException
-import java.io.InputStream
 
 
 @Suppress("DEPRECATION")
@@ -141,30 +136,20 @@ class DashboardFragment : Fragment() {
 
         val mutableBitmap = bitmap!!.copy(bitmap!!.config, true)
 
+        // for blocks in result text
         for (block in result.textBlocks) {
             val blockText = block.text
             val blockCornerPoints = block.cornerPoints
             val blockFrame = block.boundingBox
-            // textView.text = "${textView.text} \n block: $blockText \n"
 
+            // add all blocks into a list
             resultBlocks.add(block)
             drawRect(mutableBitmap, blockFrame!!)
-
-            for (line in block.lines) {
-                val lineText = line.text
-                val lineCornerPoints = line.cornerPoints
-                val lineFrame = line.boundingBox
-                // textView.text = "${textView.text} \n line: $lineText \n"
-
-                for (element in line.elements) {
-                    val elementText = element.text
-                    val elementCornerPoints = element.cornerPoints
-                    val elementFrame = element.boundingBox
-                    // textView.text = "${textView.text} \n element: $elementText \n"
-                }
-            }
         }
 
+        // if line in block has "." and does not have
+        //  "phone", "save" or "/"
+        //  then add block to price list and add block before to product list
         for (i in 0 until resultBlocks.size) {
             if (resultBlocks[i].text.contains(".")
                 && !resultBlocks[i].text.lowercase().contains("phone")
@@ -179,57 +164,25 @@ class DashboardFragment : Fragment() {
                 }
             }
         }
-
+        // if product list size is not equal to price list size then
+        //  if product item is not all uppercase and does not have "gluten free item"
+        //  and does not have ("/" and anything other than letters) add to filtered product list
         if (helperProducts.size != helperPrice.size) {
             for (i in 0 until helperProducts.size) {
-                Log.d("product", "${helperProducts.size}  =  ${helperProducts[i]}")
-                Log.d("price", "${helperPrice.size}")
-
                 if ((helperProducts[i] != helperProducts[i].uppercase())
                     && !(helperProducts[i].lowercase().contains("gluten free item"))
                     && !(helperProducts[i].contains("/") && helperProducts[i].contains(Regex("[^A-Za-z]")))
                 ) {
                     filteredProducts.add(helperProducts[i])
                 }
-
-                /*if (helperProducts[i] == helperProducts[i].uppercase()) {
-                        *//*if (helperProducts[i].lowercase().contains("subtotal")) {
-                            Log.d("line", "continued")
-                            continue
-                        }
-                        else {*//*
-                            helperProducts.removeAt(i)
-                            Log.d("line", "removed 1")
-//                        }
-                    }
-                    else if (helperProducts[i].lowercase().contains("gluten free item")) {
-                        helperProducts.removeAt(i)
-                        Log.d("line", "removed 2")
-                    }
-                    else if (helperProducts[i].contains("/") && helperProducts[i].contains(Regex("[^A-Za-z]"))) {
-                        helperProducts[i - 1] = helperProducts[i - 1] + " quantity: " + helperProducts[i]
-                        Toast.makeText(requireContext(), helperProducts[i - 1], Toast.LENGTH_SHORT).show()
-                        helperProducts.removeAt(i)
-                        Log.d("line", "removed 4")
-                    }
-                    if (i + 1 == helperPrice.size) {
-                        break
-                    }*/
             }
         }
+        // add the two lists to make one
         for (item in 0 until filteredProducts.size) {
-            Log.d("product size", "${filteredProducts.size}")
-            Log.d("price size", "${helperPrice.size}")
-
-            Toast.makeText(requireContext(), "${filteredProducts.size} and {helperPrice.size}", Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), "${filteredProducts.size} and ${helperPrice.size}", Toast.LENGTH_SHORT).show()
 
             filteredList.add(filteredProducts[item])
             filteredList.add(helperPrice[item])
-        }
-
-        for (i in 0 until filteredList.size) {
-            if (filteredList[i].lowercase().contains("subtotal") || filteredList[i].lowercase() == "c")
-                filteredList.subList(0, i)
         }
 
         textView.text = "${textView.text} \n list: $filteredList"
@@ -259,8 +212,7 @@ class DashboardFragment : Fragment() {
         if (requestCode == requestCamera && resultCode == Activity.RESULT_OK) {
 
             // get image uri and set imageBitmap to display it
-            var myBitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, imageUri)
-            myBitmap = handleSamplingAndRotationBitmap(requireActivity(),imageUri)
+            val myBitmap = MediaStore.Images.Media.getBitmap(requireContext().contentResolver, imageUri)
             imageView!!.setImageBitmap(myBitmap)
             bitmap = myBitmap
         }
@@ -275,84 +227,6 @@ class DashboardFragment : Fragment() {
 
             bitmap = myBitmap
         }
-    }
-
-    @Throws(IOException::class)
-    fun handleSamplingAndRotationBitmap(context: Context, selectedImage: Uri?): Bitmap? {
-        val MAX_HEIGHT = 1024
-        val MAX_WIDTH = 1024
-
-        // First decode with inJustDecodeBounds=true to check dimensions
-        val options = BitmapFactory.Options()
-        options.inJustDecodeBounds = true
-        var imageStream: InputStream? = selectedImage?.let {
-            context.contentResolver.openInputStream(
-                it
-            )
-        }
-        BitmapFactory.decodeStream(imageStream, null, options)
-        imageStream?.close()
-
-        // Calculate inSampleSize
-        options.inSampleSize = calculateInSampleSize(options, MAX_WIDTH, MAX_HEIGHT)
-
-        // Decode bitmap with inSampleSize set
-        options.inJustDecodeBounds = false
-        imageStream = selectedImage?.let { context.contentResolver.openInputStream(it) }
-        var img = BitmapFactory.decodeStream(imageStream, null, options)
-        img = selectedImage?.let { img?.let { it1 -> rotateImageIfRequired(context, it1, it) } }
-        return img
-    }
-
-    private fun calculateInSampleSize(
-        options: BitmapFactory.Options,
-        reqWidth: Int, reqHeight: Int
-    ): Int {
-        // Raw height and width of image
-        val height = options.outHeight
-        val width = options.outWidth
-        var inSampleSize = 1
-        if (height > reqHeight || width > reqWidth) {
-
-            // Calculate ratios of height and width to requested height and width
-            val heightRatio = Math.round(height.toFloat() / reqHeight.toFloat())
-            val widthRatio = Math.round(width.toFloat() / reqWidth.toFloat())
-
-            // Choose the smallest ratio as inSampleSize value, this will guarantee a final image
-            // with both dimensions larger than or equal to the requested height and width.
-            inSampleSize = if (heightRatio < widthRatio) heightRatio else widthRatio
-
-            // This offers some additional logic in case the image has a strange
-            // aspect ratio.
-            val totalPixels = (width * height).toFloat()
-
-            // Anything more than 2x the requested pixels we'll sample down further
-            val totalReqPixelsCap = (reqWidth * reqHeight * 2).toFloat()
-            while (totalPixels / (inSampleSize * inSampleSize) > totalReqPixelsCap) {
-                inSampleSize++
-            }
-        }
-        return inSampleSize
-    }
-
-    @Throws(IOException::class)
-    private fun rotateImageIfRequired(context: Context, img: Bitmap, selectedImage: Uri): Bitmap? {
-        val input = context.contentResolver.openInputStream(selectedImage)
-        val ei: ExifInterface = if (Build.VERSION.SDK_INT > 23) input?.let { ExifInterface(it) }!! else selectedImage.path?.let { ExifInterface(it) }!!
-        return when (ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)) {
-            ExifInterface.ORIENTATION_ROTATE_90 -> rotateImage(img, 90)
-            ExifInterface.ORIENTATION_ROTATE_180 -> rotateImage(img, 180)
-            ExifInterface.ORIENTATION_ROTATE_270 -> rotateImage(img, 270)
-            else -> img
-        }
-    }
-
-    private fun rotateImage(img: Bitmap, degree: Int): Bitmap? {
-        val matrix = Matrix()
-        matrix.postRotate(degree.toFloat())
-        val rotatedImg = Bitmap.createBitmap(img, 0, 0, img.width, img.height, matrix, true)
-        img.recycle()
-        return rotatedImg
     }
 
     // on destroy remove binding
