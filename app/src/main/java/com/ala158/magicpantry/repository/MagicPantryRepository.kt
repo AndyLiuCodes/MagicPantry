@@ -8,8 +8,11 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
 class MagicPantryRepository(private val ingredientDAO: IngredientDAO) {
-
     val allIngredients: Flow<List<Ingredient>> = ingredientDAO.getAllIngredients()
+
+    suspend fun getIngredient(id: Long): Ingredient {
+        return ingredientDAO.getIngredientEntry(id)
+    }
 
     fun insertIngredient(ingredient: Ingredient) {
         CoroutineScope(IO).launch {
@@ -26,6 +29,12 @@ class MagicPantryRepository(private val ingredientDAO: IngredientDAO) {
     fun updateIngredient(ingredient: Ingredient) {
         CoroutineScope(IO).launch {
             ingredientDAO.updateIngredient(ingredient)
+        }
+    }
+
+    fun deleteIngredientById(id: Long) {
+        CoroutineScope(IO).launch {
+            ingredientDAO.deleteIngredientById(id)
         }
     }
 }

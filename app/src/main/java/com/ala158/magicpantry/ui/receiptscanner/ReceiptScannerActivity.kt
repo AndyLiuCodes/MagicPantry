@@ -9,6 +9,7 @@ import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.DialogInterface
 import android.content.Intent
+import android.database.Cursor
 import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
@@ -18,10 +19,12 @@ import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
+import com.ala158.magicpantry.Util
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
+import java.io.File
 
 
 class ReceiptScannerActivity : AppCompatActivity() {
@@ -37,6 +40,7 @@ class ReceiptScannerActivity : AppCompatActivity() {
     private lateinit var cameraBtn: Button
     private lateinit var scanBtn: Button
     private lateinit var reviewItemsBtn: Button
+    private var imageToScan: File? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +56,6 @@ class ReceiptScannerActivity : AppCompatActivity() {
             val choices = arrayOf("Open Camera", "Select from Gallery")
 
             val builder: AlertDialog.Builder = AlertDialog.Builder(this)
-            builder.setTitle("Pick Profile Picture")
                 .setCancelable(true)
 
                 // set 2 choices, open camera or open gallery
@@ -146,7 +149,7 @@ class ReceiptScannerActivity : AppCompatActivity() {
     }
 
     // when camera or gallery chosen, update photo
-    @RequiresApi(Build.VERSION_CODES.O)
+    @RequiresApi(Build.VERSION_CODES.Q)
     @SuppressLint("CommitPrefEdits")
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -156,8 +159,27 @@ class ReceiptScannerActivity : AppCompatActivity() {
         // if camera selected, check request code
         if (requestCode == requestCamera && resultCode == Activity.RESULT_OK && data != null) {
 
-            // get image uri and set imageBitmap to display it
-            val myBitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, imageUri)
+            // get image uri, convert it to bitmap and rotate if necessary, then
+            // set imageBitmap to display it
+            // Help from https://developer.android.com/training/data-storage/shared/media
+            // TODO change how we do our URIs since this logic to fetch the image is slow due to db query
+            var imagePath = ""
+            val projections = arrayOf(MediaStore.Images.Media.DATA)
+            this.contentResolver.query(
+                imageUri,
+                projections,
+                null,
+                null,
+                null
+            )?.use { cursor ->
+                val columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+                cursor.moveToFirst()
+                imagePath = cursor.getString(columnIndex)
+            }
+
+            imageToScan = File(imagePath)
+            val myBitmap = Util.getBitmap(this, imageUri, imageToScan!!)
+
             imageView!!.setImageBitmap(myBitmap)
 
             bitmap = myBitmap
@@ -168,10 +190,37 @@ class ReceiptScannerActivity : AppCompatActivity() {
 
             // get image uri and set imageBitmap to display it
             val myData = data.data
-            val myBitmap = MediaStore.Images.Media.getBitmap(this.contentResolver, myData)
+
+            // get image uri, convert it to bitmap and rotate if necessary, then
+            // set imageBitmap to display it
+            // Help from https://developer.android.com/training/data-storage/shared/media
+            var imagePath = ""
+            val projections = arrayOf(MediaStore.Images.Media.DATA)
+            this.contentResolver.query(
+                myData!!,
+                projections,
+                null,
+                null,
+                null
+            )?.use { cursor ->
+                val columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+                cursor.moveToFirst()
+                imagePath = cursor.getString(columnIndex)
+            }
+
+            imageToScan = File(imagePath)
+            val myBitmap = Util.getBitmap(this, myData, imageToScan!!)
+
             imageView!!.setImageBitmap(myBitmap)
 
             bitmap = myBitmap
         }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        // Delete image once we are done with it
+        if (imageToScan != null && imageToScan!!.exists())
+            imageToScan!!.delete()
     }
 }

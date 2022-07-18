@@ -22,6 +22,8 @@
             android:layout_marginRight="5dp"
             android:visibility="invisible"
             android:src="@drawable/low_stock"
+            android:focusable="false"
+            android:clickable="false"/>
         />
 
         <TextView
@@ -31,7 +33,9 @@
             android:layout_weight="1"
             android:text="2x Banana"
             android:textColor="#000000"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:focusable="false"
+            android:clickable="false"/>
 
     </LinearLayout>
 
@@ -47,7 +51,9 @@
             android:layout_height="wrap_content"
             android:text="$0.50/unit"
             android:textColor="#000000"
-            android:textSize="12sp" />
+            android:textSize="12sp"
+            android:focusable="false"
+            android:clickable="false"/>
 
         <Button
             android:id="@+id/ingredient_add_button"
@@ -61,7 +67,10 @@
             app:iconGravity="textStart"
             app:iconPadding="0dp"
             app:iconSize="20sp"
-            app:iconTint="#000000" />
-
+            app:iconTint="#000000"
+            android:focusable="false"
+            android:clickable="false"/>
+            <!--TODO Have to fix the button here, because if this is focusable and clickable, it will
+            prevent the user from pressing on the listview -->
     </LinearLayout>
 </LinearLayout>
