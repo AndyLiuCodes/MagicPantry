@@ -23,7 +23,7 @@ class PantryIngredientsArrayAdapter(
     }
 
     override fun getItemId(position: Int): Long {
-        return position.toLong()
+        return ingredients[position].id
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {

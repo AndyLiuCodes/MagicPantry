@@ -14,6 +14,7 @@ import com.ala158.magicpantry.dao.IngredientDAO
 import com.ala158.magicpantry.database.MagicPantryDatabase
 import com.ala158.magicpantry.repository.MagicPantryRepository
 import com.ala158.magicpantry.ui.manualingredientinput.ManualIngredientInputActivity
+import com.ala158.magicpantry.ui.manualingredientinput.edit.PantryEditIngredientActivity
 import com.ala158.magicpantry.ui.receiptscanner.ReceiptScannerActivity
 import com.ala158.magicpantry.viewModel.ViewModelFactory
 
@@ -74,6 +75,14 @@ class PantryFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
             }
         }
 
+        allIngredientsListView.setOnItemClickListener {
+            parent, view, position, id ->
+
+            val intent = Intent(requireActivity(), PantryEditIngredientActivity::class.java)
+            intent.putExtra(PANTRY_INGREDIENT_ID_KEY, id)
+            startActivity(intent)
+        }
+
         btnAddIngredient.setOnClickListener {
             val intent = Intent(activity, ManualIngredientInputActivity::class.java)
             startActivity(intent)
@@ -108,5 +117,9 @@ class PantryFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
     private fun setHeaderLowStock() {
         textViewPantryHeader.setBackgroundResource(R.drawable.rounded_bg_red)
         textViewPantryHeader.setText(R.string.low_stock_header)
+    }
+
+    companion object {
+        val PANTRY_INGREDIENT_ID_KEY = "PANTRY_INGREDIENT_ID_KEY"
     }
 }

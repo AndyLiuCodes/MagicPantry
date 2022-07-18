@@ -1,11 +1,19 @@
 package com.ala158.magicpantry
 
 class IngredientEntry {
+    private var id: Long = -1L
     private var name: String = ""
     private var amount: Int = 0
     private var unit: String = "unit"
     private var price: Double = 0.0
 
+    fun getId() : Long {
+        return id
+    }
+
+    fun setId(newId: Long) {
+        id = newId
+    }
     fun getName() : String {
         return name
     }

@@ -21,7 +21,7 @@ class ShoppingListFragment : Fragment() {
 
         val view = inflater.inflate(R.layout.fragment_shopping_list, container, false)
 
-        val textView: TextView = view.findViewById(R.id.text_shopping_list)
+        val textView: TextView = view.findViewById(R.id.navigation_shopping_list)
         shoppingListViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }

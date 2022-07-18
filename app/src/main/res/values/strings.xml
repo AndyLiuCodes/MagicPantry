@@ -24,5 +24,7 @@
     <string name="cancel_button_text">Cancel</string>
     <string name="add_button">Add</string>
     <string name="review_finish_button">Finish</string>
+    <string name="review_save_button">Save</string>
+    <string name="item_menu_manualinput_delete_title">Delete</string>
 
 </resources>
