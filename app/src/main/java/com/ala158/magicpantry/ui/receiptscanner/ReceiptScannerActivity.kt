@@ -26,6 +26,7 @@ import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import java.io.File
+import androidx.exifinterface.media.ExifInterface
 
 
 @Suppress("DEPRECATION")
@@ -218,12 +219,11 @@ class ReceiptScannerActivity : AppCompatActivity() {
     // when camera or gallery chosen, update photo
     @RequiresApi(Build.VERSION_CODES.Q)
     @SuppressLint("CommitPrefEdits")
-    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
 
         // if camera selected, check request code
-        if (requestCode == requestCamera && resultCode == Activity.RESULT_OK && data != null) {
+        if (requestCode == requestCamera && resultCode == Activity.RESULT_OK) {
 
             // get image uri, convert it to bitmap and rotate if necessary, then
             // set imageBitmap to display it
