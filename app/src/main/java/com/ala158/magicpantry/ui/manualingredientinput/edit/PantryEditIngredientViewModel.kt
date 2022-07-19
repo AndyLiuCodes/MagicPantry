@@ -35,18 +35,12 @@ class PantryEditIngredientViewModel(private val repository: MagicPantryRepositor
     }
 
     fun updateIngredientEntry(id: Long) {
-        val pricePerUnit = ingredientEntry.value!!.getPrice()/ingredientEntry.value!!.getAmount()
-        var price = ingredientEntry.value!!.getPrice()
-        if (ingredientEntry.value!!.getAmount() > 0) {
-            price = pricePerUnit
-        }
-
         val dbIngredient = Ingredient(
             id,
             ingredientEntry.value!!.getName(),
             ingredientEntry.value!!.getAmount(),
             ingredientEntry.value!!.getUnit(),
-            price
+            ingredientEntry.value!!.getPrice()
         )
         repository.updateIngredient(dbIngredient)
     }

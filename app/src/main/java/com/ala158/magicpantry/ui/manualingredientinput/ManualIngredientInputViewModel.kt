@@ -14,16 +14,11 @@ class ManualIngredientInputViewModel(private val repository: MagicPantryReposito
     }
 
     fun insertIngredient() {
-        val pricePerUnit = ingredient.value!!.getPrice()/ingredient.value!!.getAmount()
-        var price = ingredient.value!!.getPrice()
-        if (ingredient.value!!.getAmount() > 0) {
-            price = pricePerUnit
-        }
         val dbIngredient = Ingredient(
             ingredient.value!!.getName(),
             ingredient.value!!.getAmount(),
             ingredient.value!!.getUnit(),
-            price
+            ingredient.value!!.getPrice()
         )
         repository.insertIngredient(dbIngredient)
     }
