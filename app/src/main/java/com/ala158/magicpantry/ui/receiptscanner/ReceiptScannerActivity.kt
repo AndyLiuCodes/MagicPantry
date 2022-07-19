@@ -20,6 +20,7 @@ import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
+import com.ala158.magicpantry.data.Ingredient
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
@@ -34,11 +35,18 @@ class ReceiptScannerActivity : AppCompatActivity() {
 
     private val requestCamera = 1888
     private val requestGallery = 2222
+
     private var imageView: ImageView? = null
     private lateinit var textView : TextView
+
+    private val helperPrice = mutableListOf<String>()
+
+    private val filteredProducts = mutableListOf<String>()
+
     private lateinit var cameraBtn: Button
     private lateinit var scanBtn: Button
     private lateinit var reviewItemsBtn: Button
+
     private var imageToScan: File? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -87,19 +95,37 @@ class ReceiptScannerActivity : AppCompatActivity() {
             alert.show()
         }
 
+        // on click scan image for text
         scanBtn.setOnClickListener {
             recognize()
         }
 
         reviewItemsBtn.setOnClickListener {
+//            textView.text = ""
+            val ingredient = Ingredient()
+            for (item in 0 until filteredProducts.size) {
+                if (filteredProducts[item].contains(";;")) {
+                    val temp = filteredProducts[item].split(";;")
+                    val quantity = temp[1]
 
+                    ingredient.name = temp[0]
+                    ingredient.amount = quantity.substring(0, 1).toInt()
+                }
+                else {
+                    ingredient.name = filteredProducts[item]
+                    ingredient.amount = 1
+                }
+                ingredient.price = helperPrice[item].filter { it.isDigit() || it == '.'}.toDouble()
+
+//                textView.text = "${textView.text} \n ${ingredient.name} : ${ingredient.amount} : ${ingredient.price}"
+            }
         }
     }
 
     // recognizing text
     private fun recognize() {
         val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
-        textView.text = "ok?"
+        textView.text = ". . ."
 
         if (imageView != null) {
             // process image
@@ -108,13 +134,13 @@ class ReceiptScannerActivity : AppCompatActivity() {
                 .addOnSuccessListener { visionText ->
                     // Task completed successfully
                     // ...
-                    textView.text = "success"
+                    textView.text = "Success"
                     success(visionText)
                 }
                 .addOnFailureListener {
                     // Task failed with an exception
                     // ...
-                    textView.text = "failed to recognize text"
+                    textView.text = "Failed to recognize text"
                 }
         }
     }
@@ -123,20 +149,12 @@ class ReceiptScannerActivity : AppCompatActivity() {
     private fun success(result : Text) {
         val resultBlocks = mutableListOf<Text.TextBlock>()
         val helperProducts = mutableListOf<String>()
-        val helperPrice = mutableListOf<String>()
-
-        /*val helperProducts = mutableListOf<Text.Line>()
-        val helperPrice = mutableListOf<Text.Line>()*/
-
-        val filteredProducts = mutableListOf<String>()
         val filteredList = mutableListOf<String>()
 
         val mutableBitmap = bitmap.copy(bitmap.config, true)
 
         // for blocks in result text
         for (block in result.textBlocks) {
-            val blockText = block.text
-            val blockCornerPoints = block.cornerPoints
             val blockFrame = block.boundingBox
 
             // add all blocks into a list
@@ -156,7 +174,6 @@ class ReceiptScannerActivity : AppCompatActivity() {
                 if (resultBlocks[i-1].text.contains(".") && (resultBlocks[i-1].text.lowercase().contains("save") || resultBlocks[i-1].text.contains("/"))) {
                     for (line in resultBlocks[i - 1].lines) {
                         helperProducts.add(line.text)
-//                        Log.d("textBlock", resultBlocks[i - 1].text)
                     }
                 }
                 for (line in resultBlocks[i].lines) {
@@ -165,48 +182,24 @@ class ReceiptScannerActivity : AppCompatActivity() {
             }
         }
 
-/*        for (i in 0 until helperPrice.size) {
-            Log.d("price text", helperPrice[i].text)
-            for (j in 0 until helperProducts.size) {
-                Log.d("product top", helperProducts[j].boundingBox!!.top.toString())
-                Log.d("price", helperPrice[i].boundingBox!!.top.toString())
-                Log.d("product bottom", helperProducts[j].boundingBox!!.bottom.toString())
-                Log.d("price", helperPrice[i].boundingBox!!.bottom.toString())
-
-                if (helperProducts[j].boundingBox!!.top < helperPrice[i].boundingBox!!.top
-                    && helperProducts[j].boundingBox!!.bottom < helperPrice[i].boundingBox!!.bottom) {
-                    val addedText = "${helperProducts[j].text} : ${helperPrice[i].text}"
-
-                    Log.d("isAdded", "${helperProducts[j].text} : ${helperPrice[i].text}")
-                    Log.d("added", addedText)
-
-                    filteredList.add(addedText)
-                }
-            }
-        }*/
-
         // if product list size is not equal to price list size then
         //  if product item is not all uppercase and does not have "gluten free item"
         //  and does not have ("/" and anything other than letters) add to filtered product list
         for (i in 0 until helperProducts.size) {
-            Log.d("prod", helperProducts[i])
-
-            if ((helperProducts[i] != helperProducts[i].uppercase())
-                && !(helperProducts[i].lowercase().contains("gluten free item"))
-                && !(helperProducts[i].contains("/") && !helperProducts[i].contains(Regex("[^A-Za-z]")))) {
-
-//                Log.d("adding", helperProducts[i])
+            if (helperProducts[i].contains("/") && helperProducts[i].any { it.isDigit() }) {
+                filteredProducts[filteredProducts.size - 1] = filteredProducts[filteredProducts.size - 1] + ";;" + helperProducts[i]
+            }
+            else if ((helperProducts[i] != helperProducts[i].uppercase())
+                && !(helperProducts[i].lowercase().contains("gluten free item"))) {
                 filteredProducts.add(helperProducts[i])
             }
         }
         // add the two lists to make one
         for (item in 0 until filteredProducts.size) {
-//            Log.d("filtered", "${filteredProducts.size} === ${filteredProducts[item]}")
-
             filteredList.add(filteredProducts[item])
             filteredList.add(helperPrice[item])
         }
-        textView.text = "${textView.text} \n list: $filteredList"
+        textView.text = "${textView.text} \n Scanned Result: $filteredList"
 
         textView.movementMethod = ScrollingMovementMethod()
         imageView!!.setImageBitmap(mutableBitmap)
