@@ -1,25 +1,24 @@
 package com.ala158.magicpantry.ui.receiptscanner
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import com.ala158.magicpantry.R
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.DialogInterface
 import android.content.Intent
-import android.database.Cursor
 import android.graphics.*
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.provider.MediaStore
 import android.text.method.ScrollingMovementMethod
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
@@ -28,9 +27,8 @@ import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import java.io.File
 
 
+@Suppress("DEPRECATION")
 class ReceiptScannerActivity : AppCompatActivity() {
-    private var checkIfPicTaken = 0
-
     private lateinit var imageUri: Uri
     private lateinit var bitmap : Bitmap
 
@@ -125,11 +123,15 @@ class ReceiptScannerActivity : AppCompatActivity() {
     private fun success(result : Text) {
         val resultBlocks = mutableListOf<Text.TextBlock>()
         val helperProducts = mutableListOf<String>()
-        val filteredProducts = mutableListOf<String>()
         val helperPrice = mutableListOf<String>()
+
+        /*val helperProducts = mutableListOf<Text.Line>()
+        val helperPrice = mutableListOf<Text.Line>()*/
+
+        val filteredProducts = mutableListOf<String>()
         val filteredList = mutableListOf<String>()
 
-        val mutableBitmap = bitmap!!.copy(bitmap!!.config, true)
+        val mutableBitmap = bitmap.copy(bitmap.config, true)
 
         // for blocks in result text
         for (block in result.textBlocks) {
@@ -151,30 +153,55 @@ class ReceiptScannerActivity : AppCompatActivity() {
                 && !resultBlocks[i].text.contains("/")
                 && !resultBlocks[i].text.lowercase().contains("sav")) {
 
-                for (line in resultBlocks[i - 1].lines) {
-                    helperProducts.add(line.text)
+                if (resultBlocks[i-1].text.contains(".") && (resultBlocks[i-1].text.lowercase().contains("save") || resultBlocks[i-1].text.contains("/"))) {
+                    for (line in resultBlocks[i - 1].lines) {
+                        helperProducts.add(line.text)
+//                        Log.d("textBlock", resultBlocks[i - 1].text)
+                    }
                 }
                 for (line in resultBlocks[i].lines) {
                     helperPrice.add(line.text)
                 }
             }
         }
+
+/*        for (i in 0 until helperPrice.size) {
+            Log.d("price text", helperPrice[i].text)
+            for (j in 0 until helperProducts.size) {
+                Log.d("product top", helperProducts[j].boundingBox!!.top.toString())
+                Log.d("price", helperPrice[i].boundingBox!!.top.toString())
+                Log.d("product bottom", helperProducts[j].boundingBox!!.bottom.toString())
+                Log.d("price", helperPrice[i].boundingBox!!.bottom.toString())
+
+                if (helperProducts[j].boundingBox!!.top < helperPrice[i].boundingBox!!.top
+                    && helperProducts[j].boundingBox!!.bottom < helperPrice[i].boundingBox!!.bottom) {
+                    val addedText = "${helperProducts[j].text} : ${helperPrice[i].text}"
+
+                    Log.d("isAdded", "${helperProducts[j].text} : ${helperPrice[i].text}")
+                    Log.d("added", addedText)
+
+                    filteredList.add(addedText)
+                }
+            }
+        }*/
+
         // if product list size is not equal to price list size then
         //  if product item is not all uppercase and does not have "gluten free item"
         //  and does not have ("/" and anything other than letters) add to filtered product list
-        if (helperProducts.size != helperPrice.size) {
-            for (i in 0 until helperProducts.size) {
-                if ((helperProducts[i] != helperProducts[i].uppercase())
-                    && !(helperProducts[i].lowercase().contains("gluten free item"))
-                    && !(helperProducts[i].contains("/") && helperProducts[i].contains(Regex("[^A-Za-z]")))
-                ) {
-                    filteredProducts.add(helperProducts[i])
-                }
+        for (i in 0 until helperProducts.size) {
+            Log.d("prod", helperProducts[i])
+
+            if ((helperProducts[i] != helperProducts[i].uppercase())
+                && !(helperProducts[i].lowercase().contains("gluten free item"))
+                && !(helperProducts[i].contains("/") && !helperProducts[i].contains(Regex("[^A-Za-z]")))) {
+
+//                Log.d("adding", helperProducts[i])
+                filteredProducts.add(helperProducts[i])
             }
         }
         // add the two lists to make one
         for (item in 0 until filteredProducts.size) {
-            Toast.makeText( this, "${filteredProducts.size} and ${helperPrice.size}", Toast.LENGTH_SHORT).show()
+//            Log.d("filtered", "${filteredProducts.size} === ${filteredProducts[item]}")
 
             filteredList.add(filteredProducts[item])
             filteredList.add(helperPrice[item])
@@ -201,7 +228,6 @@ class ReceiptScannerActivity : AppCompatActivity() {
     @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        checkIfPicTaken += 1
 
         // if camera selected, check request code
         if (requestCode == requestCamera && resultCode == Activity.RESULT_OK && data != null) {
