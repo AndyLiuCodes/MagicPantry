@@ -18,8 +18,7 @@ object Util {
         val bitmap = BitmapFactory.decodeStream(context.contentResolver.openInputStream(imgUri))
         val matrix = Matrix()
         matrix.setRotate(getRotationAmount(File(imagePath.toURI())))
-        val ret = Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
-        return ret
+        return Bitmap.createBitmap(bitmap, 0, 0, bitmap.width, bitmap.height, matrix, true)
     }
 
     // After taking photos on my phone, the image would rotate itself. This function is to rotate the
@@ -28,7 +27,7 @@ object Util {
     @RequiresApi(Build.VERSION_CODES.Q)
     fun getRotationAmount(imageFile: File): Float {
         try {
-            val ei = ExifInterface(imageFile)
+            val ei = androidx.exifinterface.media.ExifInterface(imageFile)
             val imageOrientation =
                 ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
             if (imageOrientation == ExifInterface.ORIENTATION_ROTATE_90) {

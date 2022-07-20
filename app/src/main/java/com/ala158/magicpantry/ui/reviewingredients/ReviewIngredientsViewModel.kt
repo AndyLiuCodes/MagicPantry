@@ -8,12 +8,16 @@ import com.ala158.magicpantry.data.Ingredient
 import com.ala158.magicpantry.repository.MagicPantryRepository
 
 class ReviewIngredientsViewModel(private val repository: MagicPantryRepository) : ViewModel() {
-    private val _ingredientList = MutableLiveData<List<Ingredient>>(MockData.lowIngredients)
+    private val _ingredientList = MutableLiveData<List<Ingredient>>()
     val ingredientList: LiveData<List<Ingredient>> = _ingredientList
 
     fun insertAll() {
         for (ingredient in ingredientList.value!!)
             repository.insertIngredient(ingredient)
+    }
+
+    fun addToIngredientList(ingredient: List<Ingredient>){
+        _ingredientList.value = ingredient
     }
 
     fun updateIngredient(position: Int, ingredient: Ingredient) {

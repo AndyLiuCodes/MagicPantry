@@ -1,26 +1,31 @@
 package com.ala158.magicpantry.ui.receiptscanner
 
-import androidx.appcompat.app.AppCompatActivity
-import android.os.Bundle
-import com.ala158.magicpantry.R
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
 import android.content.ContentValues
 import android.content.DialogInterface
 import android.content.Intent
-import android.database.Cursor
 import android.graphics.*
 import android.net.Uri
 import android.os.Build
+import android.os.Bundle
 import android.provider.MediaStore
 import android.text.method.ScrollingMovementMethod
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
+import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
+import com.ala158.magicpantry.dao.IngredientDAO
+import com.ala158.magicpantry.database.MagicPantryDatabase
+import com.ala158.magicpantry.repository.MagicPantryRepository
+import com.ala158.magicpantry.ui.reviewingredients.ReviewIngredientsActivity
+import com.ala158.magicpantry.ui.reviewingredients.ReviewIngredientsViewModel
+import com.ala158.magicpantry.viewModel.ViewModelFactory
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
@@ -28,24 +33,44 @@ import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import java.io.File
 
 
+@Suppress("DEPRECATION")
 class ReceiptScannerActivity : AppCompatActivity() {
-    private var checkIfPicTaken = 0
-
     private lateinit var imageUri: Uri
-    private lateinit var bitmap : Bitmap
+    private var bitmap: Bitmap? = null
 
     private val requestCamera = 1888
     private val requestGallery = 2222
+
     private var imageView: ImageView? = null
-    private lateinit var textView : TextView
+    private lateinit var textView: TextView
+
+    private val helperPrice = mutableListOf<String>()
+    private val filteredProducts = mutableListOf<String>()
+
+    private lateinit var myDataBase : MagicPantryDatabase
+    private lateinit var dbDao : IngredientDAO
+    private lateinit var repository : MagicPantryRepository
+    private lateinit var viewModelFactory: ViewModelFactory
+    private lateinit var itemViewModel : ReviewIngredientsViewModel
+
     private lateinit var cameraBtn: Button
     private lateinit var scanBtn: Button
     private lateinit var reviewItemsBtn: Button
+
     private var imageToScan: File? = null
+
+    private var subTotalBlock: Text.TextBlock? = null
+    private lateinit var subTotalLine: Text.Line
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_receipt_scanner)
+
+        myDataBase = MagicPantryDatabase.getInstance(this)
+        dbDao = myDataBase.ingredientDAO
+        repository = MagicPantryRepository(dbDao)
+        viewModelFactory = ViewModelFactory(repository)
+        itemViewModel = ViewModelProvider(this, viewModelFactory).get(ReviewIngredientsViewModel::class.java)
 
         imageView = findViewById(R.id.imageview_receipt)
         textView = findViewById(R.id.textview_receipt)
@@ -73,7 +98,8 @@ class ReceiptScannerActivity : AppCompatActivity() {
                             "Photo taken on " + System.currentTimeMillis()
                         )
                         imageUri = this.contentResolver.insert(
-                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values)!!
+                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values
+                        )!!
 
                         // open camera and add image to photo gallery if one is taken
                         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
@@ -89,52 +115,181 @@ class ReceiptScannerActivity : AppCompatActivity() {
             alert.show()
         }
 
+        // on click scan image for text
         scanBtn.setOnClickListener {
             recognize()
         }
 
         reviewItemsBtn.setOnClickListener {
-
+            val bundle = Bundle()
+            bundle.putStringArray("arrayList", filteredProducts.toTypedArray())
+            bundle.putStringArray("priceList", helperPrice.toTypedArray())
+            val intent = Intent(this, ReviewIngredientsActivity::class.java)
+            intent.putExtras(bundle)
+            startActivity(intent)
         }
     }
 
     // recognizing text
     private fun recognize() {
         val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
-        textView.text = "ok?"
+        textView.text = ". . ."
 
-        if (imageView != null) {
+        if (imageView != null && bitmap != null) {
             // process image
-            val image = InputImage.fromBitmap(bitmap, 0)
+            val image = InputImage.fromBitmap(bitmap!!, 0)
             recognizer.process(image)
                 .addOnSuccessListener { visionText ->
                     // Task completed successfully
                     // ...
-                    textView.text = "success"
+                    textView.text = "Success"
                     success(visionText)
+//                    parseResults(visionText)
                 }
                 .addOnFailureListener {
                     // Task failed with an exception
                     // ...
-                    textView.text = "failed to recognize text"
+                    textView.text = "Failed to recognize text"
                 }
         }
     }
 
+    private fun parseResults(result: Text) {
+        for (block in result.textBlocks) {
+            val blockText = block.text
+            val blockCornerPoints = block.cornerPoints
+            val blockFrame = block.boundingBox
+            if (blockText.lowercase().contains("sub total") || blockText.lowercase()
+                    .contains("subtotal")
+            ) {
+                subTotalBlock = block
+            }
+            for (line in block.lines) {
+                val lineText = line.text
+                val lineCornerPoints = line.cornerPoints
+                val lineFrame = line.boundingBox
+                if (blockText.lowercase().contains("sub total") || blockText.lowercase()
+                        .contains("subtotal")
+                ) {
+                    subTotalLine = line
+                }
+                for (element in line.elements) {
+                    val elementText = element.text
+                    val elementCornerPoints = element.cornerPoints
+                    val elementFrame = element.boundingBox
+                }
+            }
+        }
+
+        if (subTotalBlock != null) {
+            val filteredResultBlocks = mutableListOf<Text.TextBlock>()
+            for (block in result.textBlocks) {
+                if (block.cornerPoints?.get(0)?.y!! < subTotalBlock?.cornerPoints?.get(0)?.y!! && block.cornerPoints?.get(
+                        3
+                    )?.y!! < subTotalBlock!!.cornerPoints?.get(3)?.y!!
+                ) {
+                    filteredResultBlocks.add(block)
+                }
+            }
+            val filteredResultLine = mutableListOf<Text.TextBlock>()
+            for (i in 0 until filteredResultBlocks.size) {
+                for (lines in filteredResultBlocks[i].lines) {
+                    if (lines.cornerPoints?.get(0)?.y!! > subTotalLine.cornerPoints?.get(
+                            0
+                        )?.y!!
+                        || (lines.cornerPoints?.get(3)?.y!! > subTotalLine.cornerPoints?.get(
+                            3
+                        )?.y!!)
+                    ) {
+                        break
+                    }
+                }
+                filteredResultLine.add(filteredResultBlocks[i])
+            }
+            //Looks for prices and ignores phone numbers
+            val filterDecimal = mutableListOf<Text.TextBlock>()
+            for (i in 0 until filteredResultLine.size) {
+                if (filteredResultLine[i].text.contains(Regex("\\d{1,3}(?:[., ]\\d{3})*(?:[., ]\\d{2})"))) {
+                    if (filteredResultLine[i].text.contains(Regex("^(\\+\\d{1,2}\\s?)?1?\\-?\\.?\\s?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}\$"))
+                        || filteredResultLine[i].text.lowercase().contains("phone")
+                    ) {
+                        continue
+                    }
+                    filterDecimal.add(filteredResultLine[i])
+                }
+            }
+            //Gets all lines that correlate to ingredients
+            var minDecimal: Text.Line = filterDecimal[0].lines[0]
+            for (i in 0 until filterDecimal.size) {
+                for (lines in filterDecimal[i].lines) {
+                    if (lines.text.contains(Regex("\\d{1,3}(?:[., ]\\d{3})*(?:[., ]\\d{2})"))) {
+                        minDecimal = lines
+                        break
+                    }
+                }
+                break
+            }
+            for (i in 0 until filterDecimal.size) {
+                for (lines in filterDecimal[i].lines) {
+                    if (lines.text.contains(Regex("\\d{1,3}(?:[., ]\\d{3})*(?:[., ]\\d{2})"))) {
+                        if (lines.cornerPoints?.get(0)?.y!! < minDecimal.cornerPoints?.get(
+                                0
+                            )?.y!!
+                        ) {
+                            minDecimal = lines
+                        }
+                    }
+                }
+            }
+            val filteredProductt = mutableListOf<Text.Line>()
+            for (i in 0 until filteredResultBlocks.size) {
+                for (lines in filteredResultBlocks[i].lines) {
+                    if (lines.cornerPoints?.get(0)?.y!! >= minDecimal?.cornerPoints?.get(
+                            0
+                        )?.y!! &&
+                        lines.cornerPoints?.get(2)?.y!! >= minDecimal?.cornerPoints?.get(
+                            2
+                        )?.y!!
+                    ) {
+                        filteredProductt.add(lines)
+                        textView.text = "${textView.text} \n add"
+
+                    }
+                }
+            }
+
+            val filteredProduct = mutableListOf<Text.Line>()
+            val filteredPrice = mutableListOf<Text.Line>()
+            val filteredQuantity = ArrayList<Int>()
+            for (i in 0 until filteredProductt.size) {
+                if (filteredProductt[i].text.lowercase()
+                        .contains(Regex("[a-zA-Z]+")) && !filteredProductt[i].text.contains(
+                        Regex("\\d{1,3}(?:[., ]\\d{3})*(?:[., ]\\d{2})")
+                    )
+                ) {
+                    filteredProduct.add(filteredProductt[i])
+                    textView.text = "\n ${filteredProductt[i].text}"
+                    filteredQuantity.add(1)
+                } else if (!(filteredProductt[i].text.lowercase()
+                        .contains("/")) || filteredProductt[i].text.contains(Regex("\\d{1,3}(?:[., ]\\d{3})*(?:[., ]\\d{2})"))
+                ) {
+                    filteredPrice.add(filteredProductt[i])
+                    textView.text = "\n ${filteredProductt[i].text}"
+                }
+            }
+        }
+    }
+
     // successfully processed image
-    private fun success(result : Text) {
+    private fun success(result: Text) {
         val resultBlocks = mutableListOf<Text.TextBlock>()
         val helperProducts = mutableListOf<String>()
-        val filteredProducts = mutableListOf<String>()
-        val helperPrice = mutableListOf<String>()
         val filteredList = mutableListOf<String>()
 
         val mutableBitmap = bitmap!!.copy(bitmap!!.config, true)
 
         // for blocks in result text
         for (block in result.textBlocks) {
-            val blockText = block.text
-            val blockCornerPoints = block.cornerPoints
             val blockFrame = block.boundingBox
 
             // add all blocks into a list
@@ -149,44 +304,48 @@ class ReceiptScannerActivity : AppCompatActivity() {
             if (resultBlocks[i].text.contains(".")
                 && !resultBlocks[i].text.lowercase().contains("phone")
                 && !resultBlocks[i].text.contains("/")
-                && !resultBlocks[i].text.lowercase().contains("sav")) {
+                && !resultBlocks[i].text.lowercase().contains("sav")
+            ) {
 
-                for (line in resultBlocks[i - 1].lines) {
-                    helperProducts.add(line.text)
+                if (resultBlocks[i - 1].text.contains(".") && (resultBlocks[i - 1].text.lowercase()
+                        .contains("save") || resultBlocks[i - 1].text.contains("/"))
+                ) {
+                    for (line in resultBlocks[i - 1].lines) {
+                        helperProducts.add(line.text)
+                    }
                 }
                 for (line in resultBlocks[i].lines) {
                     helperPrice.add(line.text)
                 }
             }
         }
+
         // if product list size is not equal to price list size then
         //  if product item is not all uppercase and does not have "gluten free item"
         //  and does not have ("/" and anything other than letters) add to filtered product list
-        if (helperProducts.size != helperPrice.size) {
-            for (i in 0 until helperProducts.size) {
-                if ((helperProducts[i] != helperProducts[i].uppercase())
-                    && !(helperProducts[i].lowercase().contains("gluten free item"))
-                    && !(helperProducts[i].contains("/") && helperProducts[i].contains(Regex("[^A-Za-z]")))
-                ) {
-                    filteredProducts.add(helperProducts[i])
-                }
+        for (i in 0 until helperProducts.size) {
+            if (helperProducts[i].contains("/") && helperProducts[i].any { it.isDigit() }) {
+                filteredProducts[filteredProducts.size - 1] =
+                    filteredProducts[filteredProducts.size - 1] + ";;" + helperProducts[i]
+            } else if ((helperProducts[i] != helperProducts[i].uppercase())
+                && !(helperProducts[i].lowercase().contains("gluten free item"))
+            ) {
+                filteredProducts.add(helperProducts[i])
             }
         }
         // add the two lists to make one
         for (item in 0 until filteredProducts.size) {
-            Toast.makeText( this, "${filteredProducts.size} and ${helperPrice.size}", Toast.LENGTH_SHORT).show()
-
             filteredList.add(filteredProducts[item])
             filteredList.add(helperPrice[item])
         }
-        textView.text = "${textView.text} \n list: $filteredList"
+//        textView.text = "${textView.text} \n Items: $filteredList"
 
         textView.movementMethod = ScrollingMovementMethod()
         imageView!!.setImageBitmap(mutableBitmap)
     }
 
     // add rect around text blocks
-    private fun drawRect(mutableBitmap : Bitmap, location : Rect) {
+    private fun drawRect(mutableBitmap: Bitmap, location: Rect) {
         val paint = Paint()
         paint.color = Color.RED
         paint.style = Paint.Style.STROKE
@@ -196,15 +355,14 @@ class ReceiptScannerActivity : AppCompatActivity() {
     }
 
     // when camera or gallery chosen, update photo
+    @Deprecated("Deprecated in Java")
     @RequiresApi(Build.VERSION_CODES.Q)
     @SuppressLint("CommitPrefEdits")
-    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        checkIfPicTaken += 1
 
         // if camera selected, check request code
-        if (requestCode == requestCamera && resultCode == Activity.RESULT_OK && data != null) {
+        if (requestCode == requestCamera && resultCode == Activity.RESULT_OK) {
 
             // get image uri, convert it to bitmap and rotate if necessary, then
             // set imageBitmap to display it
