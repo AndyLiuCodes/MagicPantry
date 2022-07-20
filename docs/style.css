@@ -71,51 +71,12 @@ a {
 }
 
 nav {
-  margin: auto;
-  width: 100%;
-  max-width: 60em;
-}
-
-/*Navigation*/
-header {
-  float: left;
-  position: relative;
-  width: 100%;
-  background: #1e90ff;
   box-shadow: 0px 1px 3px #333;
   z-index: 1;
 }
 
-.nav {
-  display: flex;
-  flex-direction: row;
-  flex-wrap: wrap;
-  justify-content: flex-end;
-}
-
-@media screen and (max-width: 500px) {
-  .nav {
-    display: none;
-    flex-direction: column;
-    width: 100%;
-  }
-
-  .nav li {
-    text-align: center;
-  }
-}
-
-.nav a {
+nav a {
   text-align: center;
-  color: #fff;
-  display: block;
-  padding: 1em 0.75em;
-}
-
-.nav a:focus,
-.nav a:hover {
-  background: #0583ff !important;
-  text-decoration: none;
 }
 
 #design {
@@ -139,6 +100,7 @@ header {
   margin-top: 6%;
 }
 
-dt {
+dt,
+dd {
   margin-bottom: 2%;
 }
