@@ -8,6 +8,8 @@
         <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/activity_receipt_scanner.xml" value="0.1" />
         <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/fragment_dashboard.xml" value="0.1" />
         <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/fragment_home.xml" value="0.1331521739130435" />
+        <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/fragment_review_ingredients.xml" value="0.1" />
+        <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/list_item_edit_ingredient.xml" value="0.22" />
         <entry key="app/src/main/res/drawable/ic_dashboard_black_24dp.xml" value="0.4895" />
         <entry key="app/src/main/res/drawable/ic_pen_to_square_solid.xml" value="0.4895" />
         <entry key="app/src/main/res/drawable/rounded_bg.xml" value="0.4895" />

@@ -12,22 +12,29 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.method.ScrollingMovementMethod
-import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
+import androidx.navigation.findNavController
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
+import com.ala158.magicpantry.dao.IngredientDAO
 import com.ala158.magicpantry.data.Ingredient
+import com.ala158.magicpantry.database.MagicPantryDatabase
+import com.ala158.magicpantry.repository.MagicPantryRepository
+import com.ala158.magicpantry.ui.reviewingredients.ReviewIngredientsActivity
+import com.ala158.magicpantry.ui.reviewingredients.ReviewIngredientsFragment
+import com.ala158.magicpantry.ui.reviewingredients.ReviewIngredientsViewModel
+import com.ala158.magicpantry.viewModel.ViewModelFactory
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import java.io.File
-import androidx.exifinterface.media.ExifInterface
 
 
 @Suppress("DEPRECATION")
@@ -42,8 +49,13 @@ class ReceiptScannerActivity : AppCompatActivity() {
     private lateinit var textView: TextView
 
     private val helperPrice = mutableListOf<String>()
-
     private val filteredProducts = mutableListOf<String>()
+
+    private lateinit var myDataBase : MagicPantryDatabase
+    private lateinit var dbDao : IngredientDAO
+    private lateinit var repository : MagicPantryRepository
+    private lateinit var viewModelFactory: ViewModelFactory
+    private lateinit var itemViewModel : ReviewIngredientsViewModel
 
     private lateinit var cameraBtn: Button
     private lateinit var scanBtn: Button
@@ -57,6 +69,12 @@ class ReceiptScannerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_receipt_scanner)
+
+        myDataBase = MagicPantryDatabase.getInstance(this)
+        dbDao = myDataBase.ingredientDAO
+        repository = MagicPantryRepository(dbDao)
+        viewModelFactory = ViewModelFactory(repository)
+        itemViewModel = ViewModelProvider(this, viewModelFactory).get(ReviewIngredientsViewModel::class.java)
 
         imageView = findViewById(R.id.imageview_receipt)
         textView = findViewById(R.id.textview_receipt)
@@ -107,23 +125,19 @@ class ReceiptScannerActivity : AppCompatActivity() {
         }
 
         reviewItemsBtn.setOnClickListener {
-//            textView.text = ""
             val ingredient = Ingredient()
+            val ingredientList = arrayListOf<String>()
+
             for (item in 0 until filteredProducts.size) {
-                if (filteredProducts[item].contains(";;")) {
-                    val temp = filteredProducts[item].split(";;")
-                    val quantity = temp[1]
-
-                    ingredient.name = temp[0]
-                    ingredient.amount = quantity.substring(0, 1).toInt()
-                } else {
-                    ingredient.name = filteredProducts[item]
-                    ingredient.amount = 1
-                }
-                ingredient.price = helperPrice[item].filter { it.isDigit() || it == '.' }.toDouble()
-
-//                textView.text = "${textView.text} \n ${ingredient.name} : ${ingredient.amount} : ${ingredient.price}"
+                ingredientList.add(filteredProducts[item] + "::" + helperPrice[item])
             }
+
+            val bundle = Bundle()
+            bundle.putStringArray("arrayList", filteredProducts.toTypedArray())
+            bundle.putStringArray("priceList", helperPrice.toTypedArray())
+            val intent = Intent(this, ReviewIngredientsActivity::class.java)
+            intent.putExtras(bundle)
+            startActivity(intent)
         }
     }
 
@@ -141,7 +155,7 @@ class ReceiptScannerActivity : AppCompatActivity() {
                     // ...
                     textView.text = "Success"
                     success(visionText)
-                    //parseResults(visionText)
+//                    parseResults(visionText)
                 }
                 .addOnFailureListener {
                     // Task failed with an exception
@@ -177,9 +191,11 @@ class ReceiptScannerActivity : AppCompatActivity() {
                 }
             }
         }
-        if (subTotalBlock == null) {
+        textView.text = "${textView.text} \n Hello1"
 
-        } else {
+        if (subTotalBlock != null) {
+            textView.text = "${textView.text} \n Hello2"
+
             val filteredResultBlocks = mutableListOf<Text.TextBlock>()
             for (block in result.textBlocks) {
                 if (block.cornerPoints?.get(0)?.y!! < subTotalBlock?.cornerPoints?.get(0)?.y!! && block.cornerPoints?.get(
@@ -187,6 +203,7 @@ class ReceiptScannerActivity : AppCompatActivity() {
                     )?.y!! < subTotalBlock!!.cornerPoints?.get(3)?.y!!
                 ) {
                     filteredResultBlocks.add(block)
+                    textView.text = "${textView.text} \n result add"
                 }
             }
             val filteredResultLine = mutableListOf<Text.TextBlock>()
@@ -203,6 +220,8 @@ class ReceiptScannerActivity : AppCompatActivity() {
                     }
                 }
                 filteredResultLine.add(filteredResultBlocks[i])
+                textView.text = "${textView.text} \n line"
+
             }
             //Looks for prices and ignores phone numbers
             val filterDecimal = mutableListOf<Text.TextBlock>()
@@ -214,6 +233,8 @@ class ReceiptScannerActivity : AppCompatActivity() {
                         continue
                     }
                     filterDecimal.add(filteredResultLine[i])
+                    textView.text = "${textView.text} \n dec"
+
                 }
             }
             //Gets all lines that correlate to ingredients
@@ -250,6 +271,8 @@ class ReceiptScannerActivity : AppCompatActivity() {
                         )?.y!!
                     ) {
                         filteredProductt.add(lines)
+                        textView.text = "${textView.text} \n add"
+
                     }
                 }
             }
@@ -264,14 +287,18 @@ class ReceiptScannerActivity : AppCompatActivity() {
                     )
                 ) {
                     filteredProduct.add(filteredProductt[i])
+                    textView.text = "\n ${filteredProductt[i].text}"
                     filteredQuantity.add(1)
                 } else if (!(filteredProductt[i].text.lowercase()
                         .contains("/")) || filteredProductt[i].text.contains(Regex("\\d{1,3}(?:[., ]\\d{3})*(?:[., ]\\d{2})"))
                 ) {
                     filteredPrice.add(filteredProductt[i])
+                    textView.text = "\n ${filteredProductt[i].text}"
+
                 }
+
             }
-            Toast.makeText(this, "Hello", Toast.LENGTH_SHORT).show()
+            textView.text = "${textView.text} \n Hello"
         }
     }
 
