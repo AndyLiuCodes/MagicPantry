@@ -1,457 +1,232 @@
 <!DOCTYPE html>
 
-<html>
-    <head>
-        <meta charset="utf-8">
-        
-        <!-- add title -->
-        <title> Magic Pantry </title>  
-        <!-- <link rel="stylesheet" type="text/css" href="MagicPantryStyleSheet.css"> -->
-    
-        <style>
-            /*Typography*/
-            html {
-            font: 16px "Ubuntu", sans-serif;
-            }
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-            /*Layout*/
-            html, body {
-            width: 100%;
-            height: 100%;
-            overflow-x: hidden;
-            }
+    <title>Magic Pantry</title>
+    <link rel="icon" href="./images/icon_magic_book.png" />
+    <link rel="stylesheet" type="text/css" href="style.css" />
+    <!-- Bootstrap -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/css/bootstrap.min.css"
+      integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T"
+      crossorigin="anonymous"
+    />
+  </head>
 
-            *, *:before, *:after {
-            box-sizing: border-box;
-            }
-
-            .wrapper {
-            height: 100%;
-            }
-
-            section {
-            padding: 1em 0;
-            }
-
-            ul {
-            margin: 0;
-            padding: 0;
-            list-style-type: none;
-            }
-
-            a {
-            text-decoration: none;
-            transition: all 0.25s;
-            }
-
-            .row, nav {
-            margin: auto;
-            width: 100%;
-            max-width: 60em;
-            }
-
-            .column {
-            display: inline-block;
-            width: 24%;
-            vertical-align: top;
-            }
-
-            .col-1 {
-            display: block;
-            margin-left: auto;
-            margin-right: auto;
-            text-align: center;
-            width: 70%;
-            height: 100%;
-            }
-
-            .col-2 {
-            display: inline-block;
-            width: 49%;
-            min-width: 300px;
-            vertical-align: top;
-            }
-
-            .col-4 {
-            display: inline-block;
-            width: 24.7%;
-            min-width: 230px;
-            vertical-align: top;
-            text-align: center;
-            }
-
-            /*Navigation*/
-            header {
-            float: left;
-            position: relative;
-            width: 100%;
-            background: #1e90ff;
-            box-shadow: 0px 1px 3px #333;
-            z-index: 1;
-            }
-
-            .nav {
-            display: flex;
-            flex-direction: row;
-            flex-wrap: wrap;
-            justify-content: flex-end;
-            }
-
-            @media screen and (max-width: 500px) {
-            .nav {
-                display: none;
-                flex-direction: column;
-                width: 100%;
-            }
-
-            .nav li {
-                text-align: center;
-            }
-            }
-
-            .nav a {
-            text-align: center;
-            color: #fff;
-            display: block;
-            padding: 1em 0.75em;
-            }
-
-            .nav a:focus, .nav a:hover {
-            background: #0583ff;
-            }
-
-            /*Intro*/
-            .sec-intro .row {
-            max-width: 100%;
-            }
-
-            .sec-intro img {
-            width: 100%;
-            }
-
-            /*Posts*/
-            .sec-posts {
-            margin-bottom: 1em;
-            }
-
-            .sec-posts .row:first-child {
-            border-top: 0.1em dashed #aaa;
-            }
-
-            .sec-posts h2 {
-            padding: 0 0.25em;
-            }
-
-            @media screen and (max-width: 622px) {
-            .sec-posts h2 {
-                text-align: center;
-            }
-            }
-
-            .post {
-            padding: 0 0.5em;
-            }
-
-            .post h1 {
-            display: inline;
-            font-size: 105%;
-            color: #1e90ff;
-            transition: color 0.25s;
-            }
-
-            /*diagrmas*/
-            .sec-diag {
-            background: #222;
-            color: #fff;
-            }
-
-            .sec-diag .row {
-            margin-bottom: 2em;
-            }
-
-            .sec-diag h1 {
-            text-align: center;
-            }
-
-            .sec-diag img {
-            width: 100%;
-            height: 100%;
-            }
-
-            .sec-diag img:hover {
-            transform: scale(1.5, 1.5);
-            }
-
-            .sec-diag iframe {
-            width: 100%;
-            }
-
-            .sec-diag a {
-            line-height: 30px;
-            color: #DC143C;
-            font-size: 110%;
-            transition: color 0.25s;
-            }
-
-            .sec-diag a:hover {
-            color: #931215;
-            }
-
-            /*Footer*/
-            .footer-outer {
-            padding: 1em 0;
-            background: #1e90ff;
-            color: #fff;
-            }
-
-            footer .row:first-child a {
-            color: #fff;
-            }
-
-            footer .row:first-child a:focus, footer .row:first-child a:hover {
-            color: #333;
-            }
-
-            footer .row:last-child {
-            padding: 0.5em;
-            }
-
-            .copy {
-            font-size: 0.8em;
-            font-style: italic;
-            }
-        </style>
-    </head>
-
-    <body>
-        <div class="wrapper">
-            <header id="nav" role="banner">
-                <nav role="navigation">
-                    <ul class="nav">
-                        <li><a href="#main"> Home </a></li>
-                        <li><a href="#about"> About </a></li>
-                        <li><a href="#diagrams"> Diagrams </a></li>
-                        <li><a href="#presentation"> Presentation </a></li>
-                        <li><a href="#demo"> Demo </a></li>
-                    </ul>
-                </nav>
-            </header>
-            <section id="main" class="sec-intro">
-                <table class="row" style="width: 600px; margin: 0 auto;">
-                    <tr>
-                        <td valign="top" style="height: 30%; width: 30%;"><br><img src="https://cdn-icons-png.flaticon.com/512/3565/3565418.png" alt="Magic Book"/></td>
-                        <td valign="middle" style="font-size: 250%;"> <br>&ensp;&ensp; Magic Pantry </td>
-                    </tr>
-                </table>
-                <br>
-                <div class="row" style="width: 750px; margin: 0 auto; border: 1cm; border: solid;">
-                    <div class="column" style="border-right: 1cm; border-right: solid; padding: 1.5%;">
-                        Elaine Abraham <br>
-                        <a href="mailto:eabraham@sfu.ca"> eabraham@sfu.ca </a> <br>
-                        301368157
-                    </div>
-                    
-                    <div class="column" style="border-right: 1cm; border-right: solid; padding: 1.5%;">
-                        Jason Esquilona <br>
-                        <a href="mailto:jesquilo@sfu.ca"> jesquilo@sfu.ca </a> <br>
-                        301369208          
-                    </div>
-            
-                    <div class="column" style="border-right: 1cm; border-right: solid; padding: 1.5%;">
-                        Andy Liu <br>
-                        <a href="mailto:ala158@sfu.ca"> ala158@sfu.ca </a> <br>
-                        301319435
-                    </div>
-            
-                    <div class="column" style="padding: 1.5%;">
-                        Bao (Tyler) Trinh <br>
-                        <a href="mailto:bvtrinh@sfu.ca"> bvtrinh@sfu.ca </a> <br>
-                        301319439
-                    </div>
-                </div>
-            </section>
-
-            <section id="about" class="sec-posts">
-                <div class="row">
-                    <div class="col-2">
-                        <h2 id="initialPitch"> Initial Project Pitch </h2>
-                        <article class="post">
-                            <h1 id="motivation"> Motivation: </h1>
-                            <ul style="margin-left: 20px;">
-                                <li style="list-style-type: disc;"> What is the need for Magic Pantry? </li>
-                                    <ul style="margin-left: 25px;">
-                                        <li style="list-style-type: circle;"> Streamlines the entire kitchen and pantry storage experience </li>
-                                        <li style="list-style-type: circle;"> Saves time
-                                            <ul style="margin-left: 30px;">
-                                                <li style="list-style-type: square;"> When shopping and cooking, you no longer have to wonder what ingredients you have at home or what recipes you can or cannot cook </li>
-                                                <li style="list-style-type: square;"> You can easily keep track of all your items just from the receipt </li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                <li style="list-style-type: disc;"> What does Magic Pantry solve? </li>
-                                    <ul style="margin-left: 25px;">
-                                        <li style="list-style-type: circle;"> Easily share recipes with others </li>
-                                        <li style="list-style-type: circle;"> Helps keep track of ingredients at home
-                                            <ul style="margin-left: 30px;">
-                                                <li style="list-style-type: square;"> Prevents you from having low ingredients and overstocking </li>
-                                            </ul>
-                                        </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </article>
-                        <br>
-                        <article class="post">
-                            <h1 id="features"> Features: </h1>
-                            <ul style="margin-left: 20px;">
-                                <li style="list-style-type: decimal;"> Keeps track of the ingredients in your pantry at home </li>
-                                <li style="list-style-type: decimal;"> Scan your shopping receipts to automatically add the items to your pantry (OCR) </li>
-                                <li style="list-style-type: decimal;"> Receive notifications when low on ingredients </li>
-                                <li style="list-style-type: decimal;"> Recipe system
-                                    <ul style="margin-left: 25px;">
-                                        <li style="list-style-type: lower-roman;"> Stores your recipes </li>
-                                        <li style="list-style-type: lower-roman;"> Shows the available recipes you can make with the ingredients in your pantry </li>
-                                        <li style="list-style-type: lower-roman;"> Share your recipes with others </li>
-                                        <li style="list-style-type: lower-roman;"> Generate shopping list for missing ingredients in a recipe </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </article>
-                    </div>
-                    <div class="col-2">
-                    <h2 id="st1"> Show and Tell 1 </h2>
-                        <article class="post">
-                            <h1 id="breakdown"> Breakdown: </h1><br>
-                            <ul style="margin-left: 20px;">
-                                <li style="list-style-type: disc;"> UI mockup [Tyler] </li>
-                                <li style="list-style-type: disc;"> MVVM UML Diagram [Jason] </li>
-                                <li style="list-style-type: disc;"> Webpage [Elaine] </li>
-                                <li style="list-style-type: disc;"> Features (Code) 
-                                    <ul style="margin-left: 25px;">
-                                        <li style="list-style-type: circle;"> Basic UI [Andy] </li>
-                                        <li style="list-style-type: circle;"> Manual input of ingredients [Andy] </li>
-                                        <li style="list-style-type: circle;"> Receipt Scanning
-                                            <ul style="margin-left: 30px;">
-                                                <li style="list-style-type: square;"> Get data from receipt [Elaine/Jason] </li>
-                                                <li style="list-style-type: square;"> Parsing relevant data [Elaine/Jason] </li>
-                                            </ul>
-                                        </li>
-                                        <li style="list-style-type: circle;"> Setup database with ingredients table [Tyler] </li>
-                                        <li style="list-style-type: circle;"> Giving preview of ingredients and fix mistakes before submitting [Tyler]</li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </article>
-                        <br>
-                        <article class="post">
-                            <h1 id="preview"> Show and Tell 2 - Idea: </h1>
-                            <ul style="margin-left: 5px;">
-                                <li> In Show and Tell 2, we will present:
-                                    <ul style="margin-left: 25px;">
-                                        <li style="list-style-type: circle;"> A Threaded Design Diagram </li>
-                                        <li style="list-style-type: circle;"> CRUD shopping lists </li>
-                                        <li style="list-style-type: circle;"> CRUD recipes </li>
-                                        <li style="list-style-type: circle;"> A display of recipes based on available ingredients </li>
-                                        <li style="list-style-type: circle;"> Notifications on low ingredients </li>
-                                    </ul>
-                                </li>
-                            </ul>
-                        </article>
-                    </div>
-                </div>
-            </section>
-            
-            <section id="diagrams" class="sec-diag">
-                <div class="row">
-                    <h1> Diagrams </h1>
-                    <div id="mvvm" class="col-1">
-                        <a href="https://cdn.discordapp.com/attachments/989429292909867072/998708813957972089/MagicPantry_Diagram_3.png"> MVVM </a>
-                        <br>
-                        <img src="https://cdn.discordapp.com/attachments/989429292909867072/998708813957972089/MagicPantry_Diagram_3.png" alt="MVVM Diagram" />
-                    </div>
-                    <br>
-                    <div id="figma" class="col-1">
-                        <a href="https://www.figma.com/file/61Q9QRzicxr7sgl1qc8L3q/MagicPantry?node-id=0%3A1"> Figma </a>
-                        <br>
-                        <iframe style="border: 1px solid rgba(0, 0, 0, 0.1);" height="450;" src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Ffile%2F61Q9QRzicxr7sgl1qc8L3q%2FMagicPantry%3Fnode-id%3D0%253A1" ></iframe>
-                    </div>
-                </div>
-            </section>
-            
-            <section id="presentation">
-                <div class="row">
-                    <div class="col-1">
-                        <h2> Presentation </h2>
-                        <article class="post">
-                            <a href="https://www.youtube.com/watch?v=OoM-CpLvRrQ" style="text-align: center;">
-                                Project Pitch: Video
-                            </a>
-                            <br><br>
-                            <a href="" style="text-align: center;">
-                                Show and Tell 1: Video
-                            </a>
-                        </article>
-                    </div>
-                </div>
-            </section>
-            
-            <section id="demo" class="sec-posts">
-                <div class="row">
-                    <div class="col-1">
-                        <h2> Demo </h2>
-                        <article class="post">
-                            <h1> Show and Tell 1: </h1>
-                            <br>
-                            <a href="" style="text-align: center; line-height:30px;">
-                                Magic_Pantry.apk
-                            </a>
-                            <br>
-                            <a href="" style="text-align: center; line-height:30px;">
-                                Magic_Pantry.zip
-                            </a>
-                        </article>
-                    </div>
-                </div>
-            </section>
-            
-            <footer>
-                <div class="footer-outer">
-                    <div class="row">
-                        <div class="col-4">
-                            <h2> Navigation </h2>
-                            <ul class="footer-nav">
-                                <li><a href="#main"> Home </a></li>
-                                <li><a href="#about"> About </a></li>
-                                <li><a href="#diagrams"> Diagrams </a></li>
-                                <li><a href="#presentation"> Presentation </a></li>
-                                <li><a href="#demo"> Demo </a></li>
-                            </ul>
-                        </div>
-                        <div class="col-4">
-                            <h2> About </h2>
-                            <ul class="footer-cat">
-                                <li><a href="#initialPitch"> Initial Project Pitch </a></li>
-                                <li><a href="#st1"> Show and Tell 1 </a></li>
-                                <li><a href="#"> Show and Tell 2 </a></li>
-                            </ul>
-                        </div>
-                        <div class="col-4">
-                            <h2> Diagrams </h2>
-                            <ul class="footer-cat">
-                                <li><a href="#mvvm"> MVVM </a></li>
-                                <li><a href="#figma"> Figma </a></li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-                <div class="row">
-                    <span class="copy"> 
-                        Simon Fraser University CMPT 362 - 
-                        Mobile App Programming - 
-                        Professor Xing-Dong Yang
-                    </span>
-                </div>
-            </footer>
+  <body>
+    <header id="nav" role="banner" class="navbar fixed-top">
+      <nav role="navigation">
+        <ul class="nav">
+          <li><a href="#main"> Home </a></li>
+          <li><a href="#about"> About </a></li>
+          <li><a href="#features"> Features </a></li>
+          <li><a href="#design"> Design </a></li>
+          <li><a href="#show-and-tell-1"> Show and Tell 1 </a></li>
+          <li><a href="#project-pitch"> Project Pitch </a></li>
+          <li><a href="#team"> Team </a></li>
+        </ul>
+      </nav>
+    </header>
+    <main>
+      <div id="main" class="logo-section">
+        <div class="container title-container">
+          <div class="row align-items-center justify-content-center">
+            <div class="col-lg-3 col-md-3 col-sm-8 text-center">
+              <img
+                class="logo img-fluid"
+                src="https://cdn-icons-png.flaticon.com/512/3565/3565418.png"
+                alt="Magic Book"
+              />
+            </div>
+            <div
+              class="col-lg-4 col-md-5 col-sm-12 title d-flex justify-content-center"
+           >
+              <h1 class="logo display-2 font-weight-bold">Magic Pantry</h1>
+            </div>
+          </div>
         </div>
-    </body>
+      </div>
+    </main>
+
+
+    <section id="about">
+      <div class="container section-container">
+        <div class="row justify-content-between">
+          <h2 class="display-4"><b>What is Magic Pantry?</b></h1>
+        </div>
+				<hr>
+				<p class="section-text">
+					Magic Pantry is a virtual pantry application that streamlines the kitchen and cooking 
+          experience by keeping track of your ingredients at home. You will be able to scan grocery 
+          receipts and add items into your pantry. With Magic Pantry, add your own recipes and show 
+          available recipes to cook depending on your pantry’s contents. You will also be able to add 
+          missing ingredients of a recipe to your shopping list and receive notifications when running 
+          low on ingredients.
+				</p>
+      </div>
+    </section>
+
+		<section id="features">
+      <div class="container section-container">
+        <div class="row justify-content-between">
+          <h2 class="display-4"><b>Features</b></h1>
+        </div>
+				<hr>
+        <dl class="row">
+          <dt class="col-sm-2">- Pantry</dt>
+          <dd class="col-sm-10">
+            Keep track of all the items you have at home, including the cost you paid for them and the quantity.
+            You will also be able to directly add all your low-stock items into your shopping list.
+          </dt>
+
+          <dt class="col-sm-2">- Shopping List</dt>
+          <dd class="col-sm-10">
+            A quick and easy way to keep track of the items you need to purchase the next time
+            you are grocery shopping.
+          </dt>
+
+          <dt class="col-sm-2">- Recipes</dt>
+          <dd class="col-sm-10">
+            You will be able to save all your favourite recipes using Magic Pantry. You can also find all the recipes
+            that you can currently make with the ingredients that you have in your pantry. However, if you want to cook a recipe where you
+            don't have all the ingredients for, then you will be able directly add those items straight into your shopping list.
+          </dt>
+
+          <dt class="col-sm-2">- Receipt Scanning</dt>
+          <dd class="col-sm-10">
+            With Magic Pantry you can scan your receipts and directly add the items you purchased into your pantry using machine learning!
+          </dt>
+
+          <dt class="col-sm-2">- Notifications</dt>
+          <dd class="col-sm-10">Add notifications to alert you whenever you are running low on an ingredient.</dt>
+        </dl>
+      </div>
+    </section>
+
+		<section id="design">
+      <div class="container section-container">
+        <div class="row justify-content-between">
+          <h2 class="display-4"><b>Design</b></h1>
+        </div>
+				<hr>
+				            
+				<div class="row">
+						<div id="mvvm">
+							<h3 class="text-center design-image-title">
+								<a href="images/MagicPantry_Diagram_14.png"> 
+									Model-View-ViewModel
+								</a>
+							</h3>
+							<a href="images/MagicPantry_Diagram_14.png"> 
+								<img class="img-fluid" src="images/MagicPantry_Diagram_14.png" alt="MVVM Diagram" /> 
+							</a>
+						</div>
+				</div>
+
+				<div class="row">
+					<div id="figma" class="col-sm-12">
+						<h3 class="text-center design-image-title">
+							<a href="https://www.figma.com/file/61Q9QRzicxr7sgl1qc8L3q/MagicPantry?node-id=0%3A1"> 
+								Figma 
+							</a>
+						</h3>
+						<div class="embed-responsive embed-responsive-16by9">
+							<iframe id="figma-iframe" class="embed-responsive-item" style="border: 1px solid rgba(0, 0, 0, 0.1);" width="800" height="450" src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Ffile%2F61Q9QRzicxr7sgl1qc8L3q%2FMagicPantry%3Fnode-id%3D0%253A1" allowfullscreen></iframe>
+						</div>
+					</div>
+				</div>
+            
+      </div>
+    </section>
+
+    <section id="show-and-tell-1">
+      <div class="container section-container">
+        <div class="row justify-content-between">
+          <h2 class="display-4"><b>Show and Tell 1</b></h1>
+        </div>
+				<hr>
+      </div>
+    </section>
+
+		<section id="project-pitch">
+      <div class="container section-container">
+        <div class="row justify-content-between">
+          <h2 class="display-4"><b>Project Pitch</b></h1>
+        </div>
+				<hr>
+        <div class="row justify-content-center">
+          <iframe width="560" height="315" src="https://www.youtube.com/embed/OoM-CpLvRrQ" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        </div>
+      </div>
+    </section>
+
+		<section id="team">
+      <div class="container section-container">
+        <div class="row justify-content-between">
+          <h2 class="display-4"><b>Team</b></h1>
+        </div>
+				<hr>
+
+        <div class="row">
+
+          <div class="col-lg-3 col-md-6 col-sm-12">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Elaine Abraham</h5>
+                <p class="card-text">Email: eabraham@sfu.ca<br>Student #: 301368157</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-6 col-sm-12">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Jason Esquilona</h5>
+                <p class="card-text">Email: jesquilo@sfu.ca<br>Student #: 301369208</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-6 col-sm-12">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Andy Liu</h5>
+                <p class="card-text">Email: ala158@sfu.ca<br>Student #: 301319435</p>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-lg-3 col-md-6 col-sm-12">
+            <div class="card">
+              <div class="card-body">
+                <h5 class="card-title">Bao (Tyler) Trinh</h5>
+                <p class="card-text">bvtrinh@sfu.ca<br>301319439</p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script
+      src="https://code.jquery.com/jquery-3.3.1.slim.min.js"
+      integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.14.7/dist/umd/popper.min.js"
+      integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@4.3.1/dist/js/bootstrap.min.js"
+      integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM"
+      crossorigin="anonymous"
+    ></script>
+    <script src="./script.js"></script>
+  </body>
 </html>
