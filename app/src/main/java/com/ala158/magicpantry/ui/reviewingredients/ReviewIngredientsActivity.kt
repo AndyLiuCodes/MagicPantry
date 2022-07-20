@@ -94,9 +94,7 @@ class ReviewIngredientsActivity : AppCompatActivity() {
             onBackPressed()
         }
         addAllButton.setOnClickListener {
-            for (i in ingredientList.indices) {
-                repository.insertIngredient(ingredientList[i])
-            }
+            reviewIngredientsViewModel.addToIngredientList(ingredientList)
             reviewIngredientsViewModel.insertAll()
             Toast.makeText(this, "Items added!", Toast.LENGTH_SHORT).show()
 
