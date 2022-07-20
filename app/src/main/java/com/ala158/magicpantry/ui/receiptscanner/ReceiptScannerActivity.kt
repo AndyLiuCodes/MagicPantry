@@ -12,22 +12,18 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.method.ScrollingMovementMethod
-import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
-import androidx.navigation.findNavController
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.dao.IngredientDAO
-import com.ala158.magicpantry.data.Ingredient
 import com.ala158.magicpantry.database.MagicPantryDatabase
 import com.ala158.magicpantry.repository.MagicPantryRepository
 import com.ala158.magicpantry.ui.reviewingredients.ReviewIngredientsActivity
-import com.ala158.magicpantry.ui.reviewingredients.ReviewIngredientsFragment
 import com.ala158.magicpantry.ui.reviewingredients.ReviewIngredientsViewModel
 import com.ala158.magicpantry.viewModel.ViewModelFactory
 import com.google.mlkit.vision.common.InputImage
@@ -40,7 +36,7 @@ import java.io.File
 @Suppress("DEPRECATION")
 class ReceiptScannerActivity : AppCompatActivity() {
     private lateinit var imageUri: Uri
-    private lateinit var bitmap: Bitmap
+    private var bitmap: Bitmap? = null
 
     private val requestCamera = 1888
     private val requestGallery = 2222
@@ -125,13 +121,6 @@ class ReceiptScannerActivity : AppCompatActivity() {
         }
 
         reviewItemsBtn.setOnClickListener {
-            val ingredient = Ingredient()
-            val ingredientList = arrayListOf<String>()
-
-            for (item in 0 until filteredProducts.size) {
-                ingredientList.add(filteredProducts[item] + "::" + helperPrice[item])
-            }
-
             val bundle = Bundle()
             bundle.putStringArray("arrayList", filteredProducts.toTypedArray())
             bundle.putStringArray("priceList", helperPrice.toTypedArray())
@@ -146,9 +135,9 @@ class ReceiptScannerActivity : AppCompatActivity() {
         val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
         textView.text = ". . ."
 
-        if (imageView != null) {
+        if (imageView != null && bitmap != null) {
             // process image
-            val image = InputImage.fromBitmap(bitmap, 0)
+            val image = InputImage.fromBitmap(bitmap!!, 0)
             recognizer.process(image)
                 .addOnSuccessListener { visionText ->
                     // Task completed successfully
@@ -191,11 +180,8 @@ class ReceiptScannerActivity : AppCompatActivity() {
                 }
             }
         }
-        textView.text = "${textView.text} \n Hello1"
 
         if (subTotalBlock != null) {
-            textView.text = "${textView.text} \n Hello2"
-
             val filteredResultBlocks = mutableListOf<Text.TextBlock>()
             for (block in result.textBlocks) {
                 if (block.cornerPoints?.get(0)?.y!! < subTotalBlock?.cornerPoints?.get(0)?.y!! && block.cornerPoints?.get(
@@ -203,7 +189,6 @@ class ReceiptScannerActivity : AppCompatActivity() {
                     )?.y!! < subTotalBlock!!.cornerPoints?.get(3)?.y!!
                 ) {
                     filteredResultBlocks.add(block)
-                    textView.text = "${textView.text} \n result add"
                 }
             }
             val filteredResultLine = mutableListOf<Text.TextBlock>()
@@ -220,8 +205,6 @@ class ReceiptScannerActivity : AppCompatActivity() {
                     }
                 }
                 filteredResultLine.add(filteredResultBlocks[i])
-                textView.text = "${textView.text} \n line"
-
             }
             //Looks for prices and ignores phone numbers
             val filterDecimal = mutableListOf<Text.TextBlock>()
@@ -233,8 +216,6 @@ class ReceiptScannerActivity : AppCompatActivity() {
                         continue
                     }
                     filterDecimal.add(filteredResultLine[i])
-                    textView.text = "${textView.text} \n dec"
-
                 }
             }
             //Gets all lines that correlate to ingredients
@@ -294,11 +275,8 @@ class ReceiptScannerActivity : AppCompatActivity() {
                 ) {
                     filteredPrice.add(filteredProductt[i])
                     textView.text = "\n ${filteredProductt[i].text}"
-
                 }
-
             }
-            textView.text = "${textView.text} \n Hello"
         }
     }
 
@@ -308,7 +286,7 @@ class ReceiptScannerActivity : AppCompatActivity() {
         val helperProducts = mutableListOf<String>()
         val filteredList = mutableListOf<String>()
 
-        val mutableBitmap = bitmap.copy(bitmap.config, true)
+        val mutableBitmap = bitmap!!.copy(bitmap!!.config, true)
 
         // for blocks in result text
         for (block in result.textBlocks) {
@@ -360,7 +338,7 @@ class ReceiptScannerActivity : AppCompatActivity() {
             filteredList.add(filteredProducts[item])
             filteredList.add(helperPrice[item])
         }
-        textView.text = "${textView.text} \n Scanned Result: $filteredList"
+//        textView.text = "${textView.text} \n Items: $filteredList"
 
         textView.movementMethod = ScrollingMovementMethod()
         imageView!!.setImageBitmap(mutableBitmap)
@@ -377,6 +355,7 @@ class ReceiptScannerActivity : AppCompatActivity() {
     }
 
     // when camera or gallery chosen, update photo
+    @Deprecated("Deprecated in Java")
     @RequiresApi(Build.VERSION_CODES.Q)
     @SuppressLint("CommitPrefEdits")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
