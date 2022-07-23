@@ -15,7 +15,6 @@ import com.ala158.magicpantry.database.MagicPantryDatabase
 import com.ala158.magicpantry.repository.IngredientRepository
 import com.ala158.magicpantry.repository.RecipeRepository
 import com.ala158.magicpantry.viewModel.IngredientViewModelFactory
-import com.ala158.magicpantry.viewModel.RecipeViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModelFactory
 import java.io.File
 import java.io.FileInputStream

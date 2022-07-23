@@ -1,29 +1,21 @@
 package com.ala158.magicpantry.ui.reviewingredients
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.ListView
 import android.widget.Toast
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.ala158.magicpantry.R
+import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.ReviewIngredientsArrayAdapter
-import com.ala158.magicpantry.dao.IngredientDAO
-import com.ala158.magicpantry.database.MagicPantryDatabase
-import com.ala158.magicpantry.repository.IngredientRepository
-import com.ala158.magicpantry.viewModel.IngredientViewModelFactory
 
 class ReviewIngredientsFragment : Fragment() {
 
     private lateinit var ingredientListView: ListView
-    private lateinit var database: MagicPantryDatabase
-    private lateinit var ingredientDAO: IngredientDAO
-    private lateinit var repository: IngredientRepository
-    private lateinit var ingredientViewModelFactory: IngredientViewModelFactory
     private lateinit var reviewIngredientsViewModel: ReviewIngredientsViewModel
 
     private lateinit var cancelButton: Button
@@ -37,18 +29,15 @@ class ReviewIngredientsFragment : Fragment() {
         // Inflate the layout for this fragment
         val view = inflater.inflate(R.layout.fragment_review_ingredients, container, false)
 
-        database = MagicPantryDatabase.getInstance(requireActivity())
-        ingredientDAO = database.ingredientDAO
-        repository = IngredientRepository(ingredientDAO)
-        ingredientViewModelFactory = IngredientViewModelFactory(repository)
-        reviewIngredientsViewModel =
-            ViewModelProvider(
-                requireActivity(),
-                ingredientViewModelFactory
-            ).get(ReviewIngredientsViewModel::class.java)
+        reviewIngredientsViewModel = Util.createViewModel(
+            requireActivity(),
+            ReviewIngredientsViewModel::class.java,
+            Util.DataType.INGREDIENT
+        )
 
         ingredientListView = view.findViewById(R.id.reviewIngredientsList)
-        reviewIngredientsArrayAdapter = ReviewIngredientsArrayAdapter(requireActivity(), ArrayList())
+        reviewIngredientsArrayAdapter =
+            ReviewIngredientsArrayAdapter(requireActivity(), ArrayList())
         ingredientListView.adapter = reviewIngredientsArrayAdapter
 
         reviewIngredientsViewModel.ingredientList.observe(requireActivity()) {

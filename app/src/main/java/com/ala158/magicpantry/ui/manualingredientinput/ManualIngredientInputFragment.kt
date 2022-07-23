@@ -9,14 +9,10 @@ import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
 import android.widget.Button
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import com.ala158.magicpantry.IngredientEntry
 import com.ala158.magicpantry.R
-import com.ala158.magicpantry.dao.IngredientDAO
-import com.ala158.magicpantry.database.MagicPantryDatabase
-import com.ala158.magicpantry.repository.IngredientRepository
-import com.ala158.magicpantry.viewModel.IngredientViewModelFactory
+import com.ala158.magicpantry.Util
 import com.google.android.material.textfield.TextInputEditText
 
 
@@ -27,10 +23,6 @@ class ManualIngredientInputFragment : Fragment() {
     private lateinit var amountTextField: TextInputEditText
     private lateinit var unitEditDropdown: AutoCompleteTextView
     private lateinit var priceTextField: TextInputEditText
-    private lateinit var database: MagicPantryDatabase
-    private lateinit var ingredientDAO: IngredientDAO
-    private lateinit var repository: IngredientRepository
-    private lateinit var ingredientViewModelFactory: IngredientViewModelFactory
     private lateinit var manualIngredientsInputViewModel: ManualIngredientInputViewModel
 
     override fun onCreateView(
@@ -46,15 +38,11 @@ class ManualIngredientInputFragment : Fragment() {
         unitEditDropdown = view.findViewById(R.id.manual_input_unit)
         priceTextField = view.findViewById(R.id.manual_input_price)
 
-        database = MagicPantryDatabase.getInstance(requireActivity())
-        ingredientDAO = database.ingredientDAO
-        repository = IngredientRepository(ingredientDAO)
-        ingredientViewModelFactory = IngredientViewModelFactory(repository)
-        manualIngredientsInputViewModel =
-            ViewModelProvider(
-                requireActivity(),
-                ingredientViewModelFactory
-            ).get(ManualIngredientInputViewModel::class.java)
+        manualIngredientsInputViewModel = Util.createViewModel(
+            requireActivity(),
+            ManualIngredientInputViewModel::class.java,
+            Util.DataType.INGREDIENT
+        )
 
         initTextWatchers()
 
@@ -154,11 +142,11 @@ class ManualIngredientInputFragment : Fragment() {
 
     companion object {
         val UNIT_DROPDOWN_MAPPING = mapOf<String, Int>(
-            "kg"    to 0,
-            "g"     to 1,
-            "ml"    to 3,
-            "L"     to 4,
-            "unit"  to 5
+            "kg" to 0,
+            "g" to 1,
+            "ml" to 3,
+            "L" to 4,
+            "unit" to 5
         )
     }
 }

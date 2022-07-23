@@ -12,16 +12,11 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.ala158.magicpantry.databinding.ActivityMainBinding
-import com.ala158.magicpantry.viewModel.IngredientViewModel
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-
-    // Setup ingredient viewModel
-    private lateinit var ingredientViewModel: IngredientViewModel
-
     private val permissionCode = 200
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,9 +40,6 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
-
-        ingredientViewModel =
-            Util.createViewModel(this, IngredientViewModel::class.java, Util.DataType.INGREDIENT)
 
         // check camera permissions
         checkMyPermission()

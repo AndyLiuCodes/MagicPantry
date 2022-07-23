@@ -17,15 +17,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
-import com.ala158.magicpantry.dao.IngredientDAO
-import com.ala158.magicpantry.database.MagicPantryDatabase
-import com.ala158.magicpantry.repository.IngredientRepository
 import com.ala158.magicpantry.ui.reviewingredients.ReviewIngredientsActivity
 import com.ala158.magicpantry.ui.reviewingredients.ReviewIngredientsViewModel
-import com.ala158.magicpantry.viewModel.IngredientViewModelFactory
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
@@ -47,11 +42,7 @@ class ReceiptScannerActivity : AppCompatActivity() {
     private val helperPrice = mutableListOf<String>()
     private val filteredProducts = mutableListOf<String>()
 
-    private lateinit var myDataBase : MagicPantryDatabase
-    private lateinit var dbDao : IngredientDAO
-    private lateinit var repository : IngredientRepository
-    private lateinit var ingredientViewModelFactory: IngredientViewModelFactory
-    private lateinit var itemViewModel : ReviewIngredientsViewModel
+    private lateinit var reviewIngredientsViewModel: ReviewIngredientsViewModel
 
     private lateinit var cameraBtn: Button
     private lateinit var scanBtn: Button
@@ -66,11 +57,11 @@ class ReceiptScannerActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_receipt_scanner)
 
-        myDataBase = MagicPantryDatabase.getInstance(this)
-        dbDao = myDataBase.ingredientDAO
-        repository = IngredientRepository(dbDao)
-        ingredientViewModelFactory = IngredientViewModelFactory(repository)
-        itemViewModel = ViewModelProvider(this, ingredientViewModelFactory).get(ReviewIngredientsViewModel::class.java)
+        reviewIngredientsViewModel = Util.createViewModel(
+            this,
+            ReviewIngredientsViewModel::class.java,
+            Util.DataType.INGREDIENT
+        )
 
         imageView = findViewById(R.id.imageview_receipt)
         textView = findViewById(R.id.textview_receipt)
