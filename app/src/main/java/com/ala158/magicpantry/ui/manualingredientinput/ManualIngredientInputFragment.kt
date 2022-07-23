@@ -3,7 +3,6 @@ package com.ala158.magicpantry.ui.manualingredientinput
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,8 +15,8 @@ import com.ala158.magicpantry.IngredientEntry
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.dao.IngredientDAO
 import com.ala158.magicpantry.database.MagicPantryDatabase
-import com.ala158.magicpantry.repository.MagicPantryRepository
-import com.ala158.magicpantry.viewModel.ViewModelFactory
+import com.ala158.magicpantry.repository.IngredientRepository
+import com.ala158.magicpantry.viewModel.IngredientViewModelFactory
 import com.google.android.material.textfield.TextInputEditText
 
 
@@ -30,8 +29,8 @@ class ManualIngredientInputFragment : Fragment() {
     private lateinit var priceTextField: TextInputEditText
     private lateinit var database: MagicPantryDatabase
     private lateinit var ingredientDAO: IngredientDAO
-    private lateinit var repository: MagicPantryRepository
-    private lateinit var viewModelFactory: ViewModelFactory
+    private lateinit var repository: IngredientRepository
+    private lateinit var ingredientViewModelFactory: IngredientViewModelFactory
     private lateinit var manualIngredientsInputViewModel: ManualIngredientInputViewModel
 
     override fun onCreateView(
@@ -49,12 +48,12 @@ class ManualIngredientInputFragment : Fragment() {
 
         database = MagicPantryDatabase.getInstance(requireActivity())
         ingredientDAO = database.ingredientDAO
-        repository = MagicPantryRepository(ingredientDAO)
-        viewModelFactory = ViewModelFactory(repository)
+        repository = IngredientRepository(ingredientDAO)
+        ingredientViewModelFactory = IngredientViewModelFactory(repository)
         manualIngredientsInputViewModel =
             ViewModelProvider(
                 requireActivity(),
-                viewModelFactory
+                ingredientViewModelFactory
             ).get(ManualIngredientInputViewModel::class.java)
 
         initTextWatchers()

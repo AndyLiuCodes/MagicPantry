@@ -6,29 +6,20 @@ import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import androidx.annotation.RequiresApi
-import com.google.android.material.bottomnavigation.BottomNavigationView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
-import com.ala158.magicpantry.dao.IngredientDAO
-import com.ala158.magicpantry.database.MagicPantryDatabase
 import com.ala158.magicpantry.databinding.ActivityMainBinding
-import com.ala158.magicpantry.repository.MagicPantryRepository
 import com.ala158.magicpantry.viewModel.IngredientViewModel
-import com.ala158.magicpantry.viewModel.ViewModelFactory
+import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
 
-    // Example setup to database for ingredients
-    private lateinit var database: MagicPantryDatabase
-    private lateinit var ingredientDAO: IngredientDAO
-    private lateinit var repository: MagicPantryRepository
-    private lateinit var viewModelFactory: ViewModelFactory
+    // Setup ingredient viewModel
     private lateinit var ingredientViewModel: IngredientViewModel
 
     private val permissionCode = 200
@@ -55,12 +46,8 @@ class MainActivity : AppCompatActivity() {
         setupActionBarWithNavController(navController, appBarConfiguration)
         navView.setupWithNavController(navController)
 
-        database = MagicPantryDatabase.getInstance(this)
-        ingredientDAO = database.ingredientDAO
-        repository = MagicPantryRepository(ingredientDAO)
-        viewModelFactory = ViewModelFactory(repository)
         ingredientViewModel =
-            ViewModelProvider(this, viewModelFactory).get(IngredientViewModel::class.java)
+            Util.createViewModel(this, IngredientViewModel::class.java, Util.DataType.INGREDIENT)
 
         // check camera permissions
         checkMyPermission()
@@ -69,7 +56,11 @@ class MainActivity : AppCompatActivity() {
     // whenever request camera permissions check if permission granted, if not request again
     @RequiresApi(Build.VERSION_CODES.M)
     @Deprecated("Deprecated in Java")
-    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
         super.onRequestPermissionsResult(requestCode, permissions, grantResults)
 
         // requestCode == cameraPermissionCode
@@ -90,11 +81,17 @@ class MainActivity : AppCompatActivity() {
 
     // check camera, gallery
     @RequiresApi(Build.VERSION_CODES.M)
-    private fun checkMyPermission(){
+    private fun checkMyPermission() {
         // if not granted, request permissions
         if (checkSelfPermission(Manifest.permission.CAMERA) != PackageManager.PERMISSION_GRANTED ||
-            checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED){
-            requestPermissions(arrayOf(Manifest.permission.WRITE_EXTERNAL_STORAGE, Manifest.permission.CAMERA), permissionCode)
+            checkSelfPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED
+        ) {
+            requestPermissions(
+                arrayOf(
+                    Manifest.permission.WRITE_EXTERNAL_STORAGE,
+                    Manifest.permission.CAMERA
+                ), permissionCode
+            )
         }
     }
 }

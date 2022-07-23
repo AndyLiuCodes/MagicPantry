@@ -22,10 +22,10 @@ import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.dao.IngredientDAO
 import com.ala158.magicpantry.database.MagicPantryDatabase
-import com.ala158.magicpantry.repository.MagicPantryRepository
+import com.ala158.magicpantry.repository.IngredientRepository
 import com.ala158.magicpantry.ui.reviewingredients.ReviewIngredientsActivity
 import com.ala158.magicpantry.ui.reviewingredients.ReviewIngredientsViewModel
-import com.ala158.magicpantry.viewModel.ViewModelFactory
+import com.ala158.magicpantry.viewModel.IngredientViewModelFactory
 import com.google.mlkit.vision.common.InputImage
 import com.google.mlkit.vision.text.Text
 import com.google.mlkit.vision.text.TextRecognition
@@ -49,8 +49,8 @@ class ReceiptScannerActivity : AppCompatActivity() {
 
     private lateinit var myDataBase : MagicPantryDatabase
     private lateinit var dbDao : IngredientDAO
-    private lateinit var repository : MagicPantryRepository
-    private lateinit var viewModelFactory: ViewModelFactory
+    private lateinit var repository : IngredientRepository
+    private lateinit var ingredientViewModelFactory: IngredientViewModelFactory
     private lateinit var itemViewModel : ReviewIngredientsViewModel
 
     private lateinit var cameraBtn: Button
@@ -68,9 +68,9 @@ class ReceiptScannerActivity : AppCompatActivity() {
 
         myDataBase = MagicPantryDatabase.getInstance(this)
         dbDao = myDataBase.ingredientDAO
-        repository = MagicPantryRepository(dbDao)
-        viewModelFactory = ViewModelFactory(repository)
-        itemViewModel = ViewModelProvider(this, viewModelFactory).get(ReviewIngredientsViewModel::class.java)
+        repository = IngredientRepository(dbDao)
+        ingredientViewModelFactory = IngredientViewModelFactory(repository)
+        itemViewModel = ViewModelProvider(this, ingredientViewModelFactory).get(ReviewIngredientsViewModel::class.java)
 
         imageView = findViewById(R.id.imageview_receipt)
         textView = findViewById(R.id.textview_receipt)

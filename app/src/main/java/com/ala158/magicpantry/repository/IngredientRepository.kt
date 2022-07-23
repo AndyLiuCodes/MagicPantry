@@ -7,7 +7,7 @@ import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.launch
 
-class MagicPantryRepository(private val ingredientDAO: IngredientDAO) {
+class IngredientRepository(private val ingredientDAO: IngredientDAO) {
     val allIngredients: Flow<List<Ingredient>> = ingredientDAO.getAllIngredients()
 
     suspend fun getIngredient(id: Long): Ingredient {

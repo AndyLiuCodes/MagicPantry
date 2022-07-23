@@ -14,16 +14,16 @@ import com.ala158.magicpantry.R
 import com.ala158.magicpantry.arrayAdapter.ReviewIngredientsArrayAdapter
 import com.ala158.magicpantry.dao.IngredientDAO
 import com.ala158.magicpantry.database.MagicPantryDatabase
-import com.ala158.magicpantry.repository.MagicPantryRepository
-import com.ala158.magicpantry.viewModel.ViewModelFactory
+import com.ala158.magicpantry.repository.IngredientRepository
+import com.ala158.magicpantry.viewModel.IngredientViewModelFactory
 
 class ReviewIngredientsFragment : Fragment() {
 
     private lateinit var ingredientListView: ListView
     private lateinit var database: MagicPantryDatabase
     private lateinit var ingredientDAO: IngredientDAO
-    private lateinit var repository: MagicPantryRepository
-    private lateinit var viewModelFactory: ViewModelFactory
+    private lateinit var repository: IngredientRepository
+    private lateinit var ingredientViewModelFactory: IngredientViewModelFactory
     private lateinit var reviewIngredientsViewModel: ReviewIngredientsViewModel
 
     private lateinit var cancelButton: Button
@@ -39,12 +39,12 @@ class ReviewIngredientsFragment : Fragment() {
 
         database = MagicPantryDatabase.getInstance(requireActivity())
         ingredientDAO = database.ingredientDAO
-        repository = MagicPantryRepository(ingredientDAO)
-        viewModelFactory = ViewModelFactory(repository)
+        repository = IngredientRepository(ingredientDAO)
+        ingredientViewModelFactory = IngredientViewModelFactory(repository)
         reviewIngredientsViewModel =
             ViewModelProvider(
                 requireActivity(),
-                viewModelFactory
+                ingredientViewModelFactory
             ).get(ReviewIngredientsViewModel::class.java)
 
         ingredientListView = view.findViewById(R.id.reviewIngredientsList)

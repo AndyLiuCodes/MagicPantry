@@ -12,18 +12,18 @@ import com.ala158.magicpantry.R
 import com.ala158.magicpantry.arrayAdapter.PantryIngredientsArrayAdapter
 import com.ala158.magicpantry.dao.IngredientDAO
 import com.ala158.magicpantry.database.MagicPantryDatabase
-import com.ala158.magicpantry.repository.MagicPantryRepository
+import com.ala158.magicpantry.repository.IngredientRepository
 import com.ala158.magicpantry.ui.manualingredientinput.ManualIngredientInputActivity
 import com.ala158.magicpantry.ui.manualingredientinput.edit.PantryEditIngredientActivity
 import com.ala158.magicpantry.ui.receiptscanner.ReceiptScannerActivity
-import com.ala158.magicpantry.viewModel.ViewModelFactory
+import com.ala158.magicpantry.viewModel.IngredientViewModelFactory
 
 class PantryFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
     private lateinit var pantryViewModel: PantryViewModel
-    private lateinit var pantryViewModelFactory: ViewModelFactory
+    private lateinit var pantryIngredientViewModelFactory: IngredientViewModelFactory
     private lateinit var magicPantryDatabase: MagicPantryDatabase
     private lateinit var ingredientDAO: IngredientDAO
-    private lateinit var magicPantryRepository: MagicPantryRepository
+    private lateinit var ingredientRepository: IngredientRepository
     private lateinit var allIngredientsListView: ListView
     private lateinit var pantryIngredientsArrayAdapter: PantryIngredientsArrayAdapter
     private lateinit var btnAddIngredient: Button
@@ -35,9 +35,9 @@ class PantryFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
         super.onCreate(savedInstanceState)
         magicPantryDatabase = MagicPantryDatabase.getInstance(requireActivity())
         ingredientDAO = magicPantryDatabase.ingredientDAO
-        magicPantryRepository = MagicPantryRepository(ingredientDAO)
-        pantryViewModelFactory = ViewModelFactory(magicPantryRepository)
-        pantryViewModel = ViewModelProvider(this, pantryViewModelFactory)
+        ingredientRepository = IngredientRepository(ingredientDAO)
+        pantryIngredientViewModelFactory = IngredientViewModelFactory(ingredientRepository)
+        pantryViewModel = ViewModelProvider(this, pantryIngredientViewModelFactory)
             .get(PantryViewModel::class.java)
     }
 
@@ -76,7 +76,7 @@ class PantryFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
         }
 
         allIngredientsListView.setOnItemClickListener {
-            parent, view, position, id ->
+            _, _, _, id ->
 
             val intent = Intent(requireActivity(), PantryEditIngredientActivity::class.java)
             intent.putExtra(PANTRY_INGREDIENT_ID_KEY, id)
