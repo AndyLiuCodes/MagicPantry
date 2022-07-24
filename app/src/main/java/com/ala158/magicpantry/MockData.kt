@@ -1,5 +1,6 @@
 package com.ala158.magicpantry
 
+import com.ala158.magicpantry.arrayAdapter.ShoppingListItem
 import com.ala158.magicpantry.data.Ingredient
 
 object MockData {
@@ -14,5 +15,16 @@ object MockData {
     val lowIngredients = arrayListOf(
         Ingredient("Banana", 3, "unit", 0.50),
         Ingredient("Apple", 1, "unit", 0.20),
+    )
+
+    val shoppingList = arrayListOf(
+        ShoppingListItem("Bread", 100, "Units", false),
+        ShoppingListItem("Corn", 5, "Units", true),
+        ShoppingListItem("Flour", 10, "Kg", false),
+        ShoppingListItem("Milk", 2, "L", true),
+        ShoppingListItem("Orange Juice", 500, "ml", false),
+        ShoppingListItem("Apple", 500, "g", false),
+        ShoppingListItem("Potatos", 1, "Kg", false),
+        ShoppingListItem("Water", 1000, "ml", false)
     )
 }
