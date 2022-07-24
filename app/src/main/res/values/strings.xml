@@ -27,4 +27,8 @@
     <string name="review_save_button">Save</string>
     <string name="item_menu_manualinput_delete_title">Delete</string>
 
+    <!-- Shopping List Fragment -->
+    <string name="shop_list_add_button">Add</string>
+    <string name="shopping_list_header">Shopping List</string>
+
 </resources>
