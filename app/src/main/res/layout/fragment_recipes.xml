@@ -19,4 +19,48 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <Button
+            android:id="@+id/addIngredients"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add Ingredients" />
+
+        <Button
+            android:id="@+id/createRecipe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Create Recipe" />
+
+        <Button
+            android:id="@+id/updateRecipe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Update Recipe" />
+
+        <Button
+            android:id="@+id/addIngredientFromRecipe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add Ingredient to Recipe" />
+
+        <Button
+            android:id="@+id/deleteIngrdientFromRecipe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Delete Ingredient" />
+
+        <Button
+            android:id="@+id/deleteRecipe"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Delete Recipe" />
+
+    </LinearLayout>
+
 </androidx.constraintlayout.widget.ConstraintLayout>

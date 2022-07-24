@@ -2,8 +2,8 @@ package com.ala158.magicpantry.data
 
 import androidx.room.Entity
 
-@Entity(primaryKeys = ["ingredientId", "recipeId"])
+@Entity(tableName = "ingredient_recipe_cross_ref", primaryKeys = ["ingredientId", "recipeId"])
 data class IngredientRecipeCrossRef(
-    var ingredientId: Long,
-    var recipeId: Long,
+    val ingredientId: Long,
+    val recipeId: Long,
 )

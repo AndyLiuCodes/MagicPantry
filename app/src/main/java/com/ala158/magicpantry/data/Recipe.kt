@@ -19,8 +19,15 @@ data class Recipe(
     var timeToCook: Int = 0,
 
     @ColumnInfo(name = "description")
-    var description: Int = 0,
+    var description: String = "",
 
     @ColumnInfo(name = "num_missing_ingredients")
     var numMissingIngredients: Int = 0,
-)
+){
+    constructor(title: String, servings: Int, timeToCook: Int, description: String ) : this() {
+        this.title = title
+        this.servings = servings
+        this.timeToCook = timeToCook
+        this.description = description
+    }
+}

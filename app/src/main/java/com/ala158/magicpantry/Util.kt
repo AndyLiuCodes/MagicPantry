@@ -14,8 +14,11 @@ import androidx.lifecycle.ViewModelStoreOwner
 import com.ala158.magicpantry.database.MagicPantryDatabase
 import com.ala158.magicpantry.repository.IngredientRepository
 import com.ala158.magicpantry.repository.RecipeRepository
+import com.ala158.magicpantry.repository.ShoppingListItemRepository
 import com.ala158.magicpantry.viewModel.IngredientViewModelFactory
 import com.ala158.magicpantry.viewModel.RecipeViewModelFactory
+import com.ala158.magicpantry.viewModel.ShoppingListItemViewModel
+import com.ala158.magicpantry.viewModel.ShoppingListItemViewModelFactory
 import java.io.File
 import java.io.FileInputStream
 
@@ -58,7 +61,8 @@ object Util {
 
     // Create util methods by passing in viewModelClass and which of the
     // 4 data types it's derived from
-    enum class DataType {INGREDIENT, RECIPE, SHOPPING_LIST_ITEM, NOTIFICATION}
+    enum class DataType { INGREDIENT, RECIPE, SHOPPING_LIST_ITEM, NOTIFICATION }
+
     fun <T : ViewModel> createViewModel(
         context: Context,
         viewModelClass: Class<T>,
@@ -66,18 +70,29 @@ object Util {
     ): T {
         val database = MagicPantryDatabase.getInstance(context)
 
-        if (dataType == DataType.RECIPE) {
-            val recipeRepository = RecipeRepository(database.recipeDAO)
-            return ViewModelProvider(
-                context as ViewModelStoreOwner,
-                RecipeViewModelFactory(recipeRepository)
-            ).get(viewModelClass)
-        } else {
-            val ingredientRepository = IngredientRepository(database.ingredientDAO)
-            return ViewModelProvider(
-                context as ViewModelStoreOwner,
-                IngredientViewModelFactory(ingredientRepository)
-            ).get(viewModelClass)
+        when (dataType) {
+            DataType.INGREDIENT -> {
+                val ingredientRepository = IngredientRepository(database.ingredientDAO)
+                return ViewModelProvider(
+                    context as ViewModelStoreOwner,
+                    IngredientViewModelFactory(ingredientRepository)
+                ).get(viewModelClass)
+            }
+            DataType.SHOPPING_LIST_ITEM -> {
+                val shoppingListItemRepository =
+                    ShoppingListItemRepository(database.shoppingListItemDAO)
+                return ViewModelProvider(
+                    context as ViewModelStoreOwner,
+                    ShoppingListItemViewModelFactory(shoppingListItemRepository)
+                ).get(viewModelClass)
+            }
+            else -> {
+                val recipeRepository = RecipeRepository(database.recipeDAO)
+                return ViewModelProvider(
+                    context as ViewModelStoreOwner,
+                    RecipeViewModelFactory(recipeRepository)
+                ).get(viewModelClass)
+            }
         }
     }
 }

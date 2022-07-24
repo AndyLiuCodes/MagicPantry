@@ -6,13 +6,21 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import com.ala158.magicpantry.dao.IngredientDAO
 import com.ala158.magicpantry.dao.RecipeDAO
+import com.ala158.magicpantry.dao.ShoppingListItemDAO
 import com.ala158.magicpantry.data.Ingredient
+import com.ala158.magicpantry.data.IngredientRecipeCrossRef
 import com.ala158.magicpantry.data.Recipe
+import com.ala158.magicpantry.data.ShoppingListItem
 
-@Database(entities = [Ingredient::class, Recipe::class], version = 2)
+@Database(
+    entities = [Ingredient::class, Recipe::class, IngredientRecipeCrossRef::class, ShoppingListItem::class],
+    version = 6
+
+)
 abstract class MagicPantryDatabase : RoomDatabase() {
     abstract val ingredientDAO: IngredientDAO
     abstract val recipeDAO: RecipeDAO
+    abstract val shoppingListItemDAO: ShoppingListItemDAO
 
     companion object {
         @Volatile

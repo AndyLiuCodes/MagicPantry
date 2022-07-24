@@ -17,7 +17,4 @@ data class ShoppingListItem(
 
     @ColumnInfo(name = "is_item_bought")
     var isItemBought: Boolean = false,
-
-    @ColumnInfo(name = "related_ingredient_id")
-    var relatedIngredientId: Long = 0L
 )
