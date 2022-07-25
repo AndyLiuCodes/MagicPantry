@@ -7,13 +7,9 @@ import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.ala158.magicpantry.R
-import com.ala158.magicpantry.dao.IngredientDAO
-import com.ala158.magicpantry.database.MagicPantryDatabase
-import com.ala158.magicpantry.repository.MagicPantryRepository
+import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.ui.reviewingredients.ReviewIngredientsViewModel
-import com.ala158.magicpantry.viewModel.ViewModelFactory
 import com.google.android.material.textfield.TextInputLayout
 
 class ReviewIngredientsEditActivity : AppCompatActivity() {
@@ -25,12 +21,8 @@ class ReviewIngredientsEditActivity : AppCompatActivity() {
     private lateinit var btnCancel: Button
     private var position = -1
 
-    private lateinit var sharedPreferences : SharedPreferences
+    private lateinit var sharedPreferences: SharedPreferences
 
-    private lateinit var database: MagicPantryDatabase
-    private lateinit var ingredientDAO: IngredientDAO
-    private lateinit var repository: MagicPantryRepository
-    private lateinit var viewModelFactory: ViewModelFactory
     private lateinit var reviewIngredientsViewModel: ReviewIngredientsViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -41,7 +33,6 @@ class ReviewIngredientsEditActivity : AppCompatActivity() {
         btnCancel = findViewById(R.id.btn_cancel_pantry)
         nameEditText = findViewById(R.id.editName)
         amountEditText = findViewById(R.id.editAmount)
-        // FIXME Dropdown does not show all items of array
         unitEditDropdown = findViewById(R.id.editUnitDropdown)
         priceEditText = findViewById(R.id.editPrice)
 
@@ -51,15 +42,11 @@ class ReviewIngredientsEditActivity : AppCompatActivity() {
         val price = intent.getDoubleExtra("price", 0.0)
         val unit = intent.getStringExtra("unit")
 
-        database = MagicPantryDatabase.getInstance(this)
-        ingredientDAO = database.ingredientDAO
-        repository = MagicPantryRepository(ingredientDAO)
-        viewModelFactory = ViewModelFactory(repository)
-        reviewIngredientsViewModel =
-            ViewModelProvider(
-                this,
-                viewModelFactory
-            ).get(ReviewIngredientsViewModel::class.java)
+        reviewIngredientsViewModel = Util.createViewModel(
+            this,
+            ReviewIngredientsViewModel::class.java,
+            Util.DataType.INGREDIENT
+        )
 
         if (position >= 0) {
             nameEditText.editText?.setText(name, TextView.BufferType.EDITABLE)
@@ -69,7 +56,7 @@ class ReviewIngredientsEditActivity : AppCompatActivity() {
             )
             unitEditDropdown.setText(unit, TextView.BufferType.EDITABLE)
             priceEditText.editText?.setText(
-                String.format("%.2f",price),
+                String.format("%.2f", price),
                 TextView.BufferType.EDITABLE
             )
         }

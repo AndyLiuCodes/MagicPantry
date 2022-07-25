@@ -23,7 +23,7 @@
 
     <TextView
         android:id="@+id/ingredient_amount"
-        android:layout_width="60dp"
+        android:layout_width="65dp"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
         android:textSize="12sp"

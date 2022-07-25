@@ -8,10 +8,10 @@ import android.view.View
 import android.widget.*
 import androidx.lifecycle.ViewModelProvider
 import com.ala158.magicpantry.R
+import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.dao.IngredientDAO
 import com.ala158.magicpantry.database.MagicPantryDatabase
-import com.ala158.magicpantry.repository.MagicPantryRepository
-import com.ala158.magicpantry.viewModel.ViewModelFactory
+import com.ala158.magicpantry.ui.reviewingredients.ReviewIngredientsViewModel
 import com.google.android.material.textfield.TextInputEditText
 
 class ManualIngredientInputActivity : AppCompatActivity() {
@@ -26,8 +26,6 @@ class ManualIngredientInputActivity : AppCompatActivity() {
     private lateinit var priceTextField: TextInputEditText
     private lateinit var database: MagicPantryDatabase
     private lateinit var ingredientDAO: IngredientDAO
-    private lateinit var repository: MagicPantryRepository
-    private lateinit var viewModelFactory: ViewModelFactory
     private lateinit var manualIngredientsInputViewModel: ManualIngredientInputViewModel
     private var isIngredientNameValid = true
     private var isAmountValid = true
@@ -57,15 +55,11 @@ class ManualIngredientInputActivity : AppCompatActivity() {
         priceTextField = findViewById(R.id.manual_input_price)
         priceLabel = findViewById(R.id.manual_price_label)
 
-        database = MagicPantryDatabase.getInstance(this)
-        ingredientDAO = database.ingredientDAO
-        repository = MagicPantryRepository(ingredientDAO)
-        viewModelFactory = ViewModelFactory(repository)
-        manualIngredientsInputViewModel =
-            ViewModelProvider(
-                this,
-                viewModelFactory
-            ).get(ManualIngredientInputViewModel::class.java)
+        manualIngredientsInputViewModel = Util.createViewModel(
+            this,
+            ManualIngredientInputViewModel::class.java,
+            Util.DataType.INGREDIENT
+        )
 
         initTextWatchers()
 
@@ -192,20 +186,24 @@ class ManualIngredientInputActivity : AppCompatActivity() {
         var errorMsg = ""
 
         if (ingredientNameTextField.text.toString().trim() == "") {
-            errorMsg += "• The ingredient name cannot be empty \n"
+            errorMsg += "• The ingredient name cannot be empty"
             ingredientNameLabel.setTextColor(resources.getColor(R.color.mp_red, null))
             isIngredientNameValid = false
         }
 
         val amount = manualIngredientsInputViewModel.ingredient.value!!.getAmount()
         if (amountTextField.text.toString() == "" || amount == 0) {
-            errorMsg += "• The amount of ingredient cannot be empty or zero\n"
+            if (errorMsg != "")
+                errorMsg += "\n"
+            errorMsg += "• The amount of ingredient cannot be empty or zero"
             amountLabel.setTextColor(resources.getColor(R.color.mp_red, null))
             isAmountValid = false
         }
 
         if (priceTextField.text.toString() == ".") {
-            errorMsg += "• The price per unit is invalid \n"
+            if (errorMsg != "")
+                errorMsg += "\n"
+            errorMsg += "• The price per unit is invalid"
             priceLabel.setTextColor(resources.getColor(R.color.mp_red, null))
             isPricePerUnitValid = false
         }

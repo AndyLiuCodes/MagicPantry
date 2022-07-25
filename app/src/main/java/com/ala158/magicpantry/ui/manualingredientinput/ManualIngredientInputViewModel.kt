@@ -4,13 +4,12 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ala158.magicpantry.IngredientEntry
 import com.ala158.magicpantry.data.Ingredient
-import com.ala158.magicpantry.repository.MagicPantryRepository
+import com.ala158.magicpantry.repository.IngredientRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlin.coroutines.coroutineContext
 
-class ManualIngredientInputViewModel(private val repository: MagicPantryRepository) : ViewModel() {
+class ManualIngredientInputViewModel(private val repository: IngredientRepository) : ViewModel() {
     val ingredient = MutableLiveData<IngredientEntry>()
 
     init {
@@ -32,7 +31,7 @@ class ManualIngredientInputViewModel(private val repository: MagicPantryReposito
                     ingredient.value!!.getUnit(),
                     ingredient.value!!.getPrice() // Update the price with the newly entered in one
                 )
-                dbIngredient.id = existingtDbEntry.id
+                dbIngredient.ingredientId = existingtDbEntry.ingredientId
                 repository.updateIngredient(dbIngredient)
             } else {
                 // If not existing item exists, then add the ingredient to the db

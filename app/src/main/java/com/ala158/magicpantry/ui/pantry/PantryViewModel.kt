@@ -5,13 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import com.ala158.magicpantry.data.Ingredient
-import com.ala158.magicpantry.repository.MagicPantryRepository
+import com.ala158.magicpantry.repository.IngredientRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class PantryViewModel(private val repository: MagicPantryRepository) : ViewModel() {
+class PantryViewModel(private val repository: IngredientRepository) : ViewModel() {
     val allIngredientsLiveData: LiveData<List<Ingredient>> = repository.allIngredients.asLiveData()
     val lowStockIngredients = MutableLiveData<List<Ingredient>>()
 

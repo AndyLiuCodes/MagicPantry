@@ -10,11 +10,11 @@ import android.view.View
 import android.widget.*
 import androidx.lifecycle.ViewModelProvider
 import com.ala158.magicpantry.R
+import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.dao.IngredientDAO
 import com.ala158.magicpantry.database.MagicPantryDatabase
-import com.ala158.magicpantry.repository.MagicPantryRepository
+import com.ala158.magicpantry.ui.manualingredientinput.ManualIngredientInputViewModel
 import com.ala158.magicpantry.ui.pantry.PantryFragment
-import com.ala158.magicpantry.viewModel.ViewModelFactory
 import com.google.android.material.textfield.TextInputEditText
 
 class PantryEditIngredientActivity : AppCompatActivity() {
@@ -29,8 +29,6 @@ class PantryEditIngredientActivity : AppCompatActivity() {
     private lateinit var btnSave: Button
     private lateinit var magicPantryDatabase: MagicPantryDatabase
     private lateinit var ingredientDAO: IngredientDAO
-    private lateinit var repository: MagicPantryRepository
-    private lateinit var viewModelFactory: ViewModelFactory
     private lateinit var pantryEditIngredientViewModel: PantryEditIngredientViewModel
 
     private var ingredientId = -1L
@@ -117,14 +115,11 @@ class PantryEditIngredientActivity : AppCompatActivity() {
     }
 
     private fun initDatabaseAndViewModel() {
-        magicPantryDatabase = MagicPantryDatabase.getInstance(this)
-        ingredientDAO = magicPantryDatabase.ingredientDAO
-        repository = MagicPantryRepository(ingredientDAO)
-        viewModelFactory = ViewModelFactory(repository)
-        pantryEditIngredientViewModel = ViewModelProvider(
+        pantryEditIngredientViewModel = Util.createViewModel(
             this,
-            viewModelFactory
-        ).get(PantryEditIngredientViewModel::class.java)
+            PantryEditIngredientViewModel::class.java,
+            Util.DataType.INGREDIENT
+        )
     }
 
     private fun initTextWatchers() {

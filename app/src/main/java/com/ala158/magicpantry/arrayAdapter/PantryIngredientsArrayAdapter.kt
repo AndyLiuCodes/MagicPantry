@@ -28,7 +28,7 @@ class PantryIngredientsArrayAdapter(
     }
 
     override fun getItemId(position: Int): Long {
-        return ingredients[position].id
+        return ingredients[position].ingredientId
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
@@ -126,7 +126,7 @@ class PantryIngredientsArrayAdapter(
                 } else {
                     // Add item to database
                     val selectedUnit = unitDropdown.selectedItem
-                    println("IngredientID: ${ingredient.id} Amount: $amount, Unit: $selectedUnit")
+                    println("IngredientID: ${ingredient.ingredientId} Amount: $amount, Unit: $selectedUnit")
                 }
             }
         }

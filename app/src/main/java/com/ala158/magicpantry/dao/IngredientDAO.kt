@@ -10,7 +10,7 @@ interface IngredientDAO {
     @Insert
     suspend fun insertIngredient(ingredient: Ingredient)
 
-    @Query("SELECT * FROM ingredient where id = :key")
+    @Query("SELECT * FROM ingredient where ingredientId = :key")
     suspend fun getIngredientEntry(key: Long): Ingredient
 
     @Query("SELECT * FROM ingredient where name = :nameKey AND unit = :unitKey")
@@ -25,6 +25,6 @@ interface IngredientDAO {
     @Update
     suspend fun updateIngredient(ingredient: Ingredient)
 
-    @Query("DELETE FROM ingredient where id = :key")
+    @Query("DELETE FROM ingredient where ingredientId = :key")
     suspend fun deleteIngredientById(key: Long)
 }
