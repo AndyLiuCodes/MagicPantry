@@ -1,7 +1,6 @@
 package com.ala158.magicpantry.ui.shoppinglist
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +13,7 @@ import com.ala158.magicpantry.arrayAdapter.ShoppingListArrayAdapter
 
 class ShoppingListFragment : Fragment() {
     private lateinit var shoppingListItemViewModel: ShoppingListItemViewModel
+    private lateinit var ingredientViewModel: IngredientViewModel
     private lateinit var shoppingListListView: ListView
     private lateinit var shoppingListArrayAdapter: ShoppingListArrayAdapter
 
