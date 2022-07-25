@@ -12,13 +12,12 @@ import com.ala158.magicpantry.MockData
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.data.Ingredient
-import com.ala158.magicpantry.data.Recipe
 import com.ala158.magicpantry.data.RecipeWithIngredients
 import com.ala158.magicpantry.viewModel.IngredientViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModel
 
 class RecipesFragment : Fragment() {
-    private lateinit var recipesViewModel: RecipeViewModel
+    private lateinit var recipeViewModel: RecipeViewModel
     private lateinit var ingredientViewModel: IngredientViewModel
 
     private lateinit var recipes: List<RecipeWithIngredients>
@@ -36,7 +35,7 @@ class RecipesFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        recipesViewModel = Util.createViewModel(
+        recipeViewModel = Util.createViewModel(
             requireActivity(),
             RecipeViewModel::class.java,
             Util.DataType.RECIPE
@@ -57,7 +56,7 @@ class RecipesFragment : Fragment() {
         deleteRecipeButton = view.findViewById(R.id.deleteRecipe)
 
         val textView: TextView = view.findViewById(R.id.text_recipes)
-        recipesViewModel.text.observe(viewLifecycleOwner) {
+        recipeViewModel.text.observe(viewLifecycleOwner) {
             textView.text = it
         }
 
@@ -70,7 +69,7 @@ class RecipesFragment : Fragment() {
             ingredients = it
         }
 
-        recipesViewModel.allRecipes.observe(requireActivity()) {
+        recipeViewModel.allRecipes.observe(requireActivity()) {
             Log.d("Recipe", "onCreateView: Num: ${it.size} Recipe List: $it")
             recipes = it
         }
@@ -84,37 +83,37 @@ class RecipesFragment : Fragment() {
 
         createRecipeButton.setOnClickListener {
             Log.d("Recipe", "onCreateView: create")
-            recipesViewModel.insert(MockData.recipe)
+            recipeViewModel.insert(MockData.recipe)
             // ID's begin at 1 when query by ID
-            val recipeId = recipesViewModel.newRecipeId.value!! + 1
+            val recipeId = recipeViewModel.newRecipeId.value!! + 1
             Log.d("Recipe", "onCreateView: $recipeId")
-            recipesViewModel.insertCrossRef(recipeId, ingredients[0].ingredientId)
-            recipesViewModel.insertCrossRef(recipeId, ingredients[1].ingredientId)
+            recipeViewModel.insertCrossRef(recipeId, ingredients[0].ingredientId)
+            recipeViewModel.insertCrossRef(recipeId, ingredients[1].ingredientId)
         }
 
         updateRecipeButton.setOnClickListener {
             val recipe = recipes[0].recipe
             Log.d("Recipe", "onCreateView: Update $recipe")
             recipe.description = "New Description"
-            recipesViewModel.update(recipe)
+            recipeViewModel.update(recipe)
         }
 
         addIngredientButton.setOnClickListener {
             Log.d("Recipe", "onCreateView: add ingredient to recipe")
             val id = recipes[0].recipe.recipeId
-            recipesViewModel.insertCrossRef(id, ingredients[2].ingredientId)
+            recipeViewModel.insertCrossRef(id, ingredients[2].ingredientId)
         }
 
         deleteIngredientButton.setOnClickListener {
             Log.d("Recipe", "onCreateView: delete ingredient from recipe")
             val id = recipes[0].recipe.recipeId
-            recipesViewModel.deleteCrossRef(id, ingredients[2].ingredientId)
+            recipeViewModel.deleteCrossRef(id, ingredients[2].ingredientId)
         }
 
         deleteRecipeButton.setOnClickListener {
             Log.d("Recipe", "onCreateView: delete")
             val id = recipes[0].recipe.recipeId
-            recipesViewModel.deleteById(id)
+            recipeViewModel.deleteById(id)
         }
 
         return view

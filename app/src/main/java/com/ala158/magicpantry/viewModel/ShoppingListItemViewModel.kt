@@ -8,19 +8,15 @@ import com.ala158.magicpantry.data.ShoppingListItem
 import com.ala158.magicpantry.repository.ShoppingListItemRepository
 
 class ShoppingListItemViewModel(private val repository: ShoppingListItemRepository) : ViewModel() {
-    val allShoppingListItemLiveData: LiveData<List<ShoppingListItem>> =
+    val allShoppingListItemsLiveData: LiveData<List<ShoppingListItemAndIngredient>> =
         repository.allShoppingListItems.asLiveData()
-
-    fun getIngredients(key: Long): LiveData<ShoppingListItemAndIngredient> {
-        return repository.getIngredientAndShoppingListItem(key).asLiveData()
-    }
 
     fun insert(shoppingListItem: ShoppingListItem) {
         repository.insertShoppingListItem(shoppingListItem)
     }
 
-    fun delete(shoppingListItem: ShoppingListItem) {
-        repository.deleteShoppingListItem(shoppingListItem)
+    fun deleteById(key: Long) {
+        repository.deleteShoppingListItemById(key)
     }
 
     fun update(shoppingListItem: ShoppingListItem) {

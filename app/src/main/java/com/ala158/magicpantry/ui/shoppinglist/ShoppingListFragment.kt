@@ -1,6 +1,7 @@
 package com.ala158.magicpantry.ui.shoppinglist
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -12,7 +13,7 @@ import com.ala158.magicpantry.R
 import com.ala158.magicpantry.arrayAdapter.ShoppingListArrayAdapter
 
 class ShoppingListFragment : Fragment() {
-    private lateinit var shoppingListViewModel: ShoppingListViewModel
+    private lateinit var shoppingListItemViewModel: ShoppingListItemViewModel
     private lateinit var shoppingListListView: ListView
     private lateinit var shoppingListArrayAdapter: ShoppingListArrayAdapter
 
@@ -21,7 +22,18 @@ class ShoppingListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        shoppingListViewModel = ViewModelProvider(this).get(ShoppingListViewModel::class.java)
+
+        shoppingListItemViewModel = Util.createViewModel(
+            requireActivity(),
+            ShoppingListItemViewModel::class.java,
+            Util.DataType.SHOPPING_LIST_ITEM
+        )
+
+        ingredientViewModel = Util.createViewModel(
+            requireActivity(),
+            IngredientViewModel::class.java,
+            Util.DataType.INGREDIENT
+        )
 
         val view = inflater.inflate(R.layout.fragment_shopping_list, container, false)
         shoppingListListView = view.findViewById(R.id.listview_shopping_list_items)

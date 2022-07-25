@@ -9,7 +9,7 @@ import java.lang.IllegalArgumentException
 class ShoppingListItemViewModelFactory(private val repository: ShoppingListItemRepository) :
     ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(RecipeViewModel::class.java))
+        if (modelClass.isAssignableFrom(ShoppingListItemViewModel::class.java))
             return ShoppingListItemViewModel(repository) as T
         throw IllegalArgumentException("Unknown ViewModel class")
     }

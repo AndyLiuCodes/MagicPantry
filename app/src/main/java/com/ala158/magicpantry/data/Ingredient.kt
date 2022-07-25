@@ -26,9 +26,6 @@ data class Ingredient(
 
     @ColumnInfo(name = "notify_threshold")
     var notifyThreshold: Int = 0,
-
-    @ColumnInfo(name = "related_shopping_list_item_id")
-    var relatedShoppingListItemId: Long = 0L
 ) {
     constructor(name: String, amount: Int, unit: String, price: Double) : this() {
         this.name = name
