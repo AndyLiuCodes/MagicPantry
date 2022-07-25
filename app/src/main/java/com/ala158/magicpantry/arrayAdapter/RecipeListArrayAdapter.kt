@@ -36,10 +36,11 @@ class RecipeListArrayAdapter(private val context: Context, private var recipes:L
         cookingTimeView.text = "${currRecipe.recipe.timeToCook}"
         numOfServingsView.text ="${currRecipe.recipe.servings} servings"
         if(currRecipe.recipe.numMissingIngredients == 0){
-            enoughIngredientsImageView.setImageResource(R.drawable.ic_baseline_add_24)
+            enoughIngredientsImageView.setImageResource(R.drawable.ic_baseline_check_box_24)
             enoughIngredientsView.text = "Ready to cook!"
         }
         else{
+            enoughIngredientsImageView.setImageResource(R.drawable.low_stock)
             enoughIngredientsView.text = "Missing ${currRecipe.recipe.numMissingIngredients} ingredients"
         }
         return view

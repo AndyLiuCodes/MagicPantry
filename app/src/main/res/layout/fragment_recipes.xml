@@ -79,7 +79,7 @@
 
         <ListView
             android:id="@+id/listview_all_recipe"
-            android:layout_width="0dp"
+            android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:divider="@android:color/transparent"

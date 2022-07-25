@@ -11,95 +11,105 @@
     android:paddingBottom="5dp">
 
     <LinearLayout
-        android:layout_width="280dp"
-        android:layout_height="152dp"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
         android:layout_weight="1"
         android:gravity="center">
-
-        <ImageView
-            android:id="@+id/recipeImage"
-            android:layout_width="139dp"
-            android:layout_height="match_parent"
-            android:gravity="center"
-            app:srcCompat="@drawable/magic_pantry_app_logo"></ImageView>
-
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <TextView
-                android:id = "@+id/recipeName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:minHeight="48dp"
-                android:text="@string/recipe_name"
-                android:textSize="30sp"></TextView>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="36dp"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="5dp"
-                    android:paddingTop="5dp"
-                    android:paddingEnd="5dp"
-                    android:paddingBottom="5dp"
-                    app:srcCompat="@drawable/ic_baseline_access_time_24"></ImageView>
-
-                <TextView
-                    android:id = "@+id/CookingTime"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/cookingtime"></TextView>
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-                <ImageView
-                    android:layout_width="36dp"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="5dp"
-                    android:paddingTop="5dp"
-                    android:paddingEnd="5dp"
-                    android:paddingBottom="5dp"
-                    app:srcCompat="@drawable/ic_baseline_restaurant_24"></ImageView>
-
-                <TextView
-                    android:id = "@+id/NoOfServings"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="@string/noofservings"></TextView>
-            </LinearLayout>
-            <LinearLayout
-                android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/recipeImage"
+                android:layout_width="139dp"
                 android:layout_height="match_parent"
-                android:orientation="horizontal">
+                android:gravity="center"
+                app:srcCompat="@drawable/magic_pantry_app_logo"></ImageView>
 
-                <ImageView
-                    android:id="@+id/enoughIngredientsImage"
-                    android:layout_width="36dp"
-                    android:layout_height="wrap_content"
-                    android:paddingStart="5dp"
-                    android:paddingTop="5dp"
-                    android:paddingEnd="5dp"
-                    android:paddingBottom="5dp"
-                    app:srcCompat="@drawable/low_stock"></ImageView>
+            <LinearLayout
+                android:layout_width="264dp"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <TextView
-                    android:id = "@+id/EnoughIngredientsText"
+                    android:id="@+id/recipeName"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/enough_ingredients"></TextView>
+                    android:minHeight="48dp"
+                    android:text="@string/recipe_name"
+                    android:textColor="#000000"
+                    android:textSize="28sp"></TextView>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:paddingStart="5dp"
+                        android:paddingTop="5dp"
+                        android:paddingEnd="5dp"
+                        android:paddingBottom="5dp"
+                        app:srcCompat="@drawable/ic_baseline_access_time_24"></ImageView>
+
+                    <TextView
+                        android:id="@+id/CookingTime"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="5dp"
+                        android:text="@string/cookingtime"
+                        android:textColor="#000000"></TextView>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:paddingStart="5dp"
+                        android:paddingTop="5dp"
+                        android:paddingEnd="5dp"
+                        android:paddingBottom="5dp"
+                        app:srcCompat="@drawable/ic_baseline_restaurant_24"></ImageView>
+
+                    <TextView
+                        android:id="@+id/NoOfServings"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="5dp"
+                        android:text="@string/noofservings"
+                        android:textColor="#000000"></TextView>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:id="@+id/enoughIngredientsImage"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:paddingStart="5dp"
+                        android:paddingTop="5dp"
+                        android:paddingEnd="5dp"
+                        android:paddingBottom="5dp"
+                        app:srcCompat="@drawable/low_stock"></ImageView>
+
+                    <TextView
+                        android:id="@+id/EnoughIngredientsText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="5dp"
+                        android:text="@string/enough_ingredients"
+                        android:textColor="#000000"></TextView>
+                </LinearLayout>
             </LinearLayout>
         </LinearLayout>
-
     </LinearLayout>
 
 </LinearLayout>
