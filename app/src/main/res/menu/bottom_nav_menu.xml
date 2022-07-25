@@ -17,8 +17,8 @@
         android:title="@string/title_shopping_list" />
 
     <item
-        android:id="@+id/navigation_settings"
-        android:icon="@drawable/ic_gears_solid"
-        android:title="@string/title_settings" />
+        android:id="@+id/navigation_notifications"
+        android:icon="@drawable/ic_bell_solid"
+        android:title="@string/title_notifications" />
 
 </menu>

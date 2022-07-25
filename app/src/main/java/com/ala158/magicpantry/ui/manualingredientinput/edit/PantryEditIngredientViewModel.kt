@@ -4,14 +4,14 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ala158.magicpantry.IngredientEntry
 import com.ala158.magicpantry.data.Ingredient
-import com.ala158.magicpantry.repository.MagicPantryRepository
+import com.ala158.magicpantry.repository.IngredientRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class PantryEditIngredientViewModel(private val repository: MagicPantryRepository) : ViewModel() {
+class PantryEditIngredientViewModel(private val repository: IngredientRepository) : ViewModel() {
     val ingredientEntry = MutableLiveData<IngredientEntry>()
 
     fun getIngredientEntry(id: Long) {

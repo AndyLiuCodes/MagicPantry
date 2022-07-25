@@ -7,7 +7,7 @@ import androidx.room.PrimaryKey
 @Entity(tableName = "ingredient")
 data class Ingredient(
     @PrimaryKey(autoGenerate = true)
-    var id: Long = 0L,
+    var ingredientId: Long = 0L,
 
     @ColumnInfo(name = "name")
     var name: String = "",
@@ -20,6 +20,12 @@ data class Ingredient(
 
     @ColumnInfo(name = "price")
     var price: Double = 0.0,
+
+    @ColumnInfo(name = "is_notify")
+    var isNotify: Boolean = false,
+
+    @ColumnInfo(name = "notify_threshold")
+    var notifyThreshold: Int = 0,
 ) {
     constructor(name: String, amount: Int, unit: String, price: Double) : this() {
         this.name = name

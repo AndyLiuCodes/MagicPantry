@@ -8,7 +8,17 @@ import android.media.ExifInterface
 import android.net.Uri
 import android.os.Build
 import androidx.annotation.RequiresApi
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.ViewModelStoreOwner
+import com.ala158.magicpantry.database.MagicPantryDatabase
+import com.ala158.magicpantry.repository.IngredientRepository
+import com.ala158.magicpantry.repository.NotificationRepository
+import com.ala158.magicpantry.repository.RecipeRepository
+import com.ala158.magicpantry.repository.ShoppingListItemRepository
+import com.ala158.magicpantry.viewModel.*
 import java.io.File
+import java.io.FileInputStream
 
 object Util {
     // Obtained getBitmap() from Xing-Dong Yang in the code example
@@ -27,7 +37,8 @@ object Util {
     @RequiresApi(Build.VERSION_CODES.Q)
     fun getRotationAmount(imageFile: File): Float {
         try {
-            val ei = androidx.exifinterface.media.ExifInterface(imageFile)
+            val fileInputStream = FileInputStream(imageFile)
+            val ei = androidx.exifinterface.media.ExifInterface(fileInputStream)
             val imageOrientation =
                 ei.getAttributeInt(ExifInterface.TAG_ORIENTATION, ExifInterface.ORIENTATION_NORMAL)
             if (imageOrientation == ExifInterface.ORIENTATION_ROTATE_90) {
@@ -43,6 +54,50 @@ object Util {
             println(e)
             // If any issues occur with the viewing the Exif data, then no rotation will occur
             return 0f
+        }
+    }
+
+    // Create util methods by passing in viewModelClass and which of the
+    // 4 data types it's derived from
+    enum class DataType { INGREDIENT, RECIPE, SHOPPING_LIST_ITEM, NOTIFICATION }
+
+    fun <T : ViewModel> createViewModel(
+        context: Context,
+        viewModelClass: Class<T>,
+        dataType: DataType
+    ): T {
+        val database = MagicPantryDatabase.getInstance(context)
+
+        when (dataType) {
+            DataType.INGREDIENT -> {
+                val ingredientRepository = IngredientRepository(database.ingredientDAO)
+                return ViewModelProvider(
+                    context as ViewModelStoreOwner,
+                    IngredientViewModelFactory(ingredientRepository)
+                ).get(viewModelClass)
+            }
+            DataType.RECIPE -> {
+                val recipeRepository = RecipeRepository(database.recipeDAO)
+                return ViewModelProvider(
+                    context as ViewModelStoreOwner,
+                    RecipeViewModelFactory(recipeRepository)
+                ).get(viewModelClass)
+            }
+            DataType.SHOPPING_LIST_ITEM -> {
+                val shoppingListItemRepository =
+                    ShoppingListItemRepository(database.shoppingListItemDAO)
+                return ViewModelProvider(
+                    context as ViewModelStoreOwner,
+                    ShoppingListItemViewModelFactory(shoppingListItemRepository)
+                ).get(viewModelClass)
+            }
+            else -> {
+                val notificationRepository = NotificationRepository(database.notificationDAO)
+                return ViewModelProvider(
+                    context as ViewModelStoreOwner,
+                    NotificationViewModelFactory(notificationRepository)
+                ).get(viewModelClass)
+            }
         }
     }
 }
