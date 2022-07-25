@@ -30,6 +30,16 @@
     <!-- Shopping List Fragment -->
     <string name="shop_list_add_button">Add</string>
     <string name="shopping_list_header">Shopping List</string>
+
+    <!-- Recipe Fragment -->
     <string name="add_recipe">Add recipe</string>
+    <string name="filter_cookable_recipes">Filter Cookable Recipes</string>
+    <string name="all_recipe">All Recipe</string>
+    <string name="cookable_recipe">Cookable Recipes</string>
+    <string name="recipe_name">Recipe Name</string>
+    <string name="cookingtime">CookingTime</string>
+    <string name="noofservings">NoOfServings</string>
+    <string name="enough_ingredients">Enough Ingredients</string>
+
 
 </resources>

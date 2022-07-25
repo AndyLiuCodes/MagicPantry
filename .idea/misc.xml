@@ -23,8 +23,12 @@
         <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/drawable/ic_pen_to_square_solid.xml" value="0.1975" />
         <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/drawable/ic_plus_solid.xml" value="0.1975" />
         <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/drawable/rounded_bg_blue.xml" value="0.1975" />
+        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/drawable/rounded_bg_green.xml" value="0.3015" />
+        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/drawable/rounded_bg_grey.xml" value="0.3015" />
         <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/drawable/rounded_bg_red.xml" value="0.1975" />
         <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/drawable/rounded_bg_white.xml" value="0.1975" />
+        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/drawable/rounded_bg_yellow.xml" value="0.3015" />
+        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/activity_main.xml" value="0.3641304347826087" />
         <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/activity_manual_ingredient_input.xml" value="0.36231884057971014" />
         <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/activity_pantry_edit_ingredient.xml" value="0.36231884057971014" />
         <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/activity_receipt_scanner.xml" value="0.36231884057971014" />
@@ -35,6 +39,7 @@
         <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/list_item_edit_ingredient.xml" value="0.18958333333333333" />
         <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/list_item_pantry_ingredient.xml" value="0.5" />
         <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/list_item_recipe.xml" value="0.25" />
+        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/list_item_shopping_list.xml" value="0.3641304347826087" />
         <entry key="app/src/main/res/drawable/ic_dashboard_black_24dp.xml" value="0.4895" />
         <entry key="app/src/main/res/drawable/ic_pen_to_square_solid.xml" value="0.4895" />
         <entry key="app/src/main/res/drawable/rounded_bg.xml" value="0.4895" />

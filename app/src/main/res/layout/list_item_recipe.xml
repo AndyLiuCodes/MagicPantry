@@ -29,10 +29,11 @@
             android:orientation="vertical">
 
             <TextView
+                android:id = "@+id/recipeName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:minHeight="48dp"
-                android:text="Recipe Name"
+                android:text="@string/recipe_name"
                 android:textSize="30sp"></TextView>
 
             <LinearLayout
@@ -50,9 +51,10 @@
                     app:srcCompat="@drawable/ic_baseline_access_time_24"></ImageView>
 
                 <TextView
+                    android:id = "@+id/CookingTime"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="CookingTime"></TextView>
+                    android:text="@string/cookingtime"></TextView>
             </LinearLayout>
 
             <LinearLayout
@@ -70,9 +72,10 @@
                     app:srcCompat="@drawable/ic_baseline_restaurant_24"></ImageView>
 
                 <TextView
+                    android:id = "@+id/NoOfServings"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="NoOfServings"></TextView>
+                    android:text="@string/noofservings"></TextView>
             </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
@@ -90,9 +93,10 @@
                     app:srcCompat="@drawable/low_stock"></ImageView>
 
                 <TextView
+                    android:id = "@+id/EnoughIngredientsText"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="CanCook?"></TextView>
+                    android:text="@string/enough_ingredients"></TextView>
             </LinearLayout>
         </LinearLayout>
 
