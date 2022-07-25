@@ -88,10 +88,10 @@ class PantryFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
             startActivity(intent)
         }
 
-        btnScanReceipt.setOnClickListener {
-            val intent = Intent(activity, ReceiptScannerActivity::class.java)
-            startActivity(intent)
-        }
+//        btnScanReceipt.setOnClickListener {
+//            val intent = Intent(activity, ReceiptScannerActivity::class.java)
+//            startActivity(intent)
+//        }
 
         filterLowStockCheckbox.setOnCheckedChangeListener(this)
 

@@ -13,6 +13,9 @@ interface IngredientDAO {
     @Query("SELECT * FROM ingredient where id = :key")
     suspend fun getIngredientEntry(key: Long): Ingredient
 
+    @Query("SELECT * FROM ingredient where name = :nameKey AND unit = :unitKey")
+    suspend fun getIngredientEntryByNameAndUnit(nameKey: String, unitKey: String): Ingredient?
+
     @Query("SELECT * FROM ingredient")
     fun getAllIngredients(): Flow<List<Ingredient>>
 

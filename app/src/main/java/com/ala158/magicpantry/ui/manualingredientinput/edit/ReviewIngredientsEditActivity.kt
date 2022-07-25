@@ -102,5 +102,4 @@ class ReviewIngredientsEditActivity : AppCompatActivity() {
 //        val updatedIngredient = Ingredient(name, amount, unit, price)
 //        reviewIngredientsViewModel.updateIngredient(position, updatedIngredient)
     }
-
 }

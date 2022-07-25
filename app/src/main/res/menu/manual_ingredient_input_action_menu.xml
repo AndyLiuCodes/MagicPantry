@@ -4,5 +4,5 @@
     <item
         android:id="@+id/item_menu_manualinput_delete"
         android:title="@string/item_menu_manualinput_delete_title"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="always" />
 </menu>

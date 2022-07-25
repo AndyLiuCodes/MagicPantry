@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string-array name="simple_items">
+    <string-array name="unit_items">
         <item>kg</item>
         <item>g</item>
         <item>mL</item>

@@ -15,8 +15,16 @@
         <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/drawable/ic_plus_solid.xml" value="0.3065" />
         <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/drawable/rounded_bg_grey.xml" value="0.1" />
         <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/layout/activity_main.xml" value="0.1514360313315927" />
+        <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/layout/activity_manual_ingredient_input.xml" value="0.17604166666666668" />
+        <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/layout/activity_pantry_edit_ingredient.xml" value="0.27708333333333335" />
+        <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/layout/fragment_manual_ingredient_input.xml" value="0.17604166666666668" />
+        <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/layout/fragment_manual_ingredient_input_edit.xml" value="0.17604166666666668" />
+        <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/layout/fragment_review_ingredients.xml" value="0.27708333333333335" />
         <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/layout/fragment_shopping_list.xml" value="0.17249240121580547" />
+        <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/layout/list_item_pantry_ingredient.xml" value="0.25" />
         <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/layout/list_item_shopping_list.xml" value="0.22" />
+        <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/layout/spinner_item_unit_dropdown.xml" value="0.2296875" />
+        <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/menu/manual_ingredient_input_action_menu.xml" value="0.27708333333333335" />
         <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/activity_main.xml" value="0.19947916666666668" />
         <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/activity_receipt_scanner.xml" value="0.1" />
         <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/fragment_dashboard.xml" value="0.1" />
