@@ -13,12 +13,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import com.ala158.magicpantry.database.MagicPantryDatabase
 import com.ala158.magicpantry.repository.IngredientRepository
+import com.ala158.magicpantry.repository.NotificationRepository
 import com.ala158.magicpantry.repository.RecipeRepository
 import com.ala158.magicpantry.repository.ShoppingListItemRepository
-import com.ala158.magicpantry.viewModel.IngredientViewModelFactory
-import com.ala158.magicpantry.viewModel.RecipeViewModelFactory
-import com.ala158.magicpantry.viewModel.ShoppingListItemViewModel
-import com.ala158.magicpantry.viewModel.ShoppingListItemViewModelFactory
+import com.ala158.magicpantry.viewModel.*
 import java.io.File
 import java.io.FileInputStream
 
@@ -78,6 +76,13 @@ object Util {
                     IngredientViewModelFactory(ingredientRepository)
                 ).get(viewModelClass)
             }
+            DataType.RECIPE -> {
+                val recipeRepository = RecipeRepository(database.recipeDAO)
+                return ViewModelProvider(
+                    context as ViewModelStoreOwner,
+                    RecipeViewModelFactory(recipeRepository)
+                ).get(viewModelClass)
+            }
             DataType.SHOPPING_LIST_ITEM -> {
                 val shoppingListItemRepository =
                     ShoppingListItemRepository(database.shoppingListItemDAO)
@@ -87,10 +92,10 @@ object Util {
                 ).get(viewModelClass)
             }
             else -> {
-                val recipeRepository = RecipeRepository(database.recipeDAO)
+                val notificationRepository = NotificationRepository(database.notificationDAO)
                 return ViewModelProvider(
                     context as ViewModelStoreOwner,
-                    RecipeViewModelFactory(recipeRepository)
+                    NotificationViewModelFactory(notificationRepository)
                 ).get(viewModelClass)
             }
         }

@@ -4,6 +4,7 @@ import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
 
+// Many-to-Many Relationship REF: https://developer.android.com/training/data-storage/room/relationships
 data class NotificationWithIngredients(
     @Embedded val notification: Notification,
     @Relation(

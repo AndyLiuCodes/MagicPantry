@@ -27,9 +27,9 @@
         tools:layout="@layout/fragment_shopping_list" />
 
     <fragment
-        android:id="@+id/navigation_settings"
-        android:name="com.ala158.magicpantry.ui.settings.SettingsFragment"
-        tools:layout="@layout/fragment_settings" />
+        android:id="@+id/navigation_notifications"
+        android:name="com.ala158.magicpantry.ui.notifications.NotificationsFragment"
+        tools:layout="@layout/fragment_notifications" />
     <fragment
         android:id="@+id/navigation_manual_ingredient_input"
         android:name="com.ala158.magicpantry.ui.manualingredientinput.ManualIngredientInputFragment"

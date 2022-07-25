@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.PrimaryKey
 
+// 1-1 Relationship REF: https://stackoverflow.com/questions/48079168/room-database-with-one-to-one-relation:w
 @Entity(
     tableName = "shopping_list_item",
     foreignKeys = [ForeignKey(
