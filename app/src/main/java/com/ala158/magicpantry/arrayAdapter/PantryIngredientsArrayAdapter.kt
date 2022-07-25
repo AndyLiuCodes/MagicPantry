@@ -1,18 +1,22 @@
 package com.ala158.magicpantry.arrayAdapter
 
+import android.app.Activity
+import android.app.AlertDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.view.View
 import android.view.ViewGroup
-import android.widget.BaseAdapter
-import android.widget.ImageView
-import android.widget.TextView
+import android.widget.*
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.data.Ingredient
+import com.ala158.magicpantry.ui.manualingredientinput.ManualIngredientInputActivity
+import com.google.android.material.textfield.TextInputEditText
 import java.text.DecimalFormat
 
 class PantryIngredientsArrayAdapter(
     private val context: Context,
-    private var ingredients: List<Ingredient>
+    private var ingredients: List<Ingredient>,
+    private val activity: Activity
 ) : BaseAdapter() {
 
     override fun getCount(): Int {
@@ -28,11 +32,12 @@ class PantryIngredientsArrayAdapter(
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val view: View = View.inflate(context, R.layout.list_item_pantry_ingredient, null)
+        val view = View.inflate(context, R.layout.list_item_pantry_ingredient, null)
         val lowStockIconView = view.findViewById<ImageView>(R.id.pantry_low_stock_icon)
         val amountTextView = view.findViewById<TextView>(R.id.ingredient_amount)
         val ingredientNameTextView = view.findViewById<TextView>(R.id.ingredient_name)
         val ingredientPriceUnitTextView = view.findViewById<TextView>(R.id.ingredient_price_unit)
+        val addToShoppingListBtn = view.findViewById<Button>(R.id.ingredient_add_to_shopping_list_button)
 
         val ingredient = ingredients[position]
 
@@ -61,10 +66,78 @@ class PantryIngredientsArrayAdapter(
             lowStockIconView.visibility = View.VISIBLE
         }
 
+        addToShoppingListBtn.setOnClickListener {
+            showDialog(ingredient)
+        }
+
         return view
     }
 
     fun replace(newIngredients: List<Ingredient>) {
         ingredients = newIngredients.toList()
+    }
+
+    private fun showDialog(ingredient: Ingredient) {
+        // Open dialog to determine the amount of an item to purchase to the shopping list
+        val dialogView = activity.layoutInflater.inflate(
+            R.layout.dialog_add_to_shopping_list,
+            null
+        )
+        val unitDropdown = dialogView.findViewById<Spinner>(R.id.add_to_shopping_list_unit_dropdown)
+        val unitAdapter = ArrayAdapter.createFromResource(
+            activity,
+            R.array.unit_items,
+            R.layout.spinner_item_unit_dropdown
+        )
+        unitAdapter.setDropDownViewResource(R.layout.spinner_item_unit_dropdown)
+        unitDropdown.adapter = unitAdapter
+
+        // Default to the current unit
+        unitDropdown.setSelection(
+            ManualIngredientInputActivity.UNIT_DROPDOWN_MAPPING[ingredient.unit]!!
+        )
+
+        val dialogBuilder = AlertDialog.Builder(activity)
+        dialogBuilder.setView(dialogView)
+        dialogBuilder.setTitle(
+            String.format(
+                activity.resources.getString(R.string.dialog_add_to_shopping_list_title),
+                ingredient.name
+            )
+        )
+
+        dialogBuilder.setPositiveButton(R.string.dialog_add_button_text) {
+            dialog, which ->
+            if (which == DialogInterface.BUTTON_POSITIVE) {
+                val amountView = dialogView.findViewById<TextInputEditText>(R.id.add_to_shopping_list_amount)
+
+                var amount = 0
+
+                if( amountView.text.toString() != "")
+                    amount = amountView.text.toString().toInt()
+
+
+                if (amount == 0) {
+                    Toast.makeText(
+                        context,
+                        "No items were added to shopping list!",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } else {
+                    // Add item to database
+                    val selectedUnit = unitDropdown.selectedItem
+                    println("IngredientID: ${ingredient.id} Amount: $amount, Unit: $selectedUnit")
+                }
+            }
+        }
+        dialogBuilder.setNegativeButton(R.string.dialog_cancel_button_text) {
+            dialog, which ->
+            if (which == DialogInterface.BUTTON_NEGATIVE) {
+                dialog.dismiss()
+            }
+        }
+
+        val dialog = dialogBuilder.create()
+        dialog.show()
     }
 }

@@ -54,11 +54,11 @@
         android:textSize="12sp"
         android:focusable="false"
         android:clickable="false"
-        android:layout_toStartOf="@+id/ingredient_add_button"
+        android:layout_toStartOf="@+id/ingredient_add_to_shopping_list_button"
         android:layout_centerInParent="true" />
 
     <Button
-        android:id="@+id/ingredient_add_button"
+        android:id="@+id/ingredient_add_to_shopping_list_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:background="@android:color/transparent"
@@ -71,10 +71,7 @@
         app:iconSize="20sp"
         app:iconTint="#000000"
         android:focusable="false"
-        android:clickable="false"
         android:layout_alignParentEnd="true"
         android:layout_centerInParent="true"/>
-    <!--TODO Have to fix the button here, because if this is focusable and clickable, it will
-    prevent the user from pressing on the listview -->
 
 </RelativeLayout>

@@ -27,6 +27,11 @@
     <string name="review_save_button">Save</string>
     <string name="item_menu_manualinput_delete_title">Delete</string>
 
+    <!-- Add to Shopping List Dialog -->
+    <string name="dialog_add_to_shopping_list_title">How much \"%s\" do you want to add to your shopping list?</string>
+    <string name="dialog_add_button_text">Add</string>
+    <string name="dialog_cancel_button_text">Cancel</string>
+
     <!-- Shopping List Fragment -->
     <string name="shop_list_add_button">Add</string>
     <string name="shopping_list_header">Shopping List</string>
