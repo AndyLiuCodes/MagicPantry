@@ -30,5 +30,6 @@
     <!-- Shopping List Fragment -->
     <string name="shop_list_add_button">Add</string>
     <string name="shopping_list_header">Shopping List</string>
+    <string name="add_recipe">Add recipe</string>
 
 </resources>
