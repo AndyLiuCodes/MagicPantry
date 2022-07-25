@@ -9,10 +9,14 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.ala158.magicpantry.MockData
 import com.ala158.magicpantry.R
+import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.ShoppingListArrayAdapter
+import com.ala158.magicpantry.viewModel.IngredientViewModel
+import com.ala158.magicpantry.viewModel.ShoppingListItemViewModel
 
 class ShoppingListFragment : Fragment() {
-    private lateinit var shoppingListViewModel: ShoppingListViewModel
+    private lateinit var shoppingListItemViewModel: ShoppingListItemViewModel
+    private lateinit var ingredientViewModel: IngredientViewModel
     private lateinit var shoppingListListView: ListView
     private lateinit var shoppingListArrayAdapter: ShoppingListArrayAdapter
 
@@ -21,7 +25,18 @@ class ShoppingListFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        shoppingListViewModel = ViewModelProvider(this).get(ShoppingListViewModel::class.java)
+
+        shoppingListItemViewModel = Util.createViewModel(
+            requireActivity(),
+            ShoppingListItemViewModel::class.java,
+            Util.DataType.SHOPPING_LIST_ITEM
+        )
+
+        ingredientViewModel = Util.createViewModel(
+            requireActivity(),
+            IngredientViewModel::class.java,
+            Util.DataType.INGREDIENT
+        )
 
         val view = inflater.inflate(R.layout.fragment_shopping_list, container, false)
         shoppingListListView = view.findViewById(R.id.listview_shopping_list_items)

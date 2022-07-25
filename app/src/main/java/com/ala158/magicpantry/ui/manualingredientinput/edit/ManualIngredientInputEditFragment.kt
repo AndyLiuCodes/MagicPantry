@@ -1,24 +1,18 @@
 package com.ala158.magicpantry.ui.manualingredientinput.edit
 
 import android.os.Bundle
-import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
 import android.widget.Button
-import android.widget.EditText
 import android.widget.TextView
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.Fragment
 import androidx.navigation.findNavController
 import com.ala158.magicpantry.R
-import com.ala158.magicpantry.dao.IngredientDAO
+import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.data.Ingredient
-import com.ala158.magicpantry.database.MagicPantryDatabase
-import com.ala158.magicpantry.repository.MagicPantryRepository
 import com.ala158.magicpantry.ui.reviewingredients.ReviewIngredientsViewModel
-import com.ala158.magicpantry.viewModel.ViewModelFactory
 import com.google.android.material.textfield.TextInputLayout
 
 class ManualIngredientInputEditFragment : Fragment() {
@@ -30,10 +24,6 @@ class ManualIngredientInputEditFragment : Fragment() {
     private lateinit var btnCancel: Button
     private var position = -1
 
-    private lateinit var database: MagicPantryDatabase
-    private lateinit var ingredientDAO: IngredientDAO
-    private lateinit var repository: MagicPantryRepository
-    private lateinit var viewModelFactory: ViewModelFactory
     private lateinit var reviewIngredientsViewModel: ReviewIngredientsViewModel
 
     override fun onCreateView(
@@ -47,21 +37,16 @@ class ManualIngredientInputEditFragment : Fragment() {
         btnCancel = view.findViewById(R.id.btn_cancel_pantry)
         nameEditText = view.findViewById(R.id.editName)
         amountEditText = view.findViewById(R.id.editAmount)
-        // FIXME Dropdown does not show all items of array
         unitEditDropdown = view.findViewById(R.id.editUnitDropdown)
         priceEditText = view.findViewById(R.id.editPrice)
 
         position = arguments?.getInt("position")!!
 
-        database = MagicPantryDatabase.getInstance(requireActivity())
-        ingredientDAO = database.ingredientDAO
-        repository = MagicPantryRepository(ingredientDAO)
-        viewModelFactory = ViewModelFactory(repository)
-        reviewIngredientsViewModel =
-            ViewModelProvider(
-                requireActivity(),
-                viewModelFactory
-            ).get(ReviewIngredientsViewModel::class.java)
+        reviewIngredientsViewModel = Util.createViewModel(
+            requireActivity(),
+            ReviewIngredientsViewModel::class.java,
+            Util.DataType.INGREDIENT
+        )
 
         reviewIngredientsViewModel.ingredientList.observe(requireActivity()) {
             if (position >= 0) {
@@ -71,9 +56,9 @@ class ManualIngredientInputEditFragment : Fragment() {
                     ingredient.amount.toString(),
                     TextView.BufferType.EDITABLE
                 )
-                unitEditDropdown.setText(ingredient.unit,TextView.BufferType.EDITABLE)
+                unitEditDropdown.setText(ingredient.unit, TextView.BufferType.EDITABLE)
                 priceEditText.editText?.setText(
-                    String.format("%.2f",ingredient.price),
+                    String.format("%.2f", ingredient.price),
                     TextView.BufferType.EDITABLE
                 )
             }

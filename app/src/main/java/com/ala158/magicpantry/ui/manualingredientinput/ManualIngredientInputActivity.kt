@@ -1,17 +1,13 @@
 package com.ala158.magicpantry.ui.manualingredientinput
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.widget.AutoCompleteTextView
 import android.widget.Button
-import androidx.lifecycle.ViewModelProvider
+import androidx.appcompat.app.AppCompatActivity
 import com.ala158.magicpantry.R
-import com.ala158.magicpantry.dao.IngredientDAO
-import com.ala158.magicpantry.database.MagicPantryDatabase
-import com.ala158.magicpantry.repository.MagicPantryRepository
-import com.ala158.magicpantry.viewModel.ViewModelFactory
+import com.ala158.magicpantry.Util
 import com.google.android.material.textfield.TextInputEditText
 
 class ManualIngredientInputActivity : AppCompatActivity() {
@@ -21,10 +17,6 @@ class ManualIngredientInputActivity : AppCompatActivity() {
     private lateinit var amountTextField: TextInputEditText
     private lateinit var unitEditDropdown: AutoCompleteTextView
     private lateinit var priceTextField: TextInputEditText
-    private lateinit var database: MagicPantryDatabase
-    private lateinit var ingredientDAO: IngredientDAO
-    private lateinit var repository: MagicPantryRepository
-    private lateinit var viewModelFactory: ViewModelFactory
     private lateinit var manualIngredientsInputViewModel: ManualIngredientInputViewModel
 
 
@@ -38,15 +30,11 @@ class ManualIngredientInputActivity : AppCompatActivity() {
         unitEditDropdown = findViewById(R.id.manual_input_unit)
         priceTextField = findViewById(R.id.manual_input_price)
 
-        database = MagicPantryDatabase.getInstance(this)
-        ingredientDAO = database.ingredientDAO
-        repository = MagicPantryRepository(ingredientDAO)
-        viewModelFactory = ViewModelFactory(repository)
-        manualIngredientsInputViewModel =
-            ViewModelProvider(
-                this,
-                viewModelFactory
-            ).get(ManualIngredientInputViewModel::class.java)
+        manualIngredientsInputViewModel = Util.createViewModel(
+            this,
+            ManualIngredientInputViewModel::class.java,
+            Util.DataType.INGREDIENT
+        )
 
         initTextWatchers()
 
@@ -137,11 +125,11 @@ class ManualIngredientInputActivity : AppCompatActivity() {
 
     companion object {
         val UNIT_DROPDOWN_MAPPING = mapOf<String, Int>(
-            "kg"    to 0,
-            "g"     to 1,
-            "ml"    to 3,
-            "L"     to 4,
-            "unit"  to 5
+            "kg" to 0,
+            "g" to 1,
+            "ml" to 3,
+            "L" to 4,
+            "unit" to 5
         )
     }
 }

@@ -7,22 +7,8 @@ import android.widget.BaseAdapter
 import android.widget.CheckBox
 import android.widget.TextView
 import com.ala158.magicpantry.R
+import com.ala158.magicpantry.data.ShoppingListItem
 
-class ShoppingListItem {
-    var shoppingListItemId: Long = 0L
-    var name: String = ""
-    var amount: Int = 0
-    var unit: String = "units"
-    var isItemBought: Boolean = false
-    var relatedIngredientId: Long = 0L
-
-    constructor(newName: String, newAmount: Int, newUnit: String, newIsItemBought: Boolean) {
-        name = newName
-        amount = newAmount
-        unit = newUnit
-        isItemBought = newIsItemBought
-    }
-}
 
 class ShoppingListArrayAdapter(
             private val context: Context,
@@ -48,9 +34,9 @@ class ShoppingListArrayAdapter(
         val isBoughtCheckbox = view.findViewById<CheckBox>(R.id.shopping_list_checkbox_purchased)
 
         val shoppingListItem = shoppingList[position]
-        amountTextView.text = shoppingListItem.amount.toString()
-        unitTextView.text = shoppingListItem.unit
-        nameTextView.text = shoppingListItem.name
+        amountTextView.text = shoppingListItem.itemAmount.toString()
+        unitTextView.text = shoppingListItem.itemUnit
+        nameTextView.text = shoppingListItem.itemName
 
         isBoughtCheckbox.isChecked = shoppingListItem.isItemBought
 

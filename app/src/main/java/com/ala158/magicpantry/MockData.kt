@@ -1,7 +1,9 @@
 package com.ala158.magicpantry
 
-import com.ala158.magicpantry.arrayAdapter.ShoppingListItem
 import com.ala158.magicpantry.data.Ingredient
+import com.ala158.magicpantry.data.Notification
+import com.ala158.magicpantry.data.Recipe
+import com.ala158.magicpantry.data.ShoppingListItem
 
 object MockData {
     val ingredients = arrayListOf(
@@ -27,4 +29,26 @@ object MockData {
         ShoppingListItem("Potatos", 1, "Kg", false),
         ShoppingListItem("Water", 1000, "ml", false)
     )
+    val recipe = Recipe("French Toast", 2, 20, "Testing description")
+
+    val allIngredientsToastTest = arrayListOf(
+        Ingredient("Bread", 4, "unit", 0.50),
+        Ingredient("Milk", 2, "L", 1.00),
+        Ingredient("Cinnamon", 5, "g", 2.00),
+    )
+
+    val shoppingListItems = arrayListOf(
+        ShoppingListItem(
+            itemName = allIngredientsToastTest[0].name,
+            itemAmount = 10,
+            itemUnit = "unit"
+        ),
+        ShoppingListItem(
+            itemName = allIngredientsToastTest[1].name,
+            itemAmount = 1,
+            itemUnit = "L"
+        ),
+    )
+
+    val notification = Notification(description = "Running low on bread")
 }
