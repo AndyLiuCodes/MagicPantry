@@ -1,6 +1,5 @@
 package com.ala158.magicpantry
 
-import com.ala158.magicpantry.arrayAdapter.ShoppingListItem
 import com.ala158.magicpantry.data.Ingredient
 import com.ala158.magicpantry.data.Notification
 import com.ala158.magicpantry.data.Recipe

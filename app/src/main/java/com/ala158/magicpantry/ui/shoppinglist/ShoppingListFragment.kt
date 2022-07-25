@@ -9,7 +9,10 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import com.ala158.magicpantry.MockData
 import com.ala158.magicpantry.R
+import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.ShoppingListArrayAdapter
+import com.ala158.magicpantry.viewModel.IngredientViewModel
+import com.ala158.magicpantry.viewModel.ShoppingListItemViewModel
 
 class ShoppingListFragment : Fragment() {
     private lateinit var shoppingListItemViewModel: ShoppingListItemViewModel

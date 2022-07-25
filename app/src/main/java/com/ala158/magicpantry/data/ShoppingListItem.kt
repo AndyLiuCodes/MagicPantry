@@ -33,4 +33,11 @@ data class ShoppingListItem(
 
     @ColumnInfo(name = "related_ingredient_id")
     var relatedIngredientId: Long = 0L,
-)
+) {
+    constructor(name:String, amount: Int, unit: String, isItemBought: Boolean) : this() {
+        this.itemName = name
+        this.itemAmount = amount
+        this.itemUnit = unit
+        this.isItemBought = isItemBought
+    }
+}
