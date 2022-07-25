@@ -15,10 +15,10 @@
     <string name="checkbox_filter_low_stock_text">Filter Low Stock</string>
 
     <!-- Manual Ingredient Input Activity -->
-    <string name="manual_ingredient_name_label">Ingredient Name</string>
-    <string name="manual_amount_label">Amount</string>
+    <string name="manual_ingredient_name_label">Ingredient Name *</string>
+    <string name="manual_amount_label">Amount *</string>
     <string name="manual_unit_label">Unit</string>
-    <string name="manual_price_label">Price</string>
+    <string name="manual_price_label">Price per Unit</string>
     <string name="manual_add_item_btn">Add to Pantry</string>
     <string name="add_all_button_text">Add All</string>
     <string name="cancel_button_text">Cancel</string>
@@ -26,6 +26,11 @@
     <string name="review_finish_button">Finish</string>
     <string name="review_save_button">Save</string>
     <string name="item_menu_manualinput_delete_title">Delete</string>
+
+    <!-- Add to Shopping List Dialog -->
+    <string name="dialog_add_to_shopping_list_title">How much \"%s\" do you want to add to your shopping list?</string>
+    <string name="dialog_add_button_text">Add</string>
+    <string name="dialog_cancel_button_text">Cancel</string>
 
     <!-- Shopping List Fragment -->
     <string name="shop_list_add_button">Add</string>
