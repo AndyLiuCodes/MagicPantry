@@ -12,6 +12,9 @@ data class Recipe(
     @ColumnInfo(name = "title")
     var title: String = "",
 
+    @ColumnInfo(name = "image_uri")
+    var imageUri: String = "",
+
     @ColumnInfo(name = "servings")
     var servings: Int = 0,
 
