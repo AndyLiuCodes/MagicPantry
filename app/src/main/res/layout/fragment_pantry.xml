@@ -70,22 +70,23 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal"
                     android:layout_centerVertical="true"
+                    android:orientation="horizontal"
                     android:paddingTop="15dp">
 
                     <Space
                         android:layout_width="0dp"
                         android:layout_height="0dp"
                         android:layout_weight="15" />
+
                     <CheckBox
                         android:id="@+id/checkbox_filter_low_stock"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/checkbox_filter_low_stock_text"
                         android:layout_weight="1"
                         android:buttonTint="@color/mp_yellow"
-                        android:textColor="@color/white"/>
+                        android:text="@string/checkbox_filter_low_stock_text"
+                        android:textColor="@color/white" />
 
                 </LinearLayout>
 

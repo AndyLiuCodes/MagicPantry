@@ -31,6 +31,8 @@ object MockData {
     )
     val recipe = Recipe("French Toast", 2, 20, "Testing description")
 
+    val recipe2 = Recipe(title = "French Toast", servings = 2, timeToCook = 20, description = "Testing description", numMissingIngredients = 2)
+
     val allIngredientsToastTest = arrayListOf(
         Ingredient("Bread", 4, "unit", 0.50),
         Ingredient("Milk", 2, "L", 1.00),
