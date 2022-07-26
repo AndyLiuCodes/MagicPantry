@@ -14,6 +14,10 @@ class IngredientRepository(private val ingredientDAO: IngredientDAO) {
         return ingredientDAO.getIngredientEntry(id)
     }
 
+    suspend fun getIngredientByNameAndUnit(name: String, unit: String): Ingredient? {
+        return ingredientDAO.getIngredientEntryByNameAndUnit(name, unit)
+    }
+
     fun insertIngredient(ingredient: Ingredient) {
         CoroutineScope(IO).launch {
             ingredientDAO.insertIngredient(ingredient)

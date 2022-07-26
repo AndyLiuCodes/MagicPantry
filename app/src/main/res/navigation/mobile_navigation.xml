@@ -8,18 +8,12 @@
     <fragment
         android:id="@+id/navigation_pantry"
         android:name="com.ala158.magicpantry.ui.pantry.PantryFragment"
-        tools:layout="@layout/fragment_pantry" >
-        <action
-            android:id="@+id/action_navigation_pantry_to_navigation_manual_ingredient_input"
-            app:destination="@id/navigation_manual_ingredient_input"
-            app:enterAnim="@anim/nav_default_enter_anim"
-            app:exitAnim="@anim/nav_default_exit_anim" />
-    </fragment>
+        tools:layout="@layout/fragment_pantry" />
 
     <fragment
         android:id="@+id/navigation_recipes"
-        android:name="com.ala158.magicpantry.ui.recipes.RecipesFragment"
-        tools:layout="@layout/fragment_recipes" />
+        android:name="com.ala158.magicpantry.ui.reviewingredients.ReviewIngredientsFragment"
+        tools:layout="@layout/fragment_review_ingredients" />
 
     <fragment
         android:id="@+id/navigation_shopping_list"
@@ -30,10 +24,7 @@
         android:id="@+id/navigation_notifications"
         android:name="com.ala158.magicpantry.ui.notifications.NotificationsFragment"
         tools:layout="@layout/fragment_notifications" />
-    <fragment
-        android:id="@+id/navigation_manual_ingredient_input"
-        android:name="com.ala158.magicpantry.ui.manualingredientinput.ManualIngredientInputFragment"
-        tools:layout="@layout/fragment_manual_ingredient_input" />
+
     <fragment
         android:id="@+id/navigation_manual_ingredient_input_edit"
         android:name="com.ala158.magicpantry.ui.manualingredientinput.edit.ManualIngredientInputEditFragment" />

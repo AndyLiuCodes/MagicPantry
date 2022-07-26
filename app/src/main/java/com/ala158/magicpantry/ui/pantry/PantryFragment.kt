@@ -46,7 +46,7 @@ class PantryFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
         textViewPantryHeader = view.findViewById(R.id.header_pantry)
 
         pantryIngredientsArrayAdapter =
-            PantryIngredientsArrayAdapter(requireActivity(), ArrayList())
+            PantryIngredientsArrayAdapter(requireActivity(), ArrayList(), requireActivity())
         allIngredientsListView.adapter = pantryIngredientsArrayAdapter
 
         pantryViewModel.allIngredientsLiveData.observe(requireActivity()) {

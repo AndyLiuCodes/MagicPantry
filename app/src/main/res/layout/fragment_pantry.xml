@@ -46,8 +46,7 @@
                     app:cornerRadius="8dp"
                     app:icon="@drawable/ic_plus_solid"
                     app:iconGravity="textStart"
-                    android:layout_gravity="center_vertical"
-                    android:onClick="addIngredientManually"/>
+                    android:layout_gravity="center_vertical" />
 
             </LinearLayout>
 
@@ -61,7 +60,7 @@
                     android:layout_height="55dp"
                     android:layout_marginTop="15dp"
                     android:background="@drawable/rounded_bg_blue"
-                    android:paddingLeft="15dp"
+                    android:paddingStart="15dp"
                     android:text="@string/all_ingredients_header"
                     android:textColor="@color/white"
                     android:gravity="center_vertical"
@@ -95,10 +94,11 @@
             <ListView
                 android:id="@+id/listview_pantry_all_ingredients"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
+                android:layout_height="0dp"
                 android:divider="@android:color/transparent"
                 android:dividerHeight="10sp"
-                android:layout_weight="1"/>
+                android:layout_weight="1"
+                android:focusable="true"/>
 
         </LinearLayout>
 
