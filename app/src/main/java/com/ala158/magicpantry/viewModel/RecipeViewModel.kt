@@ -47,13 +47,17 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
     }
 
     fun updateCurrentCookable(){
+        CoroutineScope(Dispatchers.IO).launch {
             val cookableArrayList = ArrayList<RecipeWithIngredients>()
             for (currRecipe in allRecipes.value!!) {
                 if (currRecipe.recipe.numMissingIngredients == 0) {
                     cookableArrayList.add(currRecipe)
                 }
             }
-            cookableRecipes.value = cookableArrayList
+            withContext(Dispatchers.Main) {
+                cookableRecipes.value = cookableArrayList
+            }
+        }
     }
 
 }

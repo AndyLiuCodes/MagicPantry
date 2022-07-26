@@ -1,6 +1,7 @@
 package com.ala158.magicpantry.arrayAdapter
 
 import android.content.Context
+import android.net.Uri
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
@@ -8,6 +9,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.data.RecipeWithIngredients
+import java.net.URI
 
 class RecipeListArrayAdapter(private val context: Context, private var recipes:List<RecipeWithIngredients>):BaseAdapter() {
     override fun getCount(): Int {
@@ -32,8 +34,12 @@ class RecipeListArrayAdapter(private val context: Context, private var recipes:L
         val enoughIngredientsView = view.findViewById<TextView>(R.id.EnoughIngredientsText)
 
         val currRecipe = recipes[position]
+        if(currRecipe.recipe.imageUri != ""){
+            val uri = Uri.parse(currRecipe.recipe.imageUri)
+            recipeImageView.setImageURI(uri)
+        }
         recipeTitleView.text = "${currRecipe.recipe.title}"
-        cookingTimeView.text = "${currRecipe.recipe.timeToCook}"
+        cookingTimeView.text = "${currRecipe.recipe.timeToCook} minutes"
         numOfServingsView.text ="${currRecipe.recipe.servings} servings"
         if(currRecipe.recipe.numMissingIngredients == 0){
             enoughIngredientsImageView.setImageResource(R.drawable.ic_baseline_check_box_24)

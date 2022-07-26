@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:padding="15dp">
+            android:padding="10dp">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/add_recipe"
@@ -46,7 +46,7 @@
                 android:layout_marginTop="15dp"
                 android:background="@drawable/rounded_bg_blue"
                 android:gravity="center_vertical"
-                android:paddingLeft="15dp"
+                android:paddingStart="15dp"
                 android:text="@string/all_recipe"
                 android:textColor="@color/white"
                 android:textSize="20sp"

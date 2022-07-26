@@ -48,6 +48,7 @@ class RecipesFragment : Fragment(),CompoundButton.OnCheckedChangeListener{
         recipeHeader = view.findViewById(R.id.header_recipe)
 
         recipeViewModel.allRecipes.observe(viewLifecycleOwner) {
+            recipeViewModel.updateCurrentCookable()
             if(!currentCookableCheckBox.isChecked) {
                 recipeListArrayAdapter.replace(it)
                 recipeListArrayAdapter.notifyDataSetChanged()
@@ -64,7 +65,7 @@ class RecipesFragment : Fragment(),CompoundButton.OnCheckedChangeListener{
         ingredientViewModel.allIngredientsLiveData.observe(viewLifecycleOwner){
             //If a recipe gets changed i.e gets added/removed/restocked. It will proceed to update the
             //current cookable list in the viewModel
-            //recipeViewModel.updateCurrentCookable()
+            recipeViewModel.updateCurrentCookable()
         }
 
         recipeListView.setOnItemClickListener { _, _, _, id ->
@@ -74,6 +75,7 @@ class RecipesFragment : Fragment(),CompoundButton.OnCheckedChangeListener{
 
         addRecipeButton.setOnClickListener{
             recipeViewModel.insert(MockData.recipe)
+            recipeViewModel.insert(MockData.recipe2)
         }
 
         return view
@@ -81,11 +83,13 @@ class RecipesFragment : Fragment(),CompoundButton.OnCheckedChangeListener{
 
     override fun onCheckedChanged(buttonView: CompoundButton?, isChecked: Boolean) {
         if(currentCookableCheckBox.isChecked){
-            recipeViewModel.cookableRecipes.value?.let { recipeListArrayAdapter.replace(it) }
+            recipeListArrayAdapter.replace(recipeViewModel.cookableRecipes.value!!)
+            recipeListArrayAdapter.notifyDataSetChanged()
             setHeaderCookableRecipes()
         }
         else{
-            recipeViewModel.allRecipes.value?.let { recipeListArrayAdapter.replace(it) }
+            recipeListArrayAdapter.replace(recipeViewModel.allRecipes.value!!)
+            recipeListArrayAdapter.notifyDataSetChanged()
             setHeaderAllRecipes()
         }
     }
@@ -98,5 +102,6 @@ class RecipesFragment : Fragment(),CompoundButton.OnCheckedChangeListener{
     private fun setHeaderCookableRecipes() {
         recipeHeader.setBackgroundResource(R.drawable.rounded_bg_green)
         recipeHeader.setText(R.string.cookable_recipe)
+        recipeHeader.textSize = 18f
     }
 }
