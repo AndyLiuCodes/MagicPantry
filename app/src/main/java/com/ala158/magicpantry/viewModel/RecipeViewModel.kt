@@ -46,12 +46,14 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
         repository.deleteRecipeCrossRef(recipeId, ingredientId)
     }
 
-    fun updateCurrentCookable(){
+    fun updateCurrentCookable() {
         CoroutineScope(Dispatchers.IO).launch {
             val cookableArrayList = ArrayList<RecipeWithIngredients>()
-            for (currRecipe in allRecipes.value!!) {
-                if (currRecipe.recipe.numMissingIngredients == 0) {
-                    cookableArrayList.add(currRecipe)
+            if (allRecipes.value != null) {
+                for (currRecipe in allRecipes.value!!) {
+                    if (currRecipe.recipe.numMissingIngredients == 0) {
+                        cookableArrayList.add(currRecipe)
+                    }
                 }
             }
             withContext(Dispatchers.Main) {
