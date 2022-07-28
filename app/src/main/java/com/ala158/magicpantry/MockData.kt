@@ -1,9 +1,6 @@
 package com.ala158.magicpantry
 
-import com.ala158.magicpantry.data.Ingredient
-import com.ala158.magicpantry.data.Notification
-import com.ala158.magicpantry.data.Recipe
-import com.ala158.magicpantry.data.ShoppingListItem
+import com.ala158.magicpantry.data.*
 
 object MockData {
     val ingredients = arrayListOf(
@@ -31,7 +28,8 @@ object MockData {
     )
     val recipe = Recipe("French Toast", 2, 20, "Testing description")
 
-    val recipe2 = Recipe(title = "French Toast", servings = 2, timeToCook = 20, description = "Testing description", numMissingIngredients = 2)
+    val recipe2 = Recipe(title = "French Toast", servings = 2, timeToCook = 20, description = "Testing description", numMissingIngredients = 2, recipeId = 600)
+    val recipeIngredient = RecipeWithIngredients(recipe2,ingredients)
 
     val allIngredientsToastTest = arrayListOf(
         Ingredient("Bread", 4, "unit", 0.50),
