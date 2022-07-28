@@ -70,9 +70,14 @@ class RecipesFragment : Fragment(),CompoundButton.OnCheckedChangeListener{
             //current cookable list in the viewModel
         }
 
-        recipeListView.setOnItemClickListener { _, _, _, id ->
+        recipeListView.setOnItemClickListener { _, _, position, _ ->
             val intent = Intent(requireActivity(), SingleRecipeActivity::class.java)
-            intent.putExtra("RECIPE_KEY", id)
+            if(currentCookableCheckBox.isChecked){
+                intent.putExtra("RECIPE_KEY_COOKABLE", position)
+            }
+            else{
+                intent.putExtra("RECIPE_KEY", position)
+            }
             startActivity(intent)
         }
         currentCookableCheckBox.setOnCheckedChangeListener(this)
