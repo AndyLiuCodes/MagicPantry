@@ -20,134 +20,122 @@
             android:orientation="horizontal"
             android:padding="15dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:background="@color/white"
-                android:padding="15dp">
+            <TextView
+                android:id="@+id/singleRecipeName"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:gravity="center_vertical"
+                android:text="RecipeName"
+                android:textSize="30sp"></TextView>
 
-                <TextView
-                    android:id="@+id/singleRecipeName"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:gravity="center_vertical"
-                    android:text="RecipeName"
-                    android:textColor="@color/black"
-                    android:textSize="30sp"></TextView>
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="18" />
 
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_weight="18" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/edit_recipe_button"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_gravity="center_vertical"
-                    android:backgroundTint="@color/mp_yellow"
-                    android:gravity="right"
-                    app:cornerRadius="8dp"
-                    app:icon="@drawable/ic_baseline_edit_24"
-                    app:iconGravity="top"
-                    tools:ignore="SpeakableTextPresentCheck" />
-            </LinearLayout>
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/edit_recipe_button"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center_vertical"
+                android:backgroundTint="@color/mp_yellow"
+                android:gravity="right"
+                app:cornerRadius="8dp"
+                app:icon="@drawable/ic_baseline_edit_24"
+                app:iconGravity="top"
+                tools:ignore="SpeakableTextPresentCheck" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="@color/white"
             android:gravity="center"
             android:padding="15dp">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
+            <ImageView
+                android:id="@+id/recipeImage"
+                android:layout_width="139dp"
+                android:layout_height="match_parent"
+                android:gravity="center"
+                app:srcCompat="@drawable/magic_pantry_app_logo"></ImageView>
 
-                <ImageView
-                    android:id="@+id/recipeImage"
-                    android:layout_width="139dp"
-                    android:layout_height="match_parent"
-                    android:gravity="center"
-                    app:srcCompat="@drawable/magic_pantry_app_logo"></ImageView>
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
 
                 <LinearLayout
-                    android:layout_width="fill_parent"
+                    android:layout_width="223dp"
                     android:layout_height="wrap_content"
-                    android:orientation="vertical">
+                    android:orientation="horizontal">
 
-                    <LinearLayout
-                        android:layout_width="223dp"
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:paddingStart="5dp"
+                        android:paddingTop="5dp"
+                        android:paddingEnd="5dp"
+                        android:paddingBottom="5dp"
+                        app:srcCompat="@drawable/ic_baseline_access_time_24"></ImageView>
+
+                    <TextView
+                        android:id="@+id/CookingTime"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:paddingTop="5dp"
+                        android:text="@string/cookingtime">
+                    </TextView>
+                </LinearLayout>
 
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:paddingStart="5dp"
-                            android:paddingTop="5dp"
-                            android:paddingEnd="5dp"
-                            android:paddingBottom="5dp"
-                            app:srcCompat="@drawable/ic_baseline_access_time_24"></ImageView>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="horizontal">
 
-                        <TextView
-                            android:id="@+id/CookingTime"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:paddingTop="5dp"
-                            android:text="@string/cookingtime"
-                            android:textColor="#000000"></TextView>
-                    </LinearLayout>
+                    <ImageView
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:paddingStart="5dp"
+                        android:paddingTop="5dp"
+                        android:paddingEnd="5dp"
+                        android:paddingBottom="5dp"
+                        app:srcCompat="@drawable/ic_baseline_restaurant_24"></ImageView>
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
+                    <TextView
+                        android:id="@+id/NoOfServings"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:orientation="horizontal">
+                        android:paddingTop="5dp"
+                        android:text="@string/noofservings"></TextView>
+                </LinearLayout>
 
-                        <ImageView
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:paddingStart="5dp"
-                            android:paddingTop="5dp"
-                            android:paddingEnd="5dp"
-                            android:paddingBottom="5dp"
-                            app:srcCompat="@drawable/ic_baseline_restaurant_24"></ImageView>
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="horizontal">
 
-                        <TextView
-                            android:id="@+id/NoOfServings"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:paddingTop="5dp"
-                            android:text="@string/noofservings"
-                            android:textColor="#000000"></TextView>
-                    </LinearLayout>
+                    <ImageView
+                        android:id="@+id/enoughIngredientsImage"
+                        android:layout_width="30dp"
+                        android:layout_height="30dp"
+                        android:paddingStart="5dp"
+                        android:paddingTop="5dp"
+                        android:paddingEnd="5dp"
+                        android:paddingBottom="5dp"
+                        app:srcCompat="@drawable/low_stock">
 
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="match_parent"
-                        android:orientation="horizontal">
+                    </ImageView>
 
-                        <ImageView
-                            android:id="@+id/enoughIngredientsImage"
-                            android:layout_width="30dp"
-                            android:layout_height="30dp"
-                            android:paddingStart="5dp"
-                            android:paddingTop="5dp"
-                            android:paddingEnd="5dp"
-                            android:paddingBottom="5dp"
-                            app:srcCompat="@drawable/low_stock"></ImageView>
+                    <TextView
+                        android:id="@+id/EnoughIngredientsText"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:paddingTop="5dp"
+                        android:text="@string/enough_ingredients">
 
-                        <TextView
-                            android:id="@+id/EnoughIngredientsText"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:paddingTop="5dp"
-                            android:text="@string/enough_ingredients"
-                            android:textColor="#000000"></TextView>
-                    </LinearLayout>
+                    </TextView>
                 </LinearLayout>
             </LinearLayout>
 
@@ -160,86 +148,76 @@
             android:orientation="vertical"
             android:padding="15dp">
 
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:gravity="center_vertical"
+                android:text="Description"
+                android:textSize="18sp"></TextView>
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:background="@color/white"
-                android:orientation="vertical"
-                android:padding="15dp">
+                android:orientation="vertical">
 
 
                 <TextView
+                    android:id="@+id/recipe_description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:gravity="center_vertical"
-                    android:text="Description"
-                    android:textSize="24sp"
-                    android:textColor="@color/black"></TextView>
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
                     android:gravity="center_vertical"
                     android:text="DescriptionText"
-                    android:textSize="20sp"
-                    android:textColor="@color/black"></TextView>
+                    android:textSize="20sp"></TextView>
             </LinearLayout>
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:baselineAligned="false"
+            android:orientation="horizontal"
+            android:padding="15dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="15dp"
+                android:gravity="center_vertical"
+                android:text="Ingredient List"
+                android:textSize="15sp"></TextView>
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="20" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/add_ingredient_to_recipe_button"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:layout_gravity="center_vertical"
+                android:backgroundTint="@color/mp_yellow"
+                android:gravity="right"
+                app:cornerRadius="8dp"
+                app:icon="@drawable/ic_baseline_add_24"
+                app:iconGravity="top"
+                tools:ignore="SpeakableTextPresentCheck" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:background="@color/white"
             android:orientation="vertical">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:baselineAligned="false"
-                android:orientation="horizontal"
-                android:padding="15dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="15dp"
-                    android:gravity="center_vertical"
-                    android:text="Ingredients"
-                    android:textSize="24sp"
-                    android:textColor="@color/black"></TextView>
-
-                <Space
-                    android:layout_width="0dp"
-                    android:layout_height="0dp"
-                    android:layout_weight="20" />
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/add_ingredient_to_recipe_button"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    android:layout_gravity="center_vertical"
-                    android:backgroundTint="@color/mp_yellow"
-                    android:gravity="right"
-                    app:cornerRadius="8dp"
-                    app:icon="@drawable/ic_baseline_add_24"
-                    app:iconGravity="top"
-                    tools:ignore="SpeakableTextPresentCheck" />
-            </LinearLayout>
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <ListView
-                    android:id="@+id/listview_all_recipe_ingredients"
-                    android:layout_width="wrap_content"
-                    android:layout_height="479dp"
-                    android:layout_weight="1"
-                    android:divider="@android:color/transparent"
-                    android:dividerHeight="10sp"></ListView>
-            </LinearLayout>
+            <ListView
+                android:id="@+id/listview_all_recipe_ingredients"
+                android:layout_width="wrap_content"
+                android:layout_height="479dp"
+                android:layout_weight="1"
+                android:divider="@android:color/transparent"
+                android:dividerHeight="10sp"></ListView>
         </LinearLayout>
     </LinearLayout>
 
