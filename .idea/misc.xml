@@ -58,8 +58,18 @@
         <entry key="app/src/main/res/drawable/rounded_bg_white.xml" value="0.4895" />
         <entry key="app/src/main/res/drawable/rounded_bg_yellow.xml" value="0.4755" />
         <entry key="app/src/main/res/layout/activity_main.xml" value="0.5463541666666667" />
+        <entry key="app/src/main/res/layout/activity_pantry_edit_ingredient.xml" value="0.3234375" />
+        <entry key="app/src/main/res/layout/activity_receipt_scanner.xml" value="0.3234375" />
+        <entry key="app/src/main/res/layout/dialog_add_to_shopping_list.xml" value="0.3234375" />
+        <entry key="app/src/main/res/layout/fragment_manual_ingredient_input_edit.xml" value="0.3234375" />
+        <entry key="app/src/main/res/layout/fragment_notifications.xml" value="0.5463541666666667" />
         <entry key="app/src/main/res/layout/fragment_review_ingredients.xml" value="0.5463541666666667" />
+        <entry key="app/src/main/res/layout/fragment_shopping_list.xml" value="0.8544366899302094" />
+        <entry key="app/src/main/res/layout/list_item_edit_ingredient.xml" value="0.3234375" />
         <entry key="app/src/main/res/layout/list_item_ingredient.xml" value="0.75" />
+        <entry key="app/src/main/res/layout/list_item_notification.xml" value="0.67" />
+        <entry key="app/src/main/res/layout/list_item_pantry_ingredient.xml" value="0.67" />
+        <entry key="app/src/main/res/layout/list_item_recipe.xml" value="0.75" />
       </map>
     </option>
   </component>
