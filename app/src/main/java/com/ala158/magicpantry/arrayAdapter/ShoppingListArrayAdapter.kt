@@ -7,23 +7,23 @@ import android.widget.BaseAdapter
 import android.widget.CheckBox
 import android.widget.TextView
 import com.ala158.magicpantry.R
-import com.ala158.magicpantry.data.ShoppingListItem
+import com.ala158.magicpantry.data.ShoppingListItemAndIngredient
 
 
 class ShoppingListArrayAdapter(
             private val context: Context,
-            private var shoppingList: List<ShoppingListItem>) : BaseAdapter() {
+            private var shoppingListItemAndIngredient: List<ShoppingListItemAndIngredient>) : BaseAdapter() {
 
     override fun getCount(): Int {
-        return shoppingList.size
+        return shoppingListItemAndIngredient.size
     }
 
     override fun getItem(position: Int): Any {
-        return shoppingList[position]
+        return shoppingListItemAndIngredient[position].shoppingListItem
     }
 
     override fun getItemId(position: Int): Long {
-        return shoppingList[position].shoppingListItemId
+        return shoppingListItemAndIngredient[position].shoppingListItem.shoppingListItemId
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
@@ -33,7 +33,7 @@ class ShoppingListArrayAdapter(
         val nameTextView = view.findViewById<TextView>(R.id.shopping_list_item_name)
         val isBoughtCheckbox = view.findViewById<CheckBox>(R.id.shopping_list_checkbox_purchased)
 
-        val shoppingListItem = shoppingList[position]
+        val shoppingListItem = shoppingListItemAndIngredient[position].shoppingListItem
         amountTextView.text = shoppingListItem.itemAmount.toString()
         unitTextView.text = shoppingListItem.itemUnit
         nameTextView.text = shoppingListItem.itemName
@@ -43,7 +43,7 @@ class ShoppingListArrayAdapter(
         return view
     }
 
-    fun replace(newShoppingList: List<ShoppingListItem>) {
-        shoppingList = newShoppingList.toList()
+    fun replace(newShoppingListItemAndIngredient: List<ShoppingListItemAndIngredient>) {
+        shoppingListItemAndIngredient = newShoppingListItemAndIngredient
     }
 }

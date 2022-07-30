@@ -41,8 +41,13 @@ class ShoppingListFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_shopping_list, container, false)
         shoppingListListView = view.findViewById(R.id.listview_shopping_list_items)
 
-        shoppingListArrayAdapter = ShoppingListArrayAdapter(requireActivity(), MockData.shoppingList)
+        shoppingListArrayAdapter = ShoppingListArrayAdapter(requireActivity(), ArrayList())
         shoppingListListView.adapter = shoppingListArrayAdapter
+
+        shoppingListItemViewModel.allShoppingListItemsLiveData.observe(requireActivity()) {
+            shoppingListArrayAdapter.replace(it)
+            shoppingListArrayAdapter.notifyDataSetChanged()
+        }
 
         return view
     }

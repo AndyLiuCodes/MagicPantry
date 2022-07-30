@@ -11,6 +11,9 @@ interface ShoppingListItemDAO {
     @Query("SELECT * FROM shopping_list_item, ingredient WHERE related_ingredient_id = ingredientId")
     fun getAllShoppingListItems(): Flow<List<ShoppingListItemAndIngredient>>
 
+    @Query("SELECT * FROM shopping_list_item where item_name = :nameKey AND item_unit = :unitKey")
+    suspend fun getShoppingListItemWithNameAndUnit(nameKey: String, unitKey: String): ShoppingListItem?
+
     @Insert
     suspend fun insertShoppingListItem(item: ShoppingListItem)
 
