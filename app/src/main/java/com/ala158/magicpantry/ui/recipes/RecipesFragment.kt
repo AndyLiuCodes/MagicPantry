@@ -83,8 +83,7 @@ class RecipesFragment : Fragment(),CompoundButton.OnCheckedChangeListener{
         currentCookableCheckBox.setOnCheckedChangeListener(this)
 
         addRecipeButton.setOnClickListener{
-            recipeViewModel.insert(MockData.recipe)
-            recipeViewModel.insert(MockData.recipe2)
+           //Button to add recipe to recipe list
         }
 
         return view

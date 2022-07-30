@@ -29,7 +29,7 @@ object MockData {
     val recipe = Recipe("French Toast", 2, 20, "Testing description")
 
     val recipe2 = Recipe(title = "French Toast", servings = 2, timeToCook = 20, description = "Testing description", numMissingIngredients = 2, recipeId = 600)
-    val recipeIngredient = RecipeWithIngredients(recipe2,ingredients)
+    val recipeIngredient =  Ingredient(name = "Banana", amount = 1, unit = "unit", price = 0.20, ingredientId = 400)
 
     val allIngredientsToastTest = arrayListOf(
         Ingredient("Bread", 4, "unit", 0.50),

@@ -30,7 +30,7 @@ class RecipeIngredientArrayAdapter(private val context: Context, private var rec
         val alertSymbol: ImageView = view.findViewById<ImageView>(R.id.recipeIngredient_low_stock_icon)
         ingredientAmount.text = "${recipeIngredients[position].amount} ${recipeIngredients[position].unit}"
         ingredientName.text = "${recipeIngredients[position].name}"
-        val findIngredient = allIngredients.find {it.name == recipeIngredients[position].name}
+        val findIngredient = allIngredients.find {it.name.lowercase() == recipeIngredients[position].name.lowercase()}
         if (findIngredient != null) {
             if(findIngredient.amount < recipeIngredients[position].amount){
                 alertSymbol.visibility = View.VISIBLE

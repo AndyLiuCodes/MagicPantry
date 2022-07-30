@@ -49,6 +49,8 @@ class SingleRecipeActivity : AppCompatActivity() {
         numOfServingsView =findViewById(R.id.NoOfServings)
         isAbleToCookImageView = findViewById(R.id.enoughIngredientsImage)
         isAbleToCookTextView = findViewById(R.id.EnoughIngredientsText)
+        editRecipeButton = findViewById(R.id.edit_recipe_button)
+        addIngredientsButton = findViewById(R.id.add_ingredient_to_recipe_button)
 
         val id = intent.getIntExtra("RECIPE_KEY",-1)
         val id2 = intent.getIntExtra("RECIPE_KEY_COOKABLE",-1)
@@ -60,6 +62,7 @@ class SingleRecipeActivity : AppCompatActivity() {
             if(id != -1) {
                 var recipeWithIngredients: RecipeWithIngredients = it[id]
                 recipeName.text = recipeWithIngredients.recipe.title
+                recipeDescription.text = recipeWithIngredients.recipe.description
                 cookingTimeView.text = "${recipeWithIngredients.recipe.timeToCook}"
                 numOfServingsView.text = "${recipeWithIngredients.recipe.servings}"
                 if(recipeWithIngredients.recipe.numMissingIngredients == 0){
@@ -96,6 +99,14 @@ class SingleRecipeActivity : AppCompatActivity() {
         ingredientViewModel.allIngredientsLiveData.observe(this){
             recipeIngredientArrayAdapter.replaceAllIngredients(it)
             recipeIngredientArrayAdapter.notifyDataSetChanged()
+        }
+
+        editRecipeButton.setOnClickListener{
+
+        }
+
+        addIngredientsButton.setOnClickListener{
+
         }
     }
 }
