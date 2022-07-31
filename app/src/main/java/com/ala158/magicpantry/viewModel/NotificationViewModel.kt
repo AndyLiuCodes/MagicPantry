@@ -6,10 +6,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import com.ala158.magicpantry.data.Notification
 import com.ala158.magicpantry.data.NotificationWithIngredients
-import com.ala158.magicpantry.data.Recipe
-import com.ala158.magicpantry.data.RecipeWithIngredients
 import com.ala158.magicpantry.repository.NotificationRepository
-import com.ala158.magicpantry.repository.RecipeRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch

@@ -2,6 +2,7 @@ package com.ala158.magicpantry.repository
 
 import com.ala158.magicpantry.dao.IngredientDAO
 import com.ala158.magicpantry.data.Ingredient
+import com.ala158.magicpantry.data.IngredientWithRecipeItems
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.flow.Flow
@@ -10,12 +11,20 @@ import kotlinx.coroutines.launch
 class IngredientRepository(private val ingredientDAO: IngredientDAO) {
     val allIngredients: Flow<List<Ingredient>> = ingredientDAO.getAllIngredients()
 
+    suspend fun insertIngredientReturnId(ingredient: Ingredient): Long {
+        return ingredientDAO.insertIngredientReturnId(ingredient)
+    }
+
     suspend fun getIngredient(id: Long): Ingredient {
         return ingredientDAO.getIngredientEntry(id)
     }
 
     suspend fun getIngredientByNameAndUnit(name: String, unit: String): Ingredient? {
         return ingredientDAO.getIngredientEntryByNameAndUnit(name, unit)
+    }
+
+    fun getIngredientWithRecipeItemsById(key: Long): Flow<IngredientWithRecipeItems> {
+        return ingredientDAO.getIngredientWithRecipeItemsById(key)
     }
 
     fun insertIngredient(ingredient: Ingredient) {

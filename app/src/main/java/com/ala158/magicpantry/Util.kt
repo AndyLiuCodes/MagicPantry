@@ -12,10 +12,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.ViewModelStoreOwner
 import com.ala158.magicpantry.database.MagicPantryDatabase
-import com.ala158.magicpantry.repository.IngredientRepository
-import com.ala158.magicpantry.repository.NotificationRepository
-import com.ala158.magicpantry.repository.RecipeRepository
-import com.ala158.magicpantry.repository.ShoppingListItemRepository
+import com.ala158.magicpantry.repository.*
 import com.ala158.magicpantry.viewModel.*
 import java.io.File
 import java.io.FileInputStream
@@ -59,7 +56,7 @@ object Util {
 
     // Create util methods by passing in viewModelClass and which of the
     // 4 data types it's derived from
-    enum class DataType { INGREDIENT, RECIPE, SHOPPING_LIST_ITEM, NOTIFICATION }
+    enum class DataType { INGREDIENT, RECIPE, RECIPE_ITEM, SHOPPING_LIST_ITEM, NOTIFICATION }
 
     fun <T : ViewModel> createViewModel(
         context: Context,
@@ -81,6 +78,13 @@ object Util {
                 return ViewModelProvider(
                     context as ViewModelStoreOwner,
                     RecipeViewModelFactory(recipeRepository)
+                ).get(viewModelClass)
+            }
+            DataType.RECIPE_ITEM -> {
+                val recipeItemRepository = RecipeItemRepository(database.recipeItemDAO)
+                return ViewModelProvider(
+                    context as ViewModelStoreOwner,
+                    RecipeItemViewModelFactory(recipeItemRepository)
                 ).get(viewModelClass)
             }
             DataType.SHOPPING_LIST_ITEM -> {
