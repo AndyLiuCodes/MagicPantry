@@ -16,7 +16,7 @@
             android:gravity="center_horizontal">
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_add_recipe"
+                android:id="@+id/edit_recipe_btn_add_recipe"
                 android:layout_width="0dp"
                 android:layout_height="match_parent"
                 android:layout_weight="12"

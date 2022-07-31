@@ -1,10 +1,11 @@
 package com.ala158.magicpantry.ui.recipes
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.TextView
+import android.widget.Button
 import androidx.fragment.app.Fragment
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
@@ -33,9 +34,11 @@ class RecipesFragment : Fragment() {
 
         val view = inflater.inflate(R.layout.fragment_recipes, container, false)
 
-        val textView: TextView = view.findViewById(R.id.text_recipes)
-        recipeViewModel.text.observe(viewLifecycleOwner) {
-            textView.text = it
+        val button : Button = view.findViewById(R.id.edit_recipe_btn_add_recipe)
+
+        button.setOnClickListener {
+            val intent = Intent(requireContext(), AddRecipeActivity::class.java)
+            startActivity(intent)
         }
 
         return view

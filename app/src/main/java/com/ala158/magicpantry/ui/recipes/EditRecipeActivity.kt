@@ -15,6 +15,7 @@ import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
@@ -28,7 +29,7 @@ import com.ala158.magicpantry.viewModel.RecipeViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModelFactory
 import java.io.File
 
-class AddRecipeActivity : AppCompatActivity() {
+class EditRecipeActivity : AppCompatActivity() {
     private lateinit var imageUri: Uri
     private var bitmap: Bitmap? = null
 
@@ -59,6 +60,8 @@ class AddRecipeActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_recipe)
 
+        val pos = intent.getIntExtra("RecipeChosen", -1)
+
         //set up shared pref
         sharedPrefFile = getSharedPreferences("MySharedPrefs", Context.MODE_PRIVATE)
         val edit = sharedPrefFile.edit()
@@ -86,13 +89,19 @@ class AddRecipeActivity : AppCompatActivity() {
             //if not empty
             if (myList.isNotEmpty()) {
                 recipeArray = myList
+
+                imageView!!.setImageURI(recipeArray[pos].recipe.imageUri.toUri())
+                title.text = recipeArray[pos].recipe.title
+                cookTime.text = recipeArray[pos].recipe.timeToCook.toString()
+                servings.text = recipeArray[pos].recipe.servings.toString()
+                description.text = recipeArray[pos].recipe.description
             }
         }
 
         val adapter = AddIngredientToRecipeArrayAdapter(this, recipeArray)
         ingredients.adapter = adapter
 
-        ingredients.setOnItemClickListener() { parent: AdapterView<*>, _: View, position: Int, _: Long->
+        ingredients.setOnItemClickListener { parent: AdapterView<*>, _: View, position: Int, _: Long->
             println("debug: $parent")
         }
 

@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModelProvider
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.arrayAdapter.AddRecipeArrayAdapter
 import com.ala158.magicpantry.dao.RecipeDAO
-import com.ala158.magicpantry.data.Recipe
 import com.ala158.magicpantry.data.RecipeWithIngredients
 import com.ala158.magicpantry.database.MagicPantryDatabase
 import com.ala158.magicpantry.repository.RecipeRepository
@@ -58,7 +57,7 @@ class AddIngredientToRecipeActivity : AppCompatActivity() {
             println("debug: $parent")
         }
 
-        val saveIngredients = findViewById<Button>(R.id.btn_add_ingredient_to_recipe)
+        val saveIngredients = findViewById<Button>(R.id.edit_recipe_btn_add_ingredient_to_recipe)
         saveIngredients.setOnClickListener {
             //TODO: save ingredients
             updateDatabase()
@@ -68,10 +67,7 @@ class AddIngredientToRecipeActivity : AppCompatActivity() {
 
     //update database
     private fun updateDatabase() {
-        /*//get input type and activity type
-        val inputType = intent.getStringExtra("InputType")
-        val activityType = intent.getStringExtra("activityType")
-
+        /*
         //make an array of all data
         val items = arrayOf(inputType.toString(), activityType.toString(), "$time  $date", duration, dist, cals, heartRate, comment)
 

@@ -13,7 +13,7 @@
         android:padding="15dp">
 
         <TextView
-            android:id="@+id/header_add_recipe"
+            android:id="@+id/header_edit_recipe"
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:layout_marginTop="15dp"
