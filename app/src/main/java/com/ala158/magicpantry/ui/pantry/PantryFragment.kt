@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.os.Parcel
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -154,12 +155,11 @@ class PantryFragment : Fragment(),
                 } else {
                     // Add item to database
                     val shoppingListItem = ShoppingListItem(
-                        name,
                         amount,
-                        unit,
                         false
                     )
                     shoppingListItem.relatedIngredientId = id
+                    Log.d("PANTRY", "onPantryAddShoppingListDialogClick: shopping list item $shoppingListItem")
 
                     shoppingListItemRepository.insertShoppingListItemFromPantry(shoppingListItem)
 

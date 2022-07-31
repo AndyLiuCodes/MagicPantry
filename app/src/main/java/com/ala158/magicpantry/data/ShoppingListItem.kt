@@ -19,14 +19,8 @@ data class ShoppingListItem(
     @PrimaryKey(autoGenerate = true)
     var shoppingListItemId: Long = 0L,
 
-    @ColumnInfo(name = "item_name")
-    var itemName: String = "",
-
     @ColumnInfo(name = "item_amount")
     var itemAmount: Int = 0,
-
-    @ColumnInfo(name = "item_unit")
-    var itemUnit: String = "",
 
     @ColumnInfo(name = "is_item_bought")
     var isItemBought: Boolean = false,
@@ -34,10 +28,8 @@ data class ShoppingListItem(
     @ColumnInfo(name = "related_ingredient_id")
     var relatedIngredientId: Long = 0L,
 ) {
-    constructor(name:String, amount: Int, unit: String, isItemBought: Boolean) : this() {
-        this.itemName = name
+    constructor(amount: Int, isItemBought: Boolean) : this() {
         this.itemAmount = amount
-        this.itemUnit = unit
         this.isItemBought = isItemBought
     }
 }
