@@ -26,6 +26,10 @@ class ShoppingListItemViewModel(private val repository: ShoppingListItemReposito
         repository.deleteShoppingListItemById(key)
     }
 
+    fun deleteAlldeleteAllIsBoughtShoppingListItems() {
+        repository.deleteAllIsBoughtShoppingListItems()
+    }
+
     fun update(shoppingListItem: ShoppingListItem) {
         repository.updateShoppingListItem(shoppingListItem)
     }
