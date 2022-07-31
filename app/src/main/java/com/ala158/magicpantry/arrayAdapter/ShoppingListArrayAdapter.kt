@@ -40,9 +40,10 @@ class ShoppingListArrayAdapter(
         val isBoughtCheckbox = view.findViewById<CheckBox>(R.id.shopping_list_checkbox_purchased)
 
         val shoppingListItem = shoppingListItemAndIngredient[position].shoppingListItem
+        val ingredient = shoppingListItemAndIngredient[position].ingredient
         amountTextView.text = shoppingListItem.itemAmount.toString()
-        unitTextView.text = shoppingListItem.itemUnit
-        nameTextView.text = shoppingListItem.itemName
+        unitTextView.text = ingredient.unit
+        nameTextView.text = ingredient.name
 
         isBoughtCheckbox.isChecked = shoppingListItem.isItemBought
 

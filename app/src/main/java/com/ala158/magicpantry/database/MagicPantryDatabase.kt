@@ -11,7 +11,7 @@ import com.ala158.magicpantry.data.*
 
 @Database(
     entities = [Ingredient::class, Recipe::class, RecipeItem::class, RecipeItemRecipeCrossRef::class, ShoppingListItem::class, Notification::class, IngredientNotificationCrossRef::class],
-    version = 10
+    version = 11
 )
 @TypeConverters(Converters::class)
 abstract class MagicPantryDatabase : RoomDatabase() {
