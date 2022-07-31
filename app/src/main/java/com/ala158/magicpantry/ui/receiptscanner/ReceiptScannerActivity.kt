@@ -17,6 +17,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.ui.reviewingredients.ReviewIngredientsActivity
@@ -46,12 +47,10 @@ class ReceiptScannerActivity : AppCompatActivity() {
 
     private lateinit var cameraBtn: Button
     private lateinit var scanBtn: Button
-    private lateinit var reviewItemsBtn: Button
 
     private var imageToScan: File? = null
 
-    private var subTotalBlock: Text.TextBlock? = null
-    private lateinit var subTotalLine: Text.Line
+    private lateinit var receiptScannerViewModel: ReceiptScannerViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -67,7 +66,11 @@ class ReceiptScannerActivity : AppCompatActivity() {
         textView = findViewById(R.id.textview_receipt)
         cameraBtn = findViewById(R.id.cameraButton)
         scanBtn = findViewById(R.id.scanButton)
-        reviewItemsBtn = findViewById(R.id.btn_review_scanner_items)
+
+        receiptScannerViewModel = ViewModelProvider(this)[ReceiptScannerViewModel::class.java]
+        receiptScannerViewModel.userImage.observe(this) {
+            imageView!!.setImageBitmap(it)
+        }
 
         cameraBtn.setOnClickListener {
             val choices = arrayOf("Open Camera", "Select from Gallery")
@@ -111,14 +114,6 @@ class ReceiptScannerActivity : AppCompatActivity() {
             recognize()
         }
 
-        reviewItemsBtn.setOnClickListener {
-            val bundle = Bundle()
-            bundle.putStringArray("arrayList", filteredProducts.toTypedArray())
-            bundle.putStringArray("priceList", helperPrice.toTypedArray())
-            val intent = Intent(this, ReviewIngredientsActivity::class.java)
-            intent.putExtras(bundle)
-            startActivity(intent)
-        }
     }
 
     // recognizing text
@@ -135,7 +130,7 @@ class ReceiptScannerActivity : AppCompatActivity() {
                     // ...
                     textView.text = "Success"
                     success(visionText)
-//                    parseResults(visionText)
+//                  parseResults(visionText)
                 }
                 .addOnFailureListener {
                     // Task failed with an exception
@@ -145,7 +140,7 @@ class ReceiptScannerActivity : AppCompatActivity() {
         }
     }
 
-    private fun parseResults(result: Text) {
+    /*private fun parseResults(result: Text) {
         for (block in result.textBlocks) {
             val blockText = block.text
             val blockCornerPoints = block.cornerPoints
@@ -269,7 +264,7 @@ class ReceiptScannerActivity : AppCompatActivity() {
                 }
             }
         }
-    }
+    }*/
 
     // successfully processed image
     private fun success(result: Text) {
@@ -333,6 +328,13 @@ class ReceiptScannerActivity : AppCompatActivity() {
 
         textView.movementMethod = ScrollingMovementMethod()
         imageView!!.setImageBitmap(mutableBitmap)
+
+        val bundle = Bundle()
+        bundle.putStringArray("arrayList", filteredProducts.toTypedArray())
+        bundle.putStringArray("priceList", helperPrice.toTypedArray())
+        val intent = Intent(this, ReviewIngredientsActivity::class.java)
+        intent.putExtras(bundle)
+        startActivity(intent)
     }
 
     // add rect around text blocks
@@ -379,6 +381,8 @@ class ReceiptScannerActivity : AppCompatActivity() {
             imageView!!.setImageBitmap(myBitmap)
 
             bitmap = myBitmap
+
+            receiptScannerViewModel.userImage.value = bitmap
         }
 
         // if gallery selected, check request code
@@ -410,6 +414,7 @@ class ReceiptScannerActivity : AppCompatActivity() {
             imageView!!.setImageBitmap(myBitmap)
 
             bitmap = myBitmap
+            receiptScannerViewModel.userImage.value = bitmap
         }
     }
 
