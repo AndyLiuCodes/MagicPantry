@@ -7,6 +7,8 @@ import android.widget.BaseAdapter
 import android.widget.CheckBox
 import android.widget.TextView
 import com.ala158.magicpantry.R
+import com.ala158.magicpantry.data.Ingredient
+import com.ala158.magicpantry.data.ShoppingListItem
 import com.ala158.magicpantry.data.ShoppingListItemAndIngredient
 import com.ala158.magicpantry.repository.ShoppingListItemRepository
 import com.google.android.material.button.MaterialButton
@@ -15,8 +17,13 @@ import com.google.android.material.button.MaterialButton
 class ShoppingListArrayAdapter(
             private val context: Context,
             private var shoppingListItemAndIngredient: List<ShoppingListItemAndIngredient>,
-            private val shoppingListItemRepository: ShoppingListItemRepository
+            private val shoppingListItemRepository: ShoppingListItemRepository,
+            internal val onChangeShoppingItemAmountClickListener: OnChangeShoppingItemAmountClickListener
 ) : BaseAdapter() {
+
+    interface OnChangeShoppingItemAmountClickListener {
+        fun onChangeShoppingItemAmountClick(shoppingListItemAndIngredient: ShoppingListItemAndIngredient)
+    }
 
     override fun getCount(): Int {
         return shoppingListItemAndIngredient.size
@@ -54,6 +61,10 @@ class ShoppingListArrayAdapter(
 
         deleteButton.setOnClickListener() {
             shoppingListItemRepository.deleteShoppingListItemById(shoppingListItem.shoppingListItemId)
+        }
+
+        amountTextView.setOnClickListener() {
+            onChangeShoppingItemAmountClickListener.onChangeShoppingItemAmountClick(shoppingListItemAndIngredient[position])
         }
 
         return view

@@ -7,4 +7,18 @@
         <item>L</item>
         <item>unit</item>
     </string-array>
+    
+    <string-array name="unit_volume">
+        <item>mL</item>
+        <item>L</item>
+    </string-array>
+    
+    <string-array name="unit_mass">
+        <item>kg</item>
+        <item>g</item>
+    </string-array>
+
+    <string-array name="unit_unit">
+        <item>unit</item>
+    </string-array>
 </resources>

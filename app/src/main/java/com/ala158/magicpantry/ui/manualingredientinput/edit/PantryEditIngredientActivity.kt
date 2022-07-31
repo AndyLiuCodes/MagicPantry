@@ -46,10 +46,22 @@ class PantryEditIngredientActivity : AppCompatActivity() {
         initTextWatchers()
 
         pantryEditIngredientViewModel.ingredientEntry.observe(this) {
+            // Depending on what the ingredient's unit are, we limit what they can change the unit to
+            val unitAdapter = getAppropriateUnitAdapter(it.getUnit())
+            unitAdapter.setDropDownViewResource(R.layout.spinner_item_unit_dropdown)
+            unitDropdown.adapter = unitAdapter
+
             textInputEditIngredientName.setText(it.getName())
             textInputEditAmount.setText(it.getAmount().toString())
             // Had help from https://stackoverflow.com/a/57119977 for setting the dropdown value
-            unitDropdown.setSelection(UNIT_DROPDOWN_MAPPING[it.getUnit()]!!)
+            val dropdownMapping = getAppropriateDropdownMapping(it.getUnit())
+            unitDropdown.setSelection(dropdownMapping[it.getUnit()]!!)
+            if (it.getUnit() == "unit") {
+                // Disable the unit dropdown when the ingredient uses unit type "unit"
+                unitDropdown.isEnabled = false
+                unitDropdown.isClickable = false
+            }
+
             if (it.getPrice() != 0.0)
                 textInputEditPrice.setText(it.getPrice().toString())
         }
@@ -69,6 +81,42 @@ class PantryEditIngredientActivity : AppCompatActivity() {
                 finish()
             }
         }
+    }
+
+    private fun getAppropriateUnitAdapter(unit: String) : ArrayAdapter<CharSequence> {
+        if (unit == "kg" || unit == "g") {
+            return ArrayAdapter.createFromResource(
+                this,
+                R.array.unit_mass,
+                R.layout.spinner_item_unit_dropdown
+            )
+        }
+
+        if (unit == "L" || unit == "mL") {
+            return ArrayAdapter.createFromResource(
+                this,
+                R.array.unit_volume,
+                R.layout.spinner_item_unit_dropdown
+            )
+        }
+
+        return ArrayAdapter.createFromResource(
+            this,
+            R.array.unit_unit,
+            R.layout.spinner_item_unit_dropdown
+        )
+    }
+
+    private fun getAppropriateDropdownMapping(unit: String) : Map<String, Int> {
+        if (unit == "kg" || unit == "g") {
+            return UNIT_MASS_DROPDOWN_MAPPING
+        }
+
+        if (unit == "L" || unit == "mL") {
+            return UNIT_VOLUME_DROPDOWN_MAPPING
+        }
+
+        return UNIT_UNIT_DROPDOWN_MAPPING
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -96,16 +144,7 @@ class PantryEditIngredientActivity : AppCompatActivity() {
     private fun initViews() {
         textInputEditIngredientName = findViewById(R.id.pantry_edit_name)
         textInputEditAmount = findViewById(R.id.pantry_edit_amount)
-
-        val unitAdapter = ArrayAdapter.createFromResource(
-            this,
-            R.array.unit_items,
-            R.layout.spinner_item_unit_dropdown
-        )
-        unitAdapter.setDropDownViewResource(R.layout.spinner_item_unit_dropdown)
         unitDropdown = findViewById(R.id.pantry_edit_unit_dropdown)
-        unitDropdown.adapter = unitAdapter
-
         textInputEditPrice = findViewById(R.id.pantry_edit_price)
         ingredientNameLabel = findViewById(R.id.ingredient_edit_name_label)
         amountLabel = findViewById(R.id.ingredient_edit_amount_label)
@@ -258,6 +297,20 @@ class PantryEditIngredientActivity : AppCompatActivity() {
             "mL"    to 2,
             "L"     to 3,
             "unit"  to 4
+        )
+
+        val UNIT_VOLUME_DROPDOWN_MAPPING = mapOf<String, Int>(
+            "mL"    to 0,
+            "L"     to 1
+        )
+
+        val UNIT_MASS_DROPDOWN_MAPPING = mapOf<String, Int>(
+            "kg"    to 0,
+            "g"     to 1
+        )
+
+        val UNIT_UNIT_DROPDOWN_MAPPING = mapOf<String, Int>(
+            "unit"    to 0
         )
     }
 }
