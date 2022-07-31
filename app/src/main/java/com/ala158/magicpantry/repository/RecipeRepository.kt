@@ -15,15 +15,15 @@ class RecipeRepository(private val recipeDAO: RecipeDAO) {
         return recipeDAO.insertRecipe(recipe)
     }
 
-    fun insertRecipeCrossRef(recipeId: Long, recipeItemId: Long) {
-        CoroutineScope(Dispatchers.IO).launch {
-            recipeDAO.insertRecipeCrossRef(recipeId, recipeItemId)
-        }
-    }
-
     fun updateRecipe(recipe: Recipe) {
         CoroutineScope(Dispatchers.IO).launch {
             recipeDAO.updateRecipe(recipe)
+        }
+    }
+
+    fun deleteRecipe(recipe: Recipe) {
+        CoroutineScope(Dispatchers.IO).launch {
+            recipeDAO.deleteRecipe(recipe)
         }
     }
 
@@ -33,15 +33,5 @@ class RecipeRepository(private val recipeDAO: RecipeDAO) {
         }
     }
 
-    fun deleteAllRecipeCrossRef(recipeId: Long) {
-        CoroutineScope(Dispatchers.IO).launch {
-            recipeDAO.deleteAllRecipeCrossRefById(recipeId)
-        }
-    }
 
-    fun deleteRecipeCrossRef(recipeId: Long, recipeItemId: Long) {
-        CoroutineScope(Dispatchers.IO).launch {
-            recipeDAO.deleteRecipeCrossRefById(recipeId, recipeItemId)
-        }
-    }
 }

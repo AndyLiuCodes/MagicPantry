@@ -16,6 +16,9 @@ class RecipeItemViewModel(private val repository: RecipeItemRepository) : ViewMo
     private var _allRecipes: LiveData<List<RecipeItemWithRecipes>> = MutableLiveData()
     val allRecipes: LiveData<List<RecipeItemWithRecipes>> = _allRecipes
 
+    private val _newRecipeItemId = MutableLiveData(0L)
+    val newRecipeItemId: LiveData<Long> = _newRecipeItemId
+
     fun getRecipesByRecipeItemId(recipeItemId: Long) {
         CoroutineScope(Dispatchers.IO).launch {
             val recipes = repository.getRecipesByRecipeItemId(recipeItemId).asLiveData()
@@ -23,8 +26,8 @@ class RecipeItemViewModel(private val repository: RecipeItemRepository) : ViewMo
         }
     }
 
-    fun insert(recipeItem: RecipeItem) {
-        repository.insertRecipeItem(recipeItem)
+    fun insert(recipeItem: RecipeItem, recipeId: Long) {
+        repository.insertRecipeItemIntoRecipe(recipeItem, recipeId)
     }
 
     fun delete(recipeItem: RecipeItem) {

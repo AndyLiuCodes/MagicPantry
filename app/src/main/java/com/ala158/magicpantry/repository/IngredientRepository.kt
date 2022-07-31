@@ -11,6 +11,10 @@ import kotlinx.coroutines.launch
 class IngredientRepository(private val ingredientDAO: IngredientDAO) {
     val allIngredients: Flow<List<Ingredient>> = ingredientDAO.getAllIngredients()
 
+    suspend fun insertIngredientReturnId(ingredient: Ingredient): Long {
+        return ingredientDAO.insertIngredientReturnId(ingredient)
+    }
+
     suspend fun getIngredient(id: Long): Ingredient {
         return ingredientDAO.getIngredientEntry(id)
     }

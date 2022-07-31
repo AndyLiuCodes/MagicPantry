@@ -27,21 +27,12 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
         }
     }
 
-    fun insertCrossRef(recipeId: Long, ingredientId: Long) {
-        repository.insertRecipeCrossRef(recipeId, ingredientId)
-    }
-
     fun update(recipe: Recipe) {
         repository.updateRecipe(recipe)
     }
 
-    fun deleteById(key: Long) {
-        repository.deleteRecipeById(key)
-        repository.deleteAllRecipeCrossRef(key)
-    }
-
-    fun deleteCrossRef(recipeId: Long, ingredientId: Long) {
-        repository.deleteRecipeCrossRef(recipeId, ingredientId)
+    fun delete(recipe: Recipe) {
+        repository.deleteRecipe(recipe)
     }
 
     fun updateCurrentCookable() {

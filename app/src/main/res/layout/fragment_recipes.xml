@@ -77,13 +77,50 @@
 
         </RelativeLayout>
 
+        <Button
+            android:id="@+id/addIngredients"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="add ingredients" />
+
+        <Button
+            android:id="@+id/addRecipe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Add Recipe" />
+
+        <Button
+            android:id="@+id/updateRecipe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Update Recipe" />
+
+        <Button
+            android:id="@+id/updateItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Update RecipeItem of Recipe" />
+
+        <Button
+            android:id="@+id/deleteItem"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Delete RecipeItem from Recipe" />
+
+        <Button
+            android:id="@+id/deleteRecipe"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Delete Recipe" />
+
         <ListView
             android:id="@+id/listview_all_recipe"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_weight="1"
             android:divider="@android:color/transparent"
-            android:dividerHeight="10sp" />
+            android:dividerHeight="10sp"
+            android:visibility="gone" />
     </LinearLayout>
 
 </LinearLayout>

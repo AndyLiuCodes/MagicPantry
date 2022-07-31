@@ -14,9 +14,9 @@ class RecipeItemRepository(private val recipeItemDAO: RecipeItemDAO) {
         return recipeItemDAO.getRecipeItemWithRecipes(recipeItemId)
     }
 
-    fun insertRecipeItem(recipeItem: RecipeItem) {
+    fun insertRecipeItemIntoRecipe(recipeItem: RecipeItem, recipeId: Long) {
         CoroutineScope(Dispatchers.IO).launch {
-            recipeItemDAO.insertRecipeItem(recipeItem)
+            recipeItemDAO.insertRecipeItemIntoRecipe(recipeItem, recipeId)
         }
     }
 
@@ -29,6 +29,18 @@ class RecipeItemRepository(private val recipeItemDAO: RecipeItemDAO) {
     fun updateRecipeItem(recipeItem: RecipeItem) {
         CoroutineScope(Dispatchers.IO).launch {
             recipeItemDAO.updateRecipeItem(recipeItem)
+        }
+    }
+
+    fun deleteAllRecipeCrossRef(recipeId: Long) {
+        CoroutineScope(Dispatchers.IO).launch {
+            recipeItemDAO.deleteAllRecipeCrossRefById(recipeId)
+        }
+    }
+
+    fun deleteRecipeCrossRef(recipeId: Long, recipeItemId: Long) {
+        CoroutineScope(Dispatchers.IO).launch {
+            recipeItemDAO.deleteRecipeCrossRefById(recipeId, recipeItemId)
         }
     }
 }

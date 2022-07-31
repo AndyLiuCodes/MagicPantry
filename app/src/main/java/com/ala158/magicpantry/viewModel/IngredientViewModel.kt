@@ -18,6 +18,16 @@ class IngredientViewModel(private val repository: IngredientRepository) : ViewMo
     private var _ingredientWithRecipeItems: LiveData<IngredientWithRecipeItems> = MutableLiveData()
     val ingredientWithRecipeItems: LiveData<IngredientWithRecipeItems> = _ingredientWithRecipeItems
 
+    private val _newIngredientId = MutableLiveData(0L)
+    val newIngredientId: LiveData<Long> = _newIngredientId
+
+    fun insertReturnId(ingredient: Ingredient) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val id = repository.insertIngredientReturnId(ingredient)
+            _newIngredientId.postValue(id)
+        }
+    }
+
     fun findIngredientWithRecipeItemsById(key: Long) {
         CoroutineScope(Dispatchers.IO).launch {
             val ingredient = repository.getIngredientWithRecipeItemsById(key).asLiveData()

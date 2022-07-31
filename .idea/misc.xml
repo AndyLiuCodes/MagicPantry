@@ -55,6 +55,7 @@
         <entry key="app/src/main/res/layout/dialog_add_to_shopping_list.xml" value="0.3234375" />
         <entry key="app/src/main/res/layout/fragment_manual_ingredient_input_edit.xml" value="0.3234375" />
         <entry key="app/src/main/res/layout/fragment_notifications.xml" value="0.5463541666666667" />
+        <entry key="app/src/main/res/layout/fragment_recipes.xml" value="0.5463541666666667" />
         <entry key="app/src/main/res/layout/fragment_review_ingredients.xml" value="0.5463541666666667" />
         <entry key="app/src/main/res/layout/fragment_shopping_list.xml" value="0.8544366899302094" />
         <entry key="app/src/main/res/layout/list_item_edit_ingredient.xml" value="0.3234375" />

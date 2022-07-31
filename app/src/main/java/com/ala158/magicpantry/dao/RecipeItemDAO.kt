@@ -12,13 +12,30 @@ interface RecipeItemDAO {
     @Query("SELECT * FROM recipe_item WHERE recipeItemId = :recipeItemId")
     fun getRecipeItemWithRecipes(recipeItemId: Long): Flow<List<RecipeItemWithRecipes>>
 
+    @Transaction
+    suspend fun insertRecipeItemIntoRecipe(recipeItem: RecipeItem, recipeId: Long) {
+        val recipeItemId = insertRecipeItem(recipeItem)
+        insertRecipeCrossRef(recipeId, recipeItemId)
+    }
+
     @Insert
-    fun insertRecipeItem(recipeItem: RecipeItem)
+    suspend fun insertRecipeItem(recipeItem: RecipeItem): Long
+
+    // Adding to the recipe item list
+    @Query("INSERT INTO recipe_item_recipe_cross_ref (recipeId, recipeItemId) VALUES (:recipeId, :recipeItemId)")
+    suspend fun insertRecipeCrossRef(recipeId: Long, recipeItemId: Long)
 
     @Delete
-    fun deleteRecipeItem(recipeItem: RecipeItem)
+    suspend fun deleteRecipeItem(recipeItem: RecipeItem)
 
     @Update
-    fun updateRecipeItem(recipeItem: RecipeItem)
+    suspend fun updateRecipeItem(recipeItem: RecipeItem)
 
+    // Deleting all recipe items from a recipe
+    @Query("DELETE FROM recipe_item_recipe_cross_ref WHERE recipeId = :key")
+    suspend fun deleteAllRecipeCrossRefById(key: Long)
+
+    // Deleting from the recipe item list
+    @Query("DELETE FROM recipe_item_recipe_cross_ref WHERE recipeId = :recipeId AND recipeItemId = :recipeItemId")
+    suspend fun deleteRecipeCrossRefById(recipeId: Long, recipeItemId: Long)
 }
