@@ -23,4 +23,7 @@ interface ShoppingListItemDAO {
     @Query("DELETE FROM shopping_list_item where shoppingListItemId = :key")
     suspend fun deleteShoppingListItemById(key: Long)
 
+    @Query("DELETE FROM shopping_list_item where is_item_bought = 1")
+    suspend fun deleteAllIsBoughtShoppingListItems()
+
 }

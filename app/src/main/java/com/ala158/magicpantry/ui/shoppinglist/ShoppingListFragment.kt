@@ -6,11 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ListView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import com.ala158.magicpantry.MockData
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.ShoppingListArrayAdapter
+import com.ala158.magicpantry.database.MagicPantryDatabase
+import com.ala158.magicpantry.repository.ShoppingListItemRepository
 import com.ala158.magicpantry.viewModel.IngredientViewModel
 import com.ala158.magicpantry.viewModel.ShoppingListItemViewModel
 
@@ -19,12 +19,17 @@ class ShoppingListFragment : Fragment() {
     private lateinit var ingredientViewModel: IngredientViewModel
     private lateinit var shoppingListListView: ListView
     private lateinit var shoppingListArrayAdapter: ShoppingListArrayAdapter
+    private lateinit var database: MagicPantryDatabase
+    private lateinit var shoppingListItemRepository: ShoppingListItemRepository
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+
+        database = MagicPantryDatabase.getInstance(requireActivity())
+        shoppingListItemRepository = ShoppingListItemRepository(database.shoppingListItemDAO)
 
         shoppingListItemViewModel = Util.createViewModel(
             requireActivity(),
@@ -41,7 +46,9 @@ class ShoppingListFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_shopping_list, container, false)
         shoppingListListView = view.findViewById(R.id.listview_shopping_list_items)
 
-        shoppingListArrayAdapter = ShoppingListArrayAdapter(requireActivity(), ArrayList())
+        shoppingListArrayAdapter = ShoppingListArrayAdapter(
+            requireActivity(), ArrayList(), shoppingListItemRepository
+        )
         shoppingListListView.adapter = shoppingListArrayAdapter
 
         shoppingListItemViewModel.allShoppingListItemsLiveData.observe(requireActivity()) {
@@ -50,5 +57,11 @@ class ShoppingListFragment : Fragment() {
         }
 
         return view
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        if (!requireActivity().isChangingConfigurations)
+            shoppingListItemViewModel.deleteAlldeleteAllIsBoughtShoppingListItems()
     }
 }

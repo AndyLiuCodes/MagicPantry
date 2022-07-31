@@ -4,15 +4,20 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
+import android.widget.Button
 import android.widget.CheckBox
 import android.widget.TextView
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.data.ShoppingListItemAndIngredient
+import com.ala158.magicpantry.repository.ShoppingListItemRepository
+import com.google.android.material.button.MaterialButton
 
 
 class ShoppingListArrayAdapter(
             private val context: Context,
-            private var shoppingListItemAndIngredient: List<ShoppingListItemAndIngredient>) : BaseAdapter() {
+            private var shoppingListItemAndIngredient: List<ShoppingListItemAndIngredient>,
+            private val shoppingListItemRepository: ShoppingListItemRepository
+) : BaseAdapter() {
 
     override fun getCount(): Int {
         return shoppingListItemAndIngredient.size
@@ -31,6 +36,7 @@ class ShoppingListArrayAdapter(
         val amountTextView = view.findViewById<TextView>(R.id.shopping_list_item_amount)
         val unitTextView = view.findViewById<TextView>(R.id.shopping_list_item_unit)
         val nameTextView = view.findViewById<TextView>(R.id.shopping_list_item_name)
+        val deleteButton = view.findViewById<MaterialButton>(R.id.shopping_list_item_delete_button)
         val isBoughtCheckbox = view.findViewById<CheckBox>(R.id.shopping_list_checkbox_purchased)
 
         val shoppingListItem = shoppingListItemAndIngredient[position].shoppingListItem
@@ -39,6 +45,16 @@ class ShoppingListArrayAdapter(
         nameTextView.text = shoppingListItem.itemName
 
         isBoughtCheckbox.isChecked = shoppingListItem.isItemBought
+
+        isBoughtCheckbox.setOnCheckedChangeListener() {
+            _, isChecked ->
+            shoppingListItem.isItemBought = isChecked
+            shoppingListItemRepository.updateShoppingListItem(shoppingListItem)
+        }
+
+        deleteButton.setOnClickListener() {
+            shoppingListItemRepository.deleteShoppingListItemById(shoppingListItem.shoppingListItemId)
+        }
 
         return view
     }

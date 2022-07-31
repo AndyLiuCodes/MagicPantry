@@ -24,6 +24,12 @@ class ShoppingListItemRepository(private val shoppingListItemDAO: ShoppingListIt
         }
     }
 
+    fun deleteAllIsBoughtShoppingListItems() {
+        CoroutineScope(Dispatchers.IO).launch {
+            shoppingListItemDAO.deleteAllIsBoughtShoppingListItems()
+        }
+    }
+
     fun updateShoppingListItem(shoppingListItem: ShoppingListItem) {
         CoroutineScope(Dispatchers.IO).launch {
             shoppingListItemDAO.updateShoppingListItem(shoppingListItem)
