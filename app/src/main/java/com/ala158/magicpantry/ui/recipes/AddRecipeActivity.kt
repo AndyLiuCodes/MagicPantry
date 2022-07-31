@@ -51,7 +51,7 @@ class AddRecipeActivity : AppCompatActivity() {
     private lateinit var dbDao : RecipeDAO
     private lateinit var repository : RecipeRepository
     private lateinit var viewModelFactory : RecipeViewModelFactory
-    private lateinit var itemViewModel : RecipeViewModel
+    private lateinit var recipeViewModel : RecipeViewModel
 
     private var recipeArray = arrayOf<RecipeWithIngredients>()
 
@@ -68,7 +68,7 @@ class AddRecipeActivity : AppCompatActivity() {
         dbDao = myDataBase.recipeDAO
         repository = RecipeRepository(dbDao)
         viewModelFactory = RecipeViewModelFactory(repository)
-        itemViewModel = ViewModelProvider(this, viewModelFactory)[RecipeViewModel::class.java]
+        recipeViewModel = ViewModelProvider(this, viewModelFactory)[RecipeViewModel::class.java]
 
         imageView = findViewById(R.id.edit_recipe_img)
         cameraBtn = findViewById(R.id.btn_edit_recipe_pic)
@@ -80,7 +80,7 @@ class AddRecipeActivity : AppCompatActivity() {
         ingredients = findViewById(R.id.edit_recipe_recipe_ingredient_listView)
 
         //TODO: fetch from db and onclick
-        itemViewModel.allRecipes.observe(this) {
+        recipeViewModel.allRecipes.observe(this) {
             val myList = it.toTypedArray()
 
             //if not empty
@@ -91,7 +91,7 @@ class AddRecipeActivity : AppCompatActivity() {
 
         val array = arrayOf("this", "that")
 
-        val adapter = AddRecipeArrayAdapter(this, array)
+        val adapter = AddRecipeArrayAdapter(this, recipeArray, recipeViewModel)
         ingredients.adapter = adapter
 
         ingredients.setOnItemClickListener() { parent: AdapterView<*>, _: View, _: Int, _: Long->
@@ -248,7 +248,7 @@ class AddRecipeActivity : AppCompatActivity() {
         recipe.title = title.text.toString()
         recipe.imageUri =imageUri.toString()
 
-        itemViewModel.insert(recipe)
+        recipeViewModel.insert(recipe)
     }
 
     override fun onResume() {
