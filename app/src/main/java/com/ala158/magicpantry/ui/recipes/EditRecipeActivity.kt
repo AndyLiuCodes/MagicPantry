@@ -64,6 +64,8 @@ class EditRecipeActivity : AppCompatActivity() {
         //set up shared pref
         sharedPrefFile = getSharedPreferences("MySharedPrefs", Context.MODE_PRIVATE)
 
+        imageUri = "".toUri()
+
         //start up database
         myDataBase = MagicPantryDatabase.getInstance(this)
         dbDao = myDataBase.recipeDAO

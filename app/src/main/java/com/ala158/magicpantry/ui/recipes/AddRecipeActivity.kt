@@ -15,6 +15,7 @@ import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
@@ -29,8 +30,8 @@ import com.ala158.magicpantry.viewModel.RecipeViewModelFactory
 import java.io.File
 
 class AddRecipeActivity : AppCompatActivity() {
-    private lateinit var imageUri: Uri
-    private var bitmap: Bitmap? = null
+    private lateinit var imageUri : Uri
+    private var bitmap : Bitmap? = null
 
     private val requestCamera = 1000
     private val requestGallery = 2000
@@ -62,6 +63,8 @@ class AddRecipeActivity : AppCompatActivity() {
         //set up shared pref
         sharedPrefFile = getSharedPreferences("MySharedPrefs", Context.MODE_PRIVATE)
         val edit = sharedPrefFile.edit()
+
+        imageUri = "".toUri()
 
         //start up database
         myDataBase = MagicPantryDatabase.getInstance(this)
@@ -246,7 +249,7 @@ class AddRecipeActivity : AppCompatActivity() {
             cookTime.text.toString().toInt()
         }
         recipe.title = title.text.toString()
-        recipe.imageUri =imageUri.toString()
+        recipe.imageUri = imageUri.toString()
 
         recipeViewModel.insert(recipe)
     }

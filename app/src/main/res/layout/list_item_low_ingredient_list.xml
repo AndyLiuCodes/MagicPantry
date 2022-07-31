@@ -7,7 +7,7 @@
     android:padding="8dp" >
 
     <TextView
-        android:id="@+id/recipe_ingredient_list_item_name"
+        android:id="@+id/low_ingredient_list_item_name"
         android:layout_width="wrap_content"
         android:layout_height="30dp"
         android:layout_marginStart="5dp"
@@ -19,7 +19,7 @@
         android:gravity="center_vertical"/>
 
     <com.google.android.material.button.MaterialButton
-        android:id="@+id/recipe_ingredient_list_item_delete_button"
+        android:id="@+id/low_ingredient_list_item_delete_button"
         android:layout_width="18dp"
         android:layout_height="18dp"
         android:layout_centerInParent="true"

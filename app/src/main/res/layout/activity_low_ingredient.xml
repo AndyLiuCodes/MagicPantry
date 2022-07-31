@@ -39,7 +39,7 @@
                 android:layout_weight="15" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_add_ingredient"
+                android:id="@+id/btn_add_ingredient_notifications"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="15dp"
