@@ -139,7 +139,7 @@
 
         <EditText
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="240dp"
             android:minHeight="100dp"
             android:textSize="15sp"
             android:inputType="text|textMultiLine"
@@ -148,48 +148,6 @@
             android:layout_marginBottom="5dp"
             android:scrollbars="vertical"
             android:id="@+id/edit_recipe_edit_recipe_description" />
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:layout_gravity="center_horizontal" >
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="1"
-                android:text="Ingredient List"
-                android:textSize="15sp"
-                android:textStyle="bold"
-                android:textColor="@color/black"
-                android:id="@+id/edit_recipe_recipe_ingredient_list_text" />
-
-            <Button
-                android:id="@+id/edit_recipe_btn_add_ingredient_to_recipe"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:background="@android:color/transparent"
-                android:minWidth="10dp"
-                android:minHeight="10dp"
-                android:textColor="#000000"
-                app:icon="@drawable/ic_plus_solid"
-                app:iconGravity="textStart"
-                android:text="Add"
-                android:textStyle="bold"
-                app:iconPadding="0dp"
-                app:iconSize="15sp"
-                android:textSize="15sp"
-                app:iconTint="#000000"
-                android:focusable="false" />
-        </LinearLayout>
-
-        <ListView
-            android:id="@+id/edit_recipe_recipe_ingredient_listView"
-            android:layout_width="match_parent"
-            android:layout_height="140dp"
-            android:minHeight="100dp"
-            android:layout_marginBottom="5dp"/>
 
         <LinearLayout
             android:layout_width="match_parent"

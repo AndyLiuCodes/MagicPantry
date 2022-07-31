@@ -33,8 +33,8 @@ class EditRecipeActivity : AppCompatActivity() {
     private lateinit var imageUri: Uri
     private var bitmap: Bitmap? = null
 
-    private val requestCamera = 1000
-    private val requestGallery = 2000
+    private val requestCamera = 1100
+    private val requestGallery = 2200
     private lateinit var cameraBtn: Button
 
     private lateinit var sharedPrefFile : SharedPreferences
@@ -46,7 +46,6 @@ class EditRecipeActivity : AppCompatActivity() {
     private lateinit var cookTime : TextView
     private lateinit var servings : TextView
     private lateinit var description : TextView
-    private lateinit var ingredients : ListView
 
     private lateinit var myDataBase : MagicPantryDatabase
     private lateinit var dbDao : RecipeDAO
@@ -80,7 +79,6 @@ class EditRecipeActivity : AppCompatActivity() {
         cookTime = findViewById(R.id.edit_recipe_cook_time)
         servings = findViewById(R.id.edit_recipe_cook_time)
         description = findViewById(R.id.edit_recipe_edit_recipe_description)
-        ingredients = findViewById(R.id.edit_recipe_recipe_ingredient_listView)
 
         //TODO: fetch from db and onclick
         itemViewModel.allRecipes.observe(this) {
@@ -96,13 +94,6 @@ class EditRecipeActivity : AppCompatActivity() {
                 servings.text = recipeArray[pos].recipe.servings.toString()
                 description.text = recipeArray[pos].recipe.description
             }
-        }
-
-        val adapter = AddIngredientToRecipeArrayAdapter(this, recipeArray)
-        ingredients.adapter = adapter
-
-        ingredients.setOnItemClickListener { parent: AdapterView<*>, _: View, position: Int, _: Long->
-            println("debug: $parent")
         }
 
         cameraBtn.setOnClickListener {
@@ -142,25 +133,13 @@ class EditRecipeActivity : AppCompatActivity() {
             alert.show()
         }
 
-        val addIngredientBtn = findViewById<Button>(R.id.edit_recipe_btn_add_ingredient_to_recipe)
-        addIngredientBtn.setOnClickListener {
-            edit.putString("recipe_title", title.text.toString())
-            edit.putString("recipe_cookTime", cookTime.text.toString())
-            edit.putString("recipe_servings", servings.text.toString())
-            edit.putString("recipe_description", description.text.toString())
-            edit.apply()
-
-            val intent = Intent(this, AddIngredientToRecipeActivity::class.java)
-            startActivity(intent)
-        }
-
         val cancelBtn = findViewById<Button>(R.id.edit_recipe_btn_cancel_recipe)
         cancelBtn.setOnClickListener {
             onBackPressed()
         }
 
-        val addBtn = findViewById<Button>(R.id.edit_recipe_btn_add_recipe)
-        addBtn.setOnClickListener {
+        val doneBtn = findViewById<Button>(R.id.edit_recipe_btn_add_recipe)
+        doneBtn.setOnClickListener {
             //TODO: save recipe to db
             updateDatabase()
             onBackPressed()

@@ -57,7 +57,7 @@ class AddIngredientToRecipeActivity : AppCompatActivity() {
             println("debug: $parent")
         }
 
-        val saveIngredients = findViewById<Button>(R.id.edit_recipe_btn_add_ingredient_to_recipe)
+        val saveIngredients = findViewById<Button>(R.id.btn_add_all_ingredients_to_recipe)
         saveIngredients.setOnClickListener {
             //TODO: save ingredients
             updateDatabase()
