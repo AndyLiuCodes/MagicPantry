@@ -12,5 +12,6 @@
     <color name="mp_yellow">#FBB540</color>
     <color name="mp_blue">#009CF7</color>
     <color name="mp_grey">#D9D9D9</color>
+    <color name="mp_green">#3CAF34</color>
     <color name="mp_textview_grey">#808080</color>
 </resources>

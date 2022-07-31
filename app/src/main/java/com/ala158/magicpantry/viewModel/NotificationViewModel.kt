@@ -16,11 +16,6 @@ import kotlinx.coroutines.launch
 
 class NotificationViewModel(private val repository: NotificationRepository) : ViewModel() {
 
-    private val _text = MutableLiveData<String>().apply {
-        value = "This is Notifications Fragment"
-    }
-    val text: LiveData<String> = _text
-
     val allNotifications: LiveData<List<NotificationWithIngredients>> =
         repository.allNotifications.asLiveData()
 

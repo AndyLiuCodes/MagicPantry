@@ -12,7 +12,7 @@
 
     <fragment
         android:id="@+id/navigation_recipes"
-        android:name="com.ala158.magicpantry.ui.recipes.RecipesFragment"
+        android:name="com.ala158.magicpantry.ui.reviewingredients.ReviewIngredientsFragment"
         tools:layout="@layout/fragment_review_ingredients" />
 
     <fragment

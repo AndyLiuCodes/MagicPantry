@@ -1,9 +1,7 @@
 package com.ala158.magicpantry
 
-import com.ala158.magicpantry.data.Ingredient
-import com.ala158.magicpantry.data.Notification
-import com.ala158.magicpantry.data.Recipe
-import com.ala158.magicpantry.data.ShoppingListItem
+import com.ala158.magicpantry.data.*
+import java.util.*
 
 object MockData {
     val ingredients = arrayListOf(
@@ -31,6 +29,14 @@ object MockData {
     )
     val recipe = Recipe("French Toast", 2, 20, "Testing description")
 
+    val recipe2 = Recipe(
+        title = "French Toast",
+        servings = 2,
+        timeToCook = 20,
+        description = "Testing description",
+        numMissingIngredients = 2
+    )
+
     val allIngredientsToastTest = arrayListOf(
         Ingredient("Bread", 4, "unit", 0.50),
         Ingredient("Milk", 2, "L", 1.00),
@@ -51,4 +57,33 @@ object MockData {
     )
 
     val notification = Notification(description = "Running low on bread")
+
+    private fun oldDate(unit: Int, value: Int): Calendar {
+        val oldDate = Calendar.getInstance()
+        oldDate.set(unit, value)
+        return oldDate
+    }
+
+    val notifications = arrayListOf(
+        NotificationWithIngredients(
+            Notification(
+                description = "Low on 2 ingredients",
+                date = oldDate(Calendar.HOUR_OF_DAY, 5)
+            ),
+            arrayListOf(
+                allIngredientsToastTest[0],
+                allIngredientsToastTest[1],
+            )
+        ),
+        NotificationWithIngredients(
+            Notification(
+                description = "Low on Cinnamon",
+                isRead = true,
+                date = oldDate(Calendar.MONTH, 1)
+            ),
+            arrayListOf(
+                allIngredientsToastTest[2]
+            )
+        ),
+    )
 }
