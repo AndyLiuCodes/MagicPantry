@@ -400,6 +400,7 @@ class ReceiptScannerActivity : AppCompatActivity() {
                 null
             )?.use { cursor ->
                 val columnIndex = cursor.getColumnIndexOrThrow(MediaStore.Images.Media.DATA)
+
                 cursor.moveToFirst()
                 imagePath = cursor.getString(columnIndex)
             }
