@@ -94,7 +94,7 @@ class AddRecipeActivity : AppCompatActivity() {
         val adapter = AddRecipeArrayAdapter(this, array)
         ingredients.adapter = adapter
 
-        ingredients.setOnItemClickListener() { parent: AdapterView<*>, _: View, position: Int, _: Long->
+        ingredients.setOnItemClickListener() { parent: AdapterView<*>, _: View, _: Int, _: Long->
             println("debug: $parent")
         }
 
@@ -231,7 +231,6 @@ class AddRecipeActivity : AppCompatActivity() {
 
     //update database
     private fun updateDatabase() {
-        //save to database
         val recipe = Recipe()
         recipe.description = description.text.toString()
         recipe.servings = if (servings.text.toString() == "") {
@@ -247,6 +246,7 @@ class AddRecipeActivity : AppCompatActivity() {
             cookTime.text.toString().toInt()
         }
         recipe.title = title.text.toString()
+        recipe.imageUri =imageUri.toString()
 
         itemViewModel.insert(recipe)
     }

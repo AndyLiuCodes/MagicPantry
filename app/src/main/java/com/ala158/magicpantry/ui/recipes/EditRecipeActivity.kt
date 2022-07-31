@@ -11,17 +11,16 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.view.View
-import android.widget.*
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
-import com.ala158.magicpantry.arrayAdapter.AddIngredientToRecipeArrayAdapter
 import com.ala158.magicpantry.dao.RecipeDAO
-import com.ala158.magicpantry.data.Recipe
 import com.ala158.magicpantry.data.RecipeWithIngredients
 import com.ala158.magicpantry.database.MagicPantryDatabase
 import com.ala158.magicpantry.repository.RecipeRepository
@@ -54,16 +53,16 @@ class EditRecipeActivity : AppCompatActivity() {
     private lateinit var itemViewModel : RecipeViewModel
 
     private var recipeArray = arrayOf<RecipeWithIngredients>()
+    private var pos = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_recipe)
 
-        val pos = intent.getIntExtra("RecipeChosen", -1)
+        pos = intent.getIntExtra("RecipeChosen", -1)
 
         //set up shared pref
         sharedPrefFile = getSharedPreferences("MySharedPrefs", Context.MODE_PRIVATE)
-        val edit = sharedPrefFile.edit()
 
         //start up database
         myDataBase = MagicPantryDatabase.getInstance(this)
@@ -80,7 +79,6 @@ class EditRecipeActivity : AppCompatActivity() {
         servings = findViewById(R.id.edit_recipe_cook_time)
         description = findViewById(R.id.edit_recipe_edit_recipe_description)
 
-        //TODO: fetch from db and onclick
         itemViewModel.allRecipes.observe(this) {
             val myList = it.toTypedArray()
 
@@ -217,14 +215,31 @@ class EditRecipeActivity : AppCompatActivity() {
 
     //update database
     private fun updateDatabase() {
-        //save to database
-        val recipe = Recipe()
-        recipe.description = description.text.toString()
-        recipe.servings = servings.text.toString().toInt()
-        recipe.timeToCook = cookTime.text.toString().toInt()
-        recipe.title = title.text.toString()
+        itemViewModel.allRecipes.observe(this) {
+            val myList = it.toTypedArray()
 
-        itemViewModel.insert(recipe)
+            //if not empty
+            if (myList.isNotEmpty()) {
+                recipeArray = myList
+                val recipeToEdit = recipeArray[pos]
+
+                recipeToEdit.recipe.title = title.text.toString()
+                recipeToEdit.recipe.timeToCook = if (cookTime.text.toString() == "") {
+                    0
+                }
+                else {
+                    cookTime.text.toString().toInt()
+                }
+                recipeToEdit.recipe.servings = if (servings.text.toString() == "") {
+                    0
+                }
+                else {
+                    servings.text.toString().toInt()
+                }
+                recipeToEdit.recipe.description = description.text.toString()
+                recipeToEdit.recipe.imageUri = imageUri.toString()
+            }
+        }
     }
 
     override fun onResume() {
