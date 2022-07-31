@@ -32,6 +32,10 @@
     <string name="dialog_add_button_text">Add</string>
     <string name="dialog_cancel_button_text">Cancel</string>
 
+    <!-- Change Shopping List Item amount Dialog -->
+    <string name="dialog_change_shopping_item_amount_title">What is the new amount of \"%s\" that you need to purchase?</string>
+    <string name="dialog_save_button_text">save</string>
+
     <!-- Shopping List Fragment -->
     <string name="shop_list_add_button">Add</string>
     <string name="shopping_list_header">Shopping List</string>

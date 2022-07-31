@@ -14,7 +14,7 @@ import com.google.android.material.textfield.TextInputEditText
 
 class PantryAddShoppingListDialog : DialogFragment(), DialogInterface.OnClickListener {
     private lateinit var dialogView: View
-    private lateinit var pantryAddShoppingListDialogListener: PantryAddShoppingListDialogListener
+    private var pantryAddShoppingListDialogListener: PantryAddShoppingListDialogListener? = null
     private var relatedIngredientUnit = ""
     private var relatedIngredientName = ""
     private var relatedIngredientId = 0L
@@ -71,12 +71,14 @@ class PantryAddShoppingListDialog : DialogFragment(), DialogInterface.OnClickLis
             if( amountView.text.toString() != "")
                 amount = amountView.text.toString().toInt()
 
-            pantryAddShoppingListDialogListener.onPantryAddShoppingListDialogClick(
-                relatedIngredientUnit,
-                relatedIngredientName,
-                relatedIngredientId,
-                amount
-            )
+            if (pantryAddShoppingListDialogListener != null) {
+                pantryAddShoppingListDialogListener!!.onPantryAddShoppingListDialogClick(
+                    relatedIngredientUnit,
+                    relatedIngredientName,
+                    relatedIngredientId,
+                    amount
+                )
+            }
         } else {
             dismiss()
         }

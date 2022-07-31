@@ -17,11 +17,12 @@ import com.google.android.material.button.MaterialButton
 class ShoppingListArrayAdapter(
             private val context: Context,
             private var shoppingListItemAndIngredient: List<ShoppingListItemAndIngredient>,
-            private val shoppingListItemRepository: ShoppingListItemRepository
+            private val shoppingListItemRepository: ShoppingListItemRepository,
+            internal val onChangeShoppingItemAmountClickListener: OnChangeShoppingItemAmountClickListener
 ) : BaseAdapter() {
 
     interface OnChangeShoppingItemAmountClickListener {
-        fun onChangeShoppingItemAmountClick(shoppingListItem: ShoppingListItem)
+        fun onChangeShoppingItemAmountClick(shoppingListItemAndIngredient: ShoppingListItemAndIngredient)
     }
 
     override fun getCount(): Int {
@@ -60,6 +61,10 @@ class ShoppingListArrayAdapter(
 
         deleteButton.setOnClickListener() {
             shoppingListItemRepository.deleteShoppingListItemById(shoppingListItem.shoppingListItemId)
+        }
+
+        amountTextView.setOnClickListener() {
+            onChangeShoppingItemAmountClickListener.onChangeShoppingItemAmountClick(shoppingListItemAndIngredient[position])
         }
 
         return view
