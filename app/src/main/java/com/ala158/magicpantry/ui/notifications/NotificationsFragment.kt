@@ -1,12 +1,11 @@
 package com.ala158.magicpantry.ui.notifications
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ListView
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import com.ala158.magicpantry.MockData
 import com.ala158.magicpantry.R
@@ -14,6 +13,8 @@ import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.NotificationsListArrayAdapter
 import com.ala158.magicpantry.viewModel.IngredientViewModel
 import com.ala158.magicpantry.viewModel.NotificationViewModel
+import com.ala158.magicpantry.viewModel.RecipeItemViewModel
+import com.ala158.magicpantry.viewModel.RecipeViewModel
 
 class NotificationsFragment : Fragment() {
     private lateinit var notificationViewModel: NotificationViewModel
@@ -46,6 +47,7 @@ class NotificationsFragment : Fragment() {
 
         notificationsListView = view.findViewById(R.id.notifications_list_view)
         notificationsListView.adapter = notificationsListArrayAdapter
+
 
         // TODO: add back in when notifications are generated
 /*

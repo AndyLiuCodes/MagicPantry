@@ -4,10 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
-import com.ala158.magicpantry.arrayAdapter.RecipeListArrayAdapter
-import com.ala158.magicpantry.data.Ingredient
 import com.ala158.magicpantry.data.Recipe
-import com.ala158.magicpantry.data.RecipeWithIngredients
+import com.ala158.magicpantry.data.RecipeWithRecipeItems
 import com.ala158.magicpantry.repository.RecipeRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -19,8 +17,8 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
     private val _newRecipeId = MutableLiveData(0L)
     val newRecipeId: LiveData<Long> = _newRecipeId
 
-    val allRecipes: LiveData<List<RecipeWithIngredients>> = repository.allRecipes.asLiveData()
-    val cookableRecipes = MutableLiveData<List<RecipeWithIngredients>>()
+    val allRecipes: LiveData<List<RecipeWithRecipeItems>> = repository.allRecipes.asLiveData()
+    val cookableRecipes = MutableLiveData<List<RecipeWithRecipeItems>>()
 
     fun insert(recipe: Recipe) {
         CoroutineScope(Dispatchers.IO).launch {
@@ -29,26 +27,17 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
         }
     }
 
-    fun insertCrossRef(recipeId: Long, ingredientId: Long) {
-        repository.insertRecipeCrossRef(recipeId, ingredientId)
-    }
-
     fun update(recipe: Recipe) {
         repository.updateRecipe(recipe)
     }
 
-    fun deleteById(key: Long) {
-        repository.deleteRecipeById(key)
-        repository.deleteAllRecipeCrossRef(key)
-    }
-
-    fun deleteCrossRef(recipeId: Long, ingredientId: Long) {
-        repository.deleteRecipeCrossRef(recipeId, ingredientId)
+    fun delete(recipe: Recipe) {
+        repository.deleteRecipe(recipe)
     }
 
     fun updateCurrentCookable() {
         CoroutineScope(Dispatchers.IO).launch {
-            val cookableArrayList = ArrayList<RecipeWithIngredients>()
+            val cookableArrayList = ArrayList<RecipeWithRecipeItems>()
             if (allRecipes.value != null) {
                 for (currRecipe in allRecipes.value!!) {
                     if (currRecipe.recipe.numMissingIngredients == 0) {
