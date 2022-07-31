@@ -2,6 +2,7 @@ package com.ala158.magicpantry.dao
 
 import androidx.room.*
 import com.ala158.magicpantry.data.Ingredient
+import com.ala158.magicpantry.data.IngredientWithRecipeItems
 import kotlinx.coroutines.flow.Flow
 
 @Dao
@@ -18,6 +19,10 @@ interface IngredientDAO {
 
     @Query("SELECT * FROM ingredient")
     fun getAllIngredients(): Flow<List<Ingredient>>
+
+    @Transaction
+    @Query("SELECT * FROM ingredient WHERE ingredientId = :key")
+    fun getIngredientWithRecipeItemsById(key: Long ): Flow<IngredientWithRecipeItems>
 
     @Delete
     suspend fun deleteIngredient(ingredient: Ingredient)
