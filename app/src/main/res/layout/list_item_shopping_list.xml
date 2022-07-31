@@ -40,7 +40,7 @@
         android:layout_width="20dp"
         android:layout_height="20dp"
         android:layout_centerInParent="true"
-        android:layout_toStartOf="@+id/shopping_list_checkbox_purchased"
+        android:layout_toStartOf="@+id/shopping_list_item_is_bought"
         android:insetLeft="0dp"
         android:insetTop="0dp"
         android:insetRight="0dp"
@@ -50,7 +50,7 @@
         app:iconPadding="0dp" />
 
     <CheckBox
-        android:id="@+id/shopping_list_checkbox_purchased"
+        android:id="@+id/shopping_list_item_is_bought"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_alignParentEnd="true"
