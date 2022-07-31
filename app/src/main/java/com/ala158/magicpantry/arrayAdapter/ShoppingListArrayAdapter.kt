@@ -4,7 +4,6 @@ import android.content.Context
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
-import android.widget.Button
 import android.widget.CheckBox
 import android.widget.TextView
 import com.ala158.magicpantry.R
@@ -43,12 +42,13 @@ class ShoppingListArrayAdapter(
         val unitTextView = view.findViewById<TextView>(R.id.shopping_list_item_unit)
         val nameTextView = view.findViewById<TextView>(R.id.shopping_list_item_name)
         val deleteButton = view.findViewById<MaterialButton>(R.id.shopping_list_item_delete_button)
-        val isBoughtCheckbox = view.findViewById<CheckBox>(R.id.shopping_list_checkbox_purchased)
+        val isBoughtCheckbox = view.findViewById<CheckBox>(R.id.shopping_list_item_is_bought)
 
         val shoppingListItem = shoppingListItemAndIngredient[position].shoppingListItem
+        val ingredient = shoppingListItemAndIngredient[position].ingredient
         amountTextView.text = shoppingListItem.itemAmount.toString()
-        unitTextView.text = shoppingListItem.itemUnit
-        nameTextView.text = shoppingListItem.itemName
+        unitTextView.text = ingredient.unit
+        nameTextView.text = ingredient.name
 
         isBoughtCheckbox.isChecked = shoppingListItem.isItemBought
 

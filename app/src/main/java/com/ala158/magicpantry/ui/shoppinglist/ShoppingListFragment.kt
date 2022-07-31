@@ -1,9 +1,11 @@
 package com.ala158.magicpantry.ui.shoppinglist
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Button
 import android.widget.ListView
 import androidx.fragment.app.Fragment
 import com.ala158.magicpantry.R
@@ -11,6 +13,7 @@ import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.ShoppingListArrayAdapter
 import com.ala158.magicpantry.database.MagicPantryDatabase
 import com.ala158.magicpantry.repository.ShoppingListItemRepository
+import com.ala158.magicpantry.ui.ingredientlistadd.IngredientListAddActivity
 import com.ala158.magicpantry.viewModel.IngredientViewModel
 import com.ala158.magicpantry.viewModel.ShoppingListItemViewModel
 
@@ -21,6 +24,8 @@ class ShoppingListFragment : Fragment() {
     private lateinit var shoppingListArrayAdapter: ShoppingListArrayAdapter
     private lateinit var database: MagicPantryDatabase
     private lateinit var shoppingListItemRepository: ShoppingListItemRepository
+
+    private lateinit var addIngredientsButton: Button
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -54,6 +59,13 @@ class ShoppingListFragment : Fragment() {
         shoppingListItemViewModel.allShoppingListItemsLiveData.observe(requireActivity()) {
             shoppingListArrayAdapter.replace(it)
             shoppingListArrayAdapter.notifyDataSetChanged()
+        }
+
+        addIngredientsButton = view.findViewById(R.id.btn_add_shopping_list_item)
+
+        addIngredientsButton.setOnClickListener {
+            val intent = Intent(requireActivity(), IngredientListAddActivity::class.java)
+            startActivity(intent)
         }
 
         return view
