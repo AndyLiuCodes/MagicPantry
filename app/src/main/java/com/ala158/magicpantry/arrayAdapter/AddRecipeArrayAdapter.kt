@@ -16,7 +16,7 @@ import com.ala158.magicpantry.ui.manualingredientinput.edit.ReviewIngredientsEdi
 
 class AddRecipeArrayAdapter(
     private val context: Context,
-    private var recipes: Array<RecipeWithIngredients>
+    private var recipes: Array<String>
 ) : BaseAdapter() {
 
     override fun getCount(): Int {
@@ -40,9 +40,13 @@ class AddRecipeArrayAdapter(
 
         val recipe = recipes[position]
 
-        price.text = recipe.ingredients[2].toString()
+        /*price.text = recipe.ingredients[2].toString()
         unit.text = recipe.ingredients[3].toString()
-        name.text = recipe.ingredients[1].toString()
+        name.text = recipe.ingredients[1].toString()*/
+
+        price.text = "4"
+        unit.text = "kg"
+        name.text = "bread"
 
         return view
     }

@@ -14,7 +14,7 @@ import com.ala158.magicpantry.data.Ingredient
 import com.ala158.magicpantry.data.RecipeWithIngredients
 import com.ala158.magicpantry.ui.manualingredientinput.edit.ReviewIngredientsEditActivity
 
-class AddIngredientToRecipeArrayAdapter (
+class AddIngredientToRecipeArrayAdapter(
     private val context: Context,
     private var recipes: Array<RecipeWithIngredients>
 ) : BaseAdapter() {

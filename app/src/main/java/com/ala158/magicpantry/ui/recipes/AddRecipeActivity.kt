@@ -18,7 +18,7 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
-import com.ala158.magicpantry.arrayAdapter.AddIngredientToRecipeArrayAdapter
+import com.ala158.magicpantry.arrayAdapter.AddRecipeArrayAdapter
 import com.ala158.magicpantry.dao.RecipeDAO
 import com.ala158.magicpantry.data.Recipe
 import com.ala158.magicpantry.data.RecipeWithIngredients
@@ -89,7 +89,9 @@ class AddRecipeActivity : AppCompatActivity() {
             }
         }
 
-        val adapter = AddIngredientToRecipeArrayAdapter(this, recipeArray)
+        val array = arrayOf("this", "that")
+
+        val adapter = AddRecipeArrayAdapter(this, array)
         ingredients.adapter = adapter
 
         ingredients.setOnItemClickListener() { parent: AdapterView<*>, _: View, position: Int, _: Long->
@@ -232,8 +234,18 @@ class AddRecipeActivity : AppCompatActivity() {
         //save to database
         val recipe = Recipe()
         recipe.description = description.text.toString()
-        recipe.servings = servings.text.toString().toInt()
-        recipe.timeToCook = cookTime.text.toString().toInt()
+        recipe.servings = if (servings.text.toString() == "") {
+            0
+        }
+        else {
+            servings.text.toString().toInt()
+        }
+        recipe.timeToCook = if (cookTime.text.toString() == "") {
+            0
+        }
+        else {
+            cookTime.text.toString().toInt()
+        }
         recipe.title = title.text.toString()
 
         itemViewModel.insert(recipe)
