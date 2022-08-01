@@ -1,5 +1,6 @@
 package com.ala158.magicpantry.ui.recipes
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -10,6 +11,10 @@ import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.RecipeListArrayAdapter
 import com.ala158.magicpantry.data.Ingredient
+import com.ala158.magicpantry.data.RecipeItem
+import com.ala158.magicpantry.ui.manualingredientinput.edit.PantryEditIngredientActivity
+import com.ala158.magicpantry.ui.pantry.PantryFragment
+import com.ala158.magicpantry.ui.singlerecipe.SingleRecipeActivity
 import com.ala158.magicpantry.viewModel.IngredientViewModel
 import com.ala158.magicpantry.viewModel.RecipeItemViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModel
@@ -24,6 +29,7 @@ class RecipesFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
     private lateinit var recipeHeader: TextView
 
     private lateinit var recipeItemViewModel: RecipeItemViewModel
+    private lateinit var ingredients: List<Ingredient>
 
     private lateinit var ingredients: List<Ingredient>
 
@@ -78,8 +84,16 @@ class RecipesFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
             ingredients = it
             recipeViewModel.updateCurrentCookable()
         }
-        recipeListView.setOnItemClickListener { _, _, _, id ->
 
+        recipeListView.setOnItemClickListener { _, _, position, _ ->
+            val intent = Intent(requireActivity(), SingleRecipeActivity::class.java)
+            if(currentCookableCheckBox.isChecked){
+                intent.putExtra("RECIPE_KEY_COOKABLE", position)
+            }
+            else{
+                intent.putExtra("RECIPE_KEY", position)
+            }
+            startActivity(intent)
         }
         currentCookableCheckBox.setOnCheckedChangeListener(this)
 

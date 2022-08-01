@@ -3,6 +3,7 @@ package com.ala158.magicpantry
 import com.ala158.magicpantry.data.*
 import java.util.*
 
+
 object MockData {
     val ingredients = arrayListOf(
         Ingredient("Banana", 3, "unit", 0.50),
@@ -39,7 +40,6 @@ object MockData {
         ShoppingListItem(1000, false)
     )
     val recipe = Recipe("French Toast", 2, 20, "Testing description")
-
     val recipe2 = Recipe(
         title = "French Toast",
         servings = 2,
