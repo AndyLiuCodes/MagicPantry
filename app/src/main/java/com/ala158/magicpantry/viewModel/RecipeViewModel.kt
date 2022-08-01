@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
+import com.ala158.magicpantry.data.Ingredient
 import com.ala158.magicpantry.data.Recipe
 import com.ala158.magicpantry.data.RecipeWithRecipeItems
 import com.ala158.magicpantry.repository.RecipeRepository
@@ -19,6 +20,8 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
 
     val allRecipes: LiveData<List<RecipeWithRecipeItems>> = repository.allRecipes.asLiveData()
     val cookableRecipes = MutableLiveData<List<RecipeWithRecipeItems>>()
+
+    var toBeAddedToRecipeIngredients: MutableMap<Long, Ingredient> = mutableMapOf()
 
     fun insert(recipe: Recipe) {
         CoroutineScope(Dispatchers.IO).launch {
