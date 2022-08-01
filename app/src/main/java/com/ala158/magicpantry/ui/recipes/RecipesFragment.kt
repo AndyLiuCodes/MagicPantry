@@ -31,7 +31,6 @@ class RecipesFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
     private lateinit var recipeItemViewModel: RecipeItemViewModel
     private lateinit var ingredients: List<Ingredient>
 
-    private lateinit var ingredients: List<Ingredient>
 
     override fun onCreateView(
         inflater: LayoutInflater,

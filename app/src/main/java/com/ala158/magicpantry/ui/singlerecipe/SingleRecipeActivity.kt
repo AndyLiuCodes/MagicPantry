@@ -27,6 +27,7 @@ class SingleRecipeActivity : AppCompatActivity() {
     private lateinit var isAbleToCookTextView: TextView
     private lateinit var editRecipeButton: Button
     private lateinit var addIngredientsButton: Button
+    private lateinit var cookNowButton:Button
     private lateinit var recipeIngredientArrayAdapter: RecipeIngredientArrayAdapter
     private lateinit var recipeItemViewModel: RecipeItemViewModel
 
@@ -58,6 +59,7 @@ class SingleRecipeActivity : AppCompatActivity() {
         isAbleToCookTextView = findViewById(R.id.EnoughIngredientsText)
         editRecipeButton = findViewById(R.id.edit_recipe_button)
         addIngredientsButton = findViewById(R.id.add_ingredient_to_recipe_button)
+        cookNowButton = findViewById(R.id.Cook_now_btn)
 
         val id = intent.getIntExtra("RECIPE_KEY",-1)
         val id2 = intent.getIntExtra("RECIPE_KEY_COOKABLE",-1)
@@ -70,8 +72,8 @@ class SingleRecipeActivity : AppCompatActivity() {
                 var recipeWithIngredients: RecipeWithRecipeItems = it[id]
                 recipeName.text = recipeWithIngredients.recipe.title
                 recipeDescription.text = recipeWithIngredients.recipe.description
-                cookingTimeView.text = "${recipeWithIngredients.recipe.timeToCook}"
-                numOfServingsView.text = "${recipeWithIngredients.recipe.servings}"
+                cookingTimeView.text = "${recipeWithIngredients.recipe.timeToCook} minutes"
+                numOfServingsView.text = "${recipeWithIngredients.recipe.servings} servings"
                 if(recipeWithIngredients.recipe.numMissingIngredients == 0){
                     isAbleToCookImageView.setImageResource(R.drawable.ic_baseline_check_box_24)
                     isAbleToCookTextView.text = "Ready to cook!"
@@ -109,6 +111,10 @@ class SingleRecipeActivity : AppCompatActivity() {
         }
 
         addIngredientsButton.setOnClickListener{
+
+        }
+
+        cookNowButton.setOnClickListener{
 
         }
     }

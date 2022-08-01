@@ -51,7 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
-            android:background="#FFFFFF"
+            android:background="@drawable/rounded_bg_white"
             android:gravity="center"
             android:padding="15dp">
 
@@ -86,6 +86,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingTop="5dp"
+                        android:textColor = "@color/black"
                         android:text="@string/cookingtime"></TextView>
                 </LinearLayout>
 
@@ -108,7 +109,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingTop="5dp"
-                        android:text="@string/noofservings"></TextView>
+                        android:text="@string/noofservings"
+                        android:textColor = "@color/black"></TextView>
                 </LinearLayout>
 
                 <LinearLayout
@@ -133,7 +135,8 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingTop="5dp"
-                        android:text="@string/enough_ingredients">
+                        android:text="@string/enough_ingredients"
+                        android:textColor = "@color/black">
 
                     </TextView>
                 </LinearLayout>
