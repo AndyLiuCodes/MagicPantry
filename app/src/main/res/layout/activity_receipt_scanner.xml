@@ -39,30 +39,26 @@
             android:id="@+id/MyButtons"
             app:layout_constraintStart_toStartOf="parent">
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/cameraButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginStart="10dp"
                 android:layout_marginEnd="5dp"
-                android:text="Select image" />
+                android:text="Select image"
+                android:backgroundTint="@color/mp_yellow"/>
 
-            <Button
+            <com.google.android.material.button.MaterialButton
                 android:id="@+id/scanButton"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:layout_marginEnd="10dp"
                 android:layout_marginStart="5dp"
-                android:text="Scan" />
+                android:text="Scan"
+                android:backgroundTint="@color/mp_yellow"/>
         </LinearLayout>
-
-        <Button
-            android:id="@+id/btn_review_scanner_items"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:text="Review Receipt Items" />
 
     </LinearLayout>
 </androidx.constraintlayout.widget.ConstraintLayout>
