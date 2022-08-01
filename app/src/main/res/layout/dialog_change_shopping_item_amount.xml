@@ -30,7 +30,7 @@
             app:boxStrokeWidthFocused="4dp">
 
             <com.google.android.material.textfield.TextInputEditText
-                android:id="@+id/add_to_shopping_list_amount"
+                android:id="@+id/change_shopping_item_amount"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:inputType="number"
@@ -40,7 +40,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <TextView
-            android:id="@+id/add_to_shopping_list_unit"
+            android:id="@+id/change_shopping_item_unit"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
