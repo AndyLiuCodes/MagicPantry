@@ -9,8 +9,7 @@ data class RecipeWithRecipeItems(
     @Relation(
         entity = RecipeItem::class,
         parentColumn = "recipeId",
-        entityColumn = "recipeItemId",
-        associateBy = Junction(RecipeItemRecipeCrossRef::class),
+        entityColumn = "related_recipe_id",
     )
     val recipeItems: List<RecipeItemAndIngredient>
 )

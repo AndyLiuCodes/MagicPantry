@@ -105,6 +105,30 @@ object Util {
         }
     }
 
+    private val smallUnits = arrayListOf("g", "mL")
+    private val largeUnits = arrayListOf("kg", "L")
+    fun unitConversion(unitAmount: Int, ingredientUnit: String, itemUnit: String): Int {
+        var newUnitAmount = unitAmount
+        // Make the unit of the recipe item match the unit of the ingredient
+        val isIngredientSmallUnit =
+            smallUnits.any { ingredientUnit.contains(it, ignoreCase = true) }
+        val isItemSmallUnit =
+            largeUnits.any { itemUnit.contains(it, ignoreCase = true) }
+
+        // In the UI, it is only possible to go from g <-> kg and mL <-> L
+        if (ingredientUnit != itemUnit) {
+            if (isIngredientSmallUnit && !isItemSmallUnit) {
+                // e.g. ingredient: g item: kg - this should not be possible as the item won't be
+                // cookable
+                newUnitAmount = unitAmount * 1000
+            } else if (!isIngredientSmallUnit && isItemSmallUnit) {
+                // e.g. ingredient: L item: mL
+                newUnitAmount = unitAmount / 1000
+            }
+        }
+        return newUnitAmount
+    }
+
     const val INGREDIENT_ADD_LIST = "INGREDIENT_ADD_LIST"
     const val INGREDIENT_ADD_LIST_RECIPE_POSITION = "INGREDIENT_ADD_LIST_RECIPE_POSITIOn"
     const val INGREDIENT_ADD_SHOPPING_LIST = 0

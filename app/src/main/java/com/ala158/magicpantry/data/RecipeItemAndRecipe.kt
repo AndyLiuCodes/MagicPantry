@@ -4,12 +4,12 @@ import androidx.room.Embedded
 import androidx.room.Junction
 import androidx.room.Relation
 
-data class RecipeItemWithRecipes (
+data class RecipeItemAndRecipe (
     @Embedded val recipeItem: RecipeItem,
     @Relation(
+        entity = Recipe::class,
         parentColumn = "recipeItemId",
         entityColumn = "recipeId",
-        associateBy = Junction(RecipeItemRecipeCrossRef::class)
     )
-    val recipes: List<Recipe>
+    val recipe: RecipeWithRecipeItems
 )

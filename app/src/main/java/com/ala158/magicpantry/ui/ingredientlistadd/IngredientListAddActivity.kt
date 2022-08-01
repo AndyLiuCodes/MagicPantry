@@ -121,9 +121,10 @@ class IngredientListAddActivity : AppCompatActivity(), IngredientListAddDialog.I
                     recipeItem = RecipeItem(
                         recipeAmount = 0,
                         recipeUnit = ingredient.unit,
-                        relatedIngredientId = ingredient.ingredientId
+                        relatedIngredientId = ingredient.ingredientId,
+                        relatedRecipeId = recipeId
                     )
-                    recipeItemViewModel.insert(recipeItem, recipeId)
+                    recipeItemViewModel.insert(recipeItem)
                 }
             }
 

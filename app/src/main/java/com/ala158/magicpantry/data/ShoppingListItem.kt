@@ -25,7 +25,7 @@ data class ShoppingListItem(
     @ColumnInfo(name = "is_item_bought")
     var isItemBought: Boolean = false,
 
-    @ColumnInfo(name = "related_ingredient_id")
+    @ColumnInfo(name = "related_ingredient_id", index = true)
     var relatedIngredientId: Long = 0L,
 ) {
     constructor(amount: Int, isItemBought: Boolean) : this() {

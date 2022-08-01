@@ -32,6 +32,4 @@ class RecipeRepository(private val recipeDAO: RecipeDAO) {
             recipeDAO.deleteRecipeById(id)
         }
     }
-
-
 }

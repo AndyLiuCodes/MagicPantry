@@ -2,11 +2,13 @@ package com.ala158.magicpantry.ui.recipes
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
+import com.ala158.magicpantry.MockData
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.RecipeListArrayAdapter
@@ -22,6 +24,9 @@ class RecipesFragment : Fragment(),CompoundButton.OnCheckedChangeListener{
     private lateinit var recipeListArrayAdapter: RecipeListArrayAdapter
     private lateinit var currentCookableCheckBox: CheckBox
     private lateinit var recipeHeader: TextView
+
+    private lateinit var recipeItemViewModel: RecipeItemViewModel
+    private lateinit var ingredients: List<Ingredient>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -49,7 +54,13 @@ class RecipesFragment : Fragment(),CompoundButton.OnCheckedChangeListener{
 
         recipeViewModel.allRecipes.observe(viewLifecycleOwner) {
             recipeViewModel.updateCurrentCookable()
-            if(!currentCookableCheckBox.isChecked) {
+            if (!currentCookableCheckBox.isChecked && it.isNotEmpty()) {
+                Log.d("RECIPE", "onCreateView: $it")
+                for (recipe in it) {
+                    for (item in recipe.recipeItems) {
+                        Log.d("RECIPE", "onCreateView: $item")
+                    }
+                }
                 recipeListArrayAdapter.replace(it)
                 recipeListArrayAdapter.notifyDataSetChanged()
             }
@@ -69,10 +80,9 @@ class RecipesFragment : Fragment(),CompoundButton.OnCheckedChangeListener{
 
         recipeListView.setOnItemClickListener { _, _, position, _ ->
             val intent = Intent(requireActivity(), SingleRecipeActivity::class.java)
-            if(currentCookableCheckBox.isChecked){
+            if (currentCookableCheckBox.isChecked) {
                 intent.putExtra("RECIPE_KEY_COOKABLE", position)
-            }
-            else{
+            } else {
                 intent.putExtra("RECIPE_KEY", position)
             }
             startActivity(intent)
@@ -85,6 +95,40 @@ class RecipesFragment : Fragment(),CompoundButton.OnCheckedChangeListener{
             startActivity(intent)
         }
 
+        val addIngredientsButton = view.findViewById<Button>(R.id.addIngredients)
+        val createRecipeButton = view.findViewById<Button>(R.id.createRecipes)
+
+        addIngredientsButton.setOnClickListener {
+            Log.d("Recipe", "onCreateView: add ingredients")
+            for (i in MockData.allIngredientsToastTest.indices) {
+                ingredientViewModel.insert(MockData.allIngredientsToastTest[i])
+            }
+        }
+        createRecipeButton.setOnClickListener {
+            Log.d("Recipe", "onCreateView: create")
+            recipeViewModel.insert(MockData.recipe)
+            // ID's begin at 1 when query by ID
+            val recipeId = recipeViewModel.newRecipeId.value!! + 1
+            Log.d("Recipe", "onCreateView: $recipeId")
+
+            Log.d("Recipe", "onCreateView: add ingredient to recipe")
+            val breadItem = RecipeItem(
+                recipeAmount = 4,
+                relatedIngredientId = ingredients[0].ingredientId,
+                recipeUnit = "unit",
+                relatedRecipeId = recipeId
+            )
+
+            val milkItem = RecipeItem(
+                recipeAmount = 2,
+                relatedIngredientId = ingredients[1].ingredientId,
+                recipeUnit = "mL",
+                relatedRecipeId = recipeId
+            )
+
+            recipeItemViewModel.insert(breadItem)
+            recipeItemViewModel.insert(milkItem)
+        }
         return view
     }
 

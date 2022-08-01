@@ -52,7 +52,7 @@ object MockData {
     )
 
     val allIngredientsToastTest = arrayListOf(
-        Ingredient("Bread", 4, "unit", 0.50),
+        Ingredient("Bread", 10, "unit", 0.50),
         Ingredient("Milk", 2, "L", 1.00),
         Ingredient("Cinnamon", 5, "g", 2.00),
     )
