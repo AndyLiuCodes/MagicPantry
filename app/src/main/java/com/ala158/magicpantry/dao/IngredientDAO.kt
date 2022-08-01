@@ -20,7 +20,7 @@ interface IngredientDAO {
     @Query("SELECT * FROM ingredient WHERE name = :nameKey AND unit = :unitKey")
     suspend fun getIngredientEntryByNameAndUnit(nameKey: String, unitKey: String): Ingredient?
 
-    @Query("SELECT * FROM ingredient")
+    @Query("SELECT * FROM ingredient ORDER BY ingredientId ASC")
     fun getAllIngredients(): Flow<List<Ingredient>>
 
     @Transaction

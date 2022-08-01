@@ -30,6 +30,8 @@ class RecipesFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
 
     private lateinit var recipeItemViewModel: RecipeItemViewModel
 
+    private lateinit var ingredients: List<Ingredient>
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
@@ -60,11 +62,16 @@ class RecipesFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
         recipeListView.adapter = recipeListArrayAdapter
         recipeHeader = view.findViewById(R.id.header_recipe)
 
-/*        recipeViewModel.allRecipes.observe(viewLifecycleOwner) {
+        recipeViewModel.allRecipes.observe(viewLifecycleOwner) {
             recipeViewModel.updateCurrentCookable()
-            if(!currentCookableCheckBox.isChecked) {
+            if(!currentCookableCheckBox.isChecked && it.size >= 1) {
                 recipeListArrayAdapter.replace(it)
                 recipeListArrayAdapter.notifyDataSetChanged()
+                Log.d("RECIPES", "onCreateView: recipes ${it[0]}")
+                for (item in it[0].recipeItems) {
+                    Log.d("RECIPES", "onCreateView: recipesItems ${item}")
+                }
+                Log.d("RECIPES", "onCreateView: NUM: recipesItems ${it[0].recipeItems.size}")
             }
         }
         recipeViewModel.cookableRecipes.observe(viewLifecycleOwner){
@@ -73,11 +80,19 @@ class RecipesFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
                 recipeListArrayAdapter.replace(it)
                 recipeListArrayAdapter.notifyDataSetChanged()
             }
-        }*/
+        }
+
+        val addMockIngredientsButton = view.findViewById<Button>(R.id.add_mock_ingredients)
+        addMockIngredientsButton.setOnClickListener {
+            for (ingredient in MockData.shoppingListIngredients) {
+                ingredientViewModel.insert(ingredient)
+            }
+        }
 
         ingredientViewModel.allIngredientsLiveData.observe(viewLifecycleOwner) {
             //If a recipe gets changed i.e gets added/removed/restocked. It will proceed to update the
             //current cookable list in the viewModel
+            ingredients = it
             recipeViewModel.updateCurrentCookable()
         }
         recipeListView.setOnItemClickListener { _, _, _, id ->
@@ -86,8 +101,27 @@ class RecipesFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
         currentCookableCheckBox.setOnCheckedChangeListener(this)
 
         addRecipeButton.setOnClickListener {
+            // TODO: Remove later - add mock data
             recipeViewModel.insert(MockData.recipe)
-            recipeViewModel.insert(MockData.recipe2)
+            val recipeId = recipeViewModel.newRecipeId.value!! + 1
+
+            val breadItem = RecipeItem(
+                recipeAmount = 4,
+                relatedIngredientId = ingredients[0].ingredientId,
+                recipeUnit = "unit"
+            )
+
+            val milkItem = RecipeItem(
+                recipeAmount = 50,
+                relatedIngredientId = ingredients[3].ingredientId,
+                recipeUnit = "mL"
+            )
+            Log.d("ADD ITEM", "onCreateView: adding ingredients to recipe ${ingredients[0]}")
+            Log.d("ADD ITEM", "onCreateView: adding recipeItem to recipe ${breadItem}")
+            Log.d("ADD ITEM", "onCreateView: adding ingredients to recipe ${ingredients[3]}")
+            Log.d("ADD ITEM", "onCreateView: adding recipeItem to recipe ${milkItem}")
+            recipeItemViewModel.insert(breadItem, recipeId)
+            recipeItemViewModel.insert(milkItem, recipeId)
         }
 
         return view
