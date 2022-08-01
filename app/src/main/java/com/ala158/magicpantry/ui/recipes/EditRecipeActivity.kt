@@ -16,14 +16,16 @@ import android.view.MenuItem
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
-import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
+import com.ala158.magicpantry.MainActivity
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.dao.RecipeDAO
+import com.ala158.magicpantry.data.Recipe
 import com.ala158.magicpantry.data.RecipeWithIngredients
 import com.ala158.magicpantry.database.MagicPantryDatabase
 import com.ala158.magicpantry.repository.RecipeRepository
@@ -243,7 +245,12 @@ class EditRecipeActivity : AppCompatActivity() {
                     servings.text.toString().toInt()
                 }
                 recipeToEdit.recipe.description = description.text.toString()
-                recipeToEdit.recipe.imageUri = getImageUri(this, bitmap!!).toString()
+                recipeToEdit.recipe.imageUri = if (bitmap != null) {
+                    getImageUri(this, bitmap!!).toString()
+                }
+                else {
+                    ""
+                }
             }
         }
     }
@@ -270,7 +277,11 @@ class EditRecipeActivity : AppCompatActivity() {
         if (id == R.id.deleteButton) {
             //delete item from database
             deleteCurrItem()
+
+            //TODO make go to frag
+            //return to all recipes
             onBackPressed()
+
             return true
         }
         return super.onOptionsItemSelected(item)

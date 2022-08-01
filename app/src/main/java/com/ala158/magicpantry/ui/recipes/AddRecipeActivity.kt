@@ -244,8 +244,12 @@ class AddRecipeActivity : AppCompatActivity() {
             cookTime.text.toString().toInt()
         }
         recipe.title = title.text.toString()
-        recipe.imageUri = getImageUri(this, bitmap!!).toString()
-
+        recipe.imageUri = if (bitmap != null) {
+            getImageUri(this, bitmap!!).toString()
+        }
+        else {
+            ""
+        }
         recipeViewModel.insert(recipe)
     }
 
