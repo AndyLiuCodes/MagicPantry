@@ -12,7 +12,7 @@
         android:padding="15dp">
 
         <TextView
-            android:id="@+id/header_edit_recipe"
+            android:id="@+id/header_add_recipe"
             android:layout_width="match_parent"
             android:layout_height="55dp"
             android:layout_marginTop="15dp"
@@ -34,7 +34,7 @@
             android:layout_marginStart="70dp" >
 
             <ImageView
-                android:id="@+id/edit_recipe_img"
+                android:id="@+id/add_recipe_img"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:backgroundTint="@color/mp_yellow"
@@ -48,7 +48,7 @@
                 android:layout_weight="1" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_edit_recipe_pic"
+                android:id="@+id/btn_add_recipe_pic"
                 android:layout_width="54dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="20dp"
@@ -64,7 +64,7 @@
             android:textSize="15sp"
             android:textStyle="bold"
             android:textColor="@color/black"
-            android:id="@+id/edit_recipe_recipe_title" />
+            android:id="@+id/add_recipe_title" />
 
         <EditText
             android:layout_width="match_parent"
@@ -72,7 +72,7 @@
             android:textSize="15sp"
             android:background="@drawable/add_recipe_edit_text_style"
             android:layout_marginBottom="5dp"
-            android:id="@+id/edit_recipe_edit_recipe_title" />
+            android:id="@+id/add_recipe_edit_recipe_title" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -89,7 +89,7 @@
                 android:textStyle="bold"
                 android:textColor="@color/black"
                 android:layout_marginEnd="20dp"
-                android:id="@+id/edit_recipe_recipe_cook_time" />
+                android:id="@+id/add_recipe_cook_time" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -100,7 +100,7 @@
                 android:textStyle="bold"
                 android:textColor="@color/black"
                 android:layout_marginStart="20dp"
-                android:id="@+id/edit_recipe_recipe_servings" />
+                android:id="@+id/add_recipe_servings" />
         </LinearLayout>
 
         <LinearLayout
@@ -117,7 +117,7 @@
                 android:textSize="15sp"
                 android:background="@drawable/add_recipe_edit_text_style"
                 android:layout_marginEnd="60dp"
-                android:id="@+id/edit_recipe_cook_time" />
+                android:id="@+id/add_recipe_edit_recipe_cook_time" />
 
             <EditText
                 android:layout_width="30dp"
@@ -125,7 +125,7 @@
                 android:layout_weight="1"
                 android:background="@drawable/add_recipe_edit_text_style"
                 android:textSize="15sp"
-                android:id="@+id/edit_recipe_edit_recipe_servings" />
+                android:id="@+id/add_recipe_edit_recipe_servings" />
         </LinearLayout>
 
         <TextView
@@ -135,7 +135,7 @@
             android:textSize="15sp"
             android:textStyle="bold"
             android:textColor="@color/black"
-            android:id="@+id/edit_recipe_recipe_description" />
+            android:id="@+id/add_recipe_description" />
 
         <EditText
             android:layout_width="match_parent"
@@ -147,7 +147,7 @@
             android:gravity="top"
             android:layout_marginBottom="5dp"
             android:scrollbars="vertical"
-            android:id="@+id/edit_recipe_edit_recipe_description" />
+            android:id="@+id/add_recipe_edit_recipe_description" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -163,10 +163,10 @@
                 android:textSize="15sp"
                 android:textStyle="bold"
                 android:textColor="@color/black"
-                android:id="@+id/edit_recipe_recipe_ingredient_list_text" />
+                android:id="@+id/add_recipe_ingredient_list_text" />
 
             <Button
-                android:id="@+id/edit_recipe_btn_add_ingredient_to_recipe"
+                android:id="@+id/add_recipe_btn_add_ingredient_to_recipe"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:background="@android:color/transparent"
@@ -185,7 +185,7 @@
         </LinearLayout>
 
         <ListView
-            android:id="@+id/edit_recipe_recipe_ingredient_listView"
+            android:id="@+id/add_recipe_ingredient_listView"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="5dp"/>
@@ -198,7 +198,7 @@
             android:gravity="center|bottom" >
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/edit_recipe_btn_cancel_recipe"
+                android:id="@+id/add_recipe_btn_cancel_recipe"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:text="Cancel"
@@ -215,7 +215,7 @@
                 android:layout_weight="1" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/edit_recipe_btn_add_recipe"
+                android:id="@+id/add_recipe_btn_add_recipe"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="12"

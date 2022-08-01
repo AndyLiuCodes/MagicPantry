@@ -27,7 +27,7 @@
                 android:layout_marginTop="15dp"
                 android:gravity="center_vertical"
                 android:text="RecipeName"
-                android:textSize="30sp"></TextView>
+                android:textSize="30sp" />
 
             <Space
                 android:layout_width="0dp"
@@ -55,11 +55,11 @@
             android:padding="15dp">
 
             <ImageView
-                android:id="@+id/recipeImage"
+                android:id="@+id/singleRecipeImage"
                 android:layout_width="139dp"
                 android:layout_height="match_parent"
                 android:gravity="center"
-                app:srcCompat="@drawable/magic_pantry_app_logo"></ImageView>
+                app:srcCompat="@drawable/magic_pantry_app_logo" />
 
             <LinearLayout
                 android:layout_width="fill_parent"

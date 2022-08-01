@@ -11,9 +11,12 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
@@ -26,7 +29,10 @@ import com.ala158.magicpantry.database.MagicPantryDatabase
 import com.ala158.magicpantry.repository.RecipeRepository
 import com.ala158.magicpantry.viewModel.RecipeViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModelFactory
+import java.io.ByteArrayOutputStream
 import java.io.File
+
+//TODO: delete button (myRuns style)
 
 class EditRecipeActivity : AppCompatActivity() {
     private lateinit var imageUri: Uri
@@ -57,14 +63,12 @@ class EditRecipeActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_add_recipe)
+        setContentView(R.layout.activity_edit_recipe)
 
         pos = intent.getIntExtra("RecipeChosen", -1)
 
         //set up shared pref
         sharedPrefFile = getSharedPreferences("MySharedPrefs", Context.MODE_PRIVATE)
-
-        imageUri = "".toUri()
 
         //start up database
         myDataBase = MagicPantryDatabase.getInstance(this)
@@ -73,12 +77,12 @@ class EditRecipeActivity : AppCompatActivity() {
         viewModelFactory = RecipeViewModelFactory(repository)
         itemViewModel = ViewModelProvider(this, viewModelFactory)[RecipeViewModel::class.java]
 
-        imageView = findViewById(R.id.edit_recipe_img)
-        cameraBtn = findViewById(R.id.btn_edit_recipe_pic)
+        imageView = findViewById(R.id.edit_recipe_edit_recipe_img)
+        cameraBtn = findViewById(R.id.edit_recipe_btn_edit_recipe_pic)
 
         title = findViewById(R.id.edit_recipe_edit_recipe_title)
-        cookTime = findViewById(R.id.edit_recipe_cook_time)
-        servings = findViewById(R.id.edit_recipe_cook_time)
+        cookTime = findViewById(R.id.edit_recipe_edit_recipe_cook_time)
+        servings = findViewById(R.id.edit_recipe_edit_recipe_servings)
         description = findViewById(R.id.edit_recipe_edit_recipe_description)
 
         itemViewModel.allRecipes.observe(this) {
@@ -239,9 +243,46 @@ class EditRecipeActivity : AppCompatActivity() {
                     servings.text.toString().toInt()
                 }
                 recipeToEdit.recipe.description = description.text.toString()
-                recipeToEdit.recipe.imageUri = imageUri.toString()
+                recipeToEdit.recipe.imageUri = getImageUri(this, bitmap!!).toString()
             }
         }
+    }
+
+    private fun getImageUri(inContext: Context, inImage: Bitmap): Uri? {
+        val bytes = ByteArrayOutputStream()
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+        val path =
+            MediaStore.Images.Media.insertImage(inContext.contentResolver, inImage, "Title", null)
+        return Uri.parse(path)
+    }
+
+    //add delete button
+    override fun onCreateOptionsMenu(menu: Menu): Boolean {
+        menuInflater.inflate(R.menu.edit_recipe_delete_menu, menu)
+        return true
+    }
+
+    //make button clickable
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        val id = item.itemId
+
+        //if delete clicked
+        if (id == R.id.deleteButton) {
+            //delete item from database
+            deleteCurrItem()
+            onBackPressed()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    //delete current item from database
+    private fun deleteCurrItem() {
+        //remove observer from livedata
+        itemViewModel.allRecipes.removeObservers(this)
+
+        //delete item from viewModel
+        itemViewModel.deleteById(pos.toLong())
     }
 
     override fun onResume() {

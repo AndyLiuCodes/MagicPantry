@@ -34,7 +34,7 @@
             android:layout_marginStart="70dp" >
 
             <ImageView
-                android:id="@+id/edit_recipe_img"
+                android:id="@+id/edit_recipe_edit_recipe_img"
                 android:layout_width="100dp"
                 android:layout_height="100dp"
                 android:backgroundTint="@color/mp_yellow"
@@ -48,7 +48,7 @@
                 android:layout_weight="1" />
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/btn_edit_recipe_pic"
+                android:id="@+id/edit_recipe_btn_edit_recipe_pic"
                 android:layout_width="54dp"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="20dp"
@@ -117,7 +117,7 @@
                 android:textSize="15sp"
                 android:background="@drawable/add_recipe_edit_text_style"
                 android:layout_marginEnd="60dp"
-                android:id="@+id/edit_recipe_cook_time" />
+                android:id="@+id/edit_recipe_edit_recipe_cook_time" />
 
             <EditText
                 android:layout_width="30dp"

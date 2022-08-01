@@ -15,7 +15,6 @@ import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.net.toUri
 import androidx.lifecycle.ViewModelProvider
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
@@ -27,6 +26,7 @@ import com.ala158.magicpantry.database.MagicPantryDatabase
 import com.ala158.magicpantry.repository.RecipeRepository
 import com.ala158.magicpantry.viewModel.RecipeViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModelFactory
+import java.io.ByteArrayOutputStream
 import java.io.File
 
 class AddRecipeActivity : AppCompatActivity() {
@@ -64,8 +64,6 @@ class AddRecipeActivity : AppCompatActivity() {
         sharedPrefFile = getSharedPreferences("MySharedPrefs", Context.MODE_PRIVATE)
         val edit = sharedPrefFile.edit()
 
-        imageUri = "".toUri()
-
         //start up database
         myDataBase = MagicPantryDatabase.getInstance(this)
         dbDao = myDataBase.recipeDAO
@@ -73,16 +71,15 @@ class AddRecipeActivity : AppCompatActivity() {
         viewModelFactory = RecipeViewModelFactory(repository)
         recipeViewModel = ViewModelProvider(this, viewModelFactory)[RecipeViewModel::class.java]
 
-        imageView = findViewById(R.id.edit_recipe_img)
-        cameraBtn = findViewById(R.id.btn_edit_recipe_pic)
+        imageView = findViewById(R.id.add_recipe_img)
+        cameraBtn = findViewById(R.id.btn_add_recipe_pic)
 
-        title = findViewById(R.id.edit_recipe_edit_recipe_title)
-        cookTime = findViewById(R.id.edit_recipe_cook_time)
-        servings = findViewById(R.id.edit_recipe_cook_time)
-        description = findViewById(R.id.edit_recipe_edit_recipe_description)
-        ingredients = findViewById(R.id.edit_recipe_recipe_ingredient_listView)
+        title = findViewById(R.id.add_recipe_edit_recipe_title)
+        cookTime = findViewById(R.id.add_recipe_edit_recipe_cook_time)
+        servings = findViewById(R.id.add_recipe_edit_recipe_servings)
+        description = findViewById(R.id.add_recipe_edit_recipe_description)
+        ingredients = findViewById(R.id.add_recipe_ingredient_listView)
 
-        //TODO: fetch from db and onclick
         recipeViewModel.allRecipes.observe(this) {
             val myList = it.toTypedArray()
 
@@ -91,8 +88,6 @@ class AddRecipeActivity : AppCompatActivity() {
                 recipeArray = myList
             }
         }
-
-        val array = arrayOf("this", "that")
 
         val adapter = AddRecipeArrayAdapter(this, recipeArray, recipeViewModel)
         ingredients.adapter = adapter
@@ -138,7 +133,7 @@ class AddRecipeActivity : AppCompatActivity() {
             alert.show()
         }
 
-        val addIngredientBtn = findViewById<Button>(R.id.edit_recipe_btn_add_ingredient_to_recipe)
+        val addIngredientBtn = findViewById<Button>(R.id.add_recipe_btn_add_ingredient_to_recipe)
         addIngredientBtn.setOnClickListener {
             edit.putString("recipe_title", title.text.toString())
             edit.putString("recipe_cookTime", cookTime.text.toString())
@@ -150,12 +145,12 @@ class AddRecipeActivity : AppCompatActivity() {
             startActivity(intent)
         }
 
-        val cancelBtn = findViewById<Button>(R.id.edit_recipe_btn_cancel_recipe)
+        val cancelBtn = findViewById<Button>(R.id.add_recipe_btn_cancel_recipe)
         cancelBtn.setOnClickListener {
             onBackPressed()
         }
 
-        val addBtn = findViewById<Button>(R.id.edit_recipe_btn_add_recipe)
+        val addBtn = findViewById<Button>(R.id.add_recipe_btn_add_recipe)
         addBtn.setOnClickListener {
             //TODO: save recipe to db
             updateDatabase()
@@ -249,9 +244,17 @@ class AddRecipeActivity : AppCompatActivity() {
             cookTime.text.toString().toInt()
         }
         recipe.title = title.text.toString()
-        recipe.imageUri = imageUri.toString()
+        recipe.imageUri = getImageUri(this, bitmap!!).toString()
 
         recipeViewModel.insert(recipe)
+    }
+
+    private fun getImageUri(inContext: Context, inImage: Bitmap): Uri? {
+        val bytes = ByteArrayOutputStream()
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
+        val path =
+            MediaStore.Images.Media.insertImage(inContext.contentResolver, inImage, "Title", null)
+        return Uri.parse(path)
     }
 
     override fun onResume() {

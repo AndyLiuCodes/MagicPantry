@@ -7,12 +7,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
-import com.ala158.magicpantry.MockData
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.RecipeListArrayAdapter
-import com.ala158.magicpantry.ui.manualingredientinput.edit.PantryEditIngredientActivity
-import com.ala158.magicpantry.ui.pantry.PantryFragment
 import com.ala158.magicpantry.ui.singlerecipe.SingleRecipeActivity
 import com.ala158.magicpantry.viewModel.IngredientViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModel
@@ -84,6 +81,8 @@ class RecipesFragment : Fragment(),CompoundButton.OnCheckedChangeListener{
 
         addRecipeButton.setOnClickListener{
            //Button to add recipe to recipe list
+            val intent = Intent(requireContext(), AddRecipeActivity::class.java)
+            startActivity(intent)
         }
 
         return view

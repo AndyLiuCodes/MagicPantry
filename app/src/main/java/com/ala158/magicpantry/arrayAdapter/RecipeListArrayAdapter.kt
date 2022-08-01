@@ -38,7 +38,7 @@ class RecipeListArrayAdapter(private val context: Context, private var recipes:L
             val uri = Uri.parse(currRecipe.recipe.imageUri)
             recipeImageView.setImageURI(uri)
         }
-        recipeTitleView.text = "${currRecipe.recipe.title}"
+        recipeTitleView.text = currRecipe.recipe.title
         cookingTimeView.text = "${currRecipe.recipe.timeToCook} minutes"
         numOfServingsView.text ="${currRecipe.recipe.servings} servings"
         if(currRecipe.recipe.numMissingIngredients == 0){

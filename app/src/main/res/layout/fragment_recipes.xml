@@ -1,11 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:orientation="horizontal"
+    tools:context=".ui.recipes.RecipesFragment">
+
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:baselineAligned="false"
         android:orientation="vertical"
         android:padding="15dp">
 
@@ -13,35 +18,72 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:orientation="horizontal"
-            android:gravity="center_horizontal">
+            android:padding="10dp">
 
             <com.google.android.material.button.MaterialButton
-                android:id="@+id/edit_recipe_btn_add_recipe"
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
+                android:id="@+id/add_recipe"
+                android:layout_width="382dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
                 android:layout_weight="12"
                 android:backgroundTint="@color/mp_yellow"
-                android:text="Add Recipe"
+                android:text="@string/add_recipe"
                 android:textSize="16sp"
                 app:cornerRadius="8dp"
-                app:icon="@drawable/ic_plus_solid"
-                app:iconGravity="textStart"
-                android:layout_gravity="center_vertical" />
+                app:icon="@drawable/ic_baseline_add_24"
+                app:iconGravity="textStart" />
+
         </LinearLayout>
 
-        <!--Space
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight=".02" />-->
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/header_recipe"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_marginTop="15dp"
+                android:background="@drawable/rounded_bg_blue"
+                android:gravity="center_vertical"
+                android:paddingStart="15dp"
+                android:text="@string/all_recipe"
+                android:textColor="@color/white"
+                android:textSize="20sp"
+                android:textStyle="bold" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_centerVertical="true"
+                android:orientation="horizontal"
+                android:paddingTop="15dp">
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="15" />
+
+                <CheckBox
+                    android:id="@+id/checkbox_filter_cookable_recipes"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:buttonTint="@color/mp_yellow"
+                    android:text="@string/filter_cookable_recipes"
+                    android:textColor="@color/white" />
+
+            </LinearLayout>
+
+        </RelativeLayout>
 
         <ListView
-            android:id="@+id/listview_all_recipes"
-            android:layout_width="match_parent"
-            android:layout_height="0dp"
-            android:divider="@android:color/transparent"
-            android:dividerHeight="10sp"
+            android:id="@+id/listview_all_recipe"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="1"
-            android:focusable="true" />
+            android:divider="@android:color/transparent"
+            android:dividerHeight="10sp" />
     </LinearLayout>
 
 </LinearLayout>
