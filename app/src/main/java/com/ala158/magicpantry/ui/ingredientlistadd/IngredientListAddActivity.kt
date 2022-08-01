@@ -21,33 +21,38 @@ class IngredientListAddActivity : AppCompatActivity() {
     private lateinit var ingredientListView: ListView
     private lateinit var ingredientListAddAdapter: IngredientListAddAdapter
     private lateinit var finishIngredientListAddButton: Button
+    private lateinit var ingredientViewModel: IngredientViewModel
+    private lateinit var shoppingListItemViewModel: ShoppingListItemViewModel
+    private lateinit var recipeViewModel: RecipeViewModel
+    private lateinit var recipeItemViewModel: RecipeItemViewModel
 
     private var recipeId = 0L
+    private var isIngredientAddShoppingList: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_ingredient_list_add)
 
-        val isIngredientAddShoppingList =
+        isIngredientAddShoppingList =
             intent.extras?.getInt(Util.INGREDIENT_ADD_LIST) == Util.INGREDIENT_ADD_SHOPPING_LIST
-        val ingredientViewModel =
+        ingredientViewModel =
             Util.createViewModel(this, IngredientViewModel::class.java, Util.DataType.INGREDIENT)
 
-        val shoppingListItemViewModel =
+        shoppingListItemViewModel =
             Util.createViewModel(
                 this,
                 ShoppingListItemViewModel::class.java,
                 Util.DataType.SHOPPING_LIST_ITEM
             )
 
-        val recipeViewModel =
+        recipeViewModel =
             Util.createViewModel(
                 this,
                 RecipeViewModel::class.java,
                 Util.DataType.RECIPE
             )
 
-        val recipeItemViewModel =
+        recipeItemViewModel =
             Util.createViewModel(
                 this,
                 RecipeItemViewModel::class.java,
@@ -59,21 +64,25 @@ class IngredientListAddActivity : AppCompatActivity() {
         ingredientListView = findViewById(R.id.list_view_all_ingredients)
         finishIngredientListAddButton = findViewById(R.id.finish_ingredient_list_add)
 
-        ingredientListAddAdapter = IngredientListAddAdapter(this, isIngredientAddShoppingList)
-        ingredientListView.adapter = ingredientListAddAdapter
-
-        ingredientViewModel.allIngredientsLiveData.observe(this) {
-            ingredientListAddAdapter.replaceIngredients(it)
-            ingredientListAddAdapter.notifyDataSetChanged()
-        }
-
         if (isIngredientAddShoppingList) {
+            ingredientListAddAdapter = IngredientListAddAdapter(
+                this,
+                isIngredientAddShoppingList,
+                shoppingListItemViewModel.toBeAddedToShoppingListItems
+            )
+
             header.text = "Add Items to Shopping List"
             shoppingListItemViewModel.allShoppingListItemsLiveData.observe(this) {
                 ingredientListAddAdapter.replaceShoppingListItems(it)
                 ingredientListAddAdapter.notifyDataSetChanged()
             }
         } else {
+            ingredientListAddAdapter = IngredientListAddAdapter(
+                this,
+                isIngredientAddShoppingList,
+                recipeViewModel.toBeAddedToRecipeIngredients
+            )
+
             header.text = "Add Ingredients to Recipe"
             val position = intent.extras?.getInt(Util.INGREDIENT_ADD_LIST_RECIPE_POSITION)!!
             recipeViewModel.allRecipes.observe(this) {
@@ -81,6 +90,13 @@ class IngredientListAddActivity : AppCompatActivity() {
                 recipeId = it[position].recipe.recipeId
                 ingredientListAddAdapter.notifyDataSetChanged()
             }
+        }
+
+        ingredientListView.adapter = ingredientListAddAdapter
+
+        ingredientViewModel.allIngredientsLiveData.observe(this) {
+            ingredientListAddAdapter.replaceIngredients(it)
+            ingredientListAddAdapter.notifyDataSetChanged()
         }
 
         finishIngredientListAddButton.setOnClickListener {
@@ -107,6 +123,15 @@ class IngredientListAddActivity : AppCompatActivity() {
                 }
             }
             finish()
+        }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        if (isIngredientAddShoppingList) {
+            shoppingListItemViewModel.toBeAddedToShoppingListItems = ingredientListAddAdapter.ingredientsToAdd
+        } else {
+            recipeViewModel.toBeAddedToRecipeIngredients = ingredientListAddAdapter.ingredientsToAdd
         }
     }
 }

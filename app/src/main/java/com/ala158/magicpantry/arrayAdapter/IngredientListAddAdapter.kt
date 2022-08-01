@@ -14,6 +14,7 @@ import com.ala158.magicpantry.data.ShoppingListItemAndIngredient
 class IngredientListAddAdapter(
     private val context: Context,
     private val isIngredientAddShoppingList: Boolean,
+    existingIngredientsToAdd: MutableMap<Long, Ingredient>? = null
 ) : BaseAdapter() {
 
     private var ingredients: List<Ingredient> = ArrayList()
@@ -25,6 +26,12 @@ class IngredientListAddAdapter(
 
     // Only show ingredients that are not in the shopping list or in the recipe
     private var filteredIngredients: List<Ingredient> = ArrayList()
+
+    init {
+        if (existingIngredientsToAdd != null) {
+            ingredientsToAdd = existingIngredientsToAdd
+        }
+    }
 
     override fun getCount(): Int {
         return filteredIngredients.size
@@ -46,6 +53,10 @@ class IngredientListAddAdapter(
         val ingredient = filteredIngredients[position]
 
         nameTextView.text = ingredient.name
+
+        if (ingredientsToAdd.containsKey(ingredient.ingredientId)) {
+            inListCheckBox.isChecked = true
+        }
 
         inListCheckBox.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {

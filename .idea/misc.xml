@@ -14,6 +14,7 @@
         <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/drawable/ic_pen_to_square_solid.xml" value="0.3065" />
         <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/drawable/ic_plus_solid.xml" value="0.3065" />
         <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/drawable/rounded_bg_grey.xml" value="0.1" />
+        <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/layout/activity_ingredient_list_add.xml" value="0.24583333333333332" />
         <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/layout/activity_main.xml" value="0.1514360313315927" />
         <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/layout/activity_manual_ingredient_input.xml" value="0.17604166666666668" />
         <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/layout/activity_pantry_edit_ingredient.xml" value="0.27708333333333335" />
@@ -31,50 +32,6 @@
         <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/activity_receipt_scanner.xml" value="0.1" />
         <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/fragment_dashboard.xml" value="0.1" />
         <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/fragment_home.xml" value="0.1331521739130435" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.1975" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/drawable/ic_apple_whole_solid.xml" value="0.1975" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/drawable/ic_baseline_access_time_24.xml" value="0.1975" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/drawable/ic_baseline_add_24.xml" value="0.1975" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/drawable/ic_baseline_check_box_24.xml" value="0.1975" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/drawable/ic_baseline_edit_24.xml" value="0.1975" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/drawable/ic_baseline_restaurant_24.xml" value="0.1975" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/drawable/ic_bell_solid.xml" value="0.1975" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/drawable/ic_book_open_solid.xml" value="0.1975" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/drawable/ic_camera_solid.xml" value="0.1975" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/drawable/ic_cart_shopping_solid.xml" value="0.1975" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/drawable/ic_close.xml" value="0.1975" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/drawable/ic_dashboard_black_24dp.xml" value="0.1975" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/drawable/ic_gears_solid.xml" value="0.1975" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/drawable/ic_home_black_24dp.xml" value="0.1975" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/drawable/ic_launcher_background.xml" value="0.1975" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/drawable/ic_notifications_black_24dp.xml" value="0.1975" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/drawable/ic_pen_to_square_solid.xml" value="0.1975" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/drawable/ic_plus_solid.xml" value="0.1975" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/drawable/rounded_bg_blue.xml" value="0.1975" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/drawable/rounded_bg_green.xml" value="0.3015" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/drawable/rounded_bg_grey.xml" value="0.3015" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/drawable/rounded_bg_red.xml" value="0.1975" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/drawable/rounded_bg_white.xml" value="0.1975" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/drawable/rounded_bg_yellow.xml" value="0.3015" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/activity_main.xml" value="0.3641304347826087" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/activity_manual_ingredient_input.xml" value="0.36231884057971014" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/activity_pantry_edit_ingredient.xml" value="0.36231884057971014" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/activity_receipt_scanner.xml" value="0.36231884057971014" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/fragment_manual_ingredient_input.xml" value="0.36231884057971014" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/fragment_manual_ingredient_input_edit.xml" value="0.36231884057971014" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/fragment_pantry.xml" value="0.18958333333333333" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/fragment_recipes.xml" value="0.18802083333333333" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/fragment_review_ingredients.xml" value="0.3641304347826087" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/fragment_shopping_list.xml" value="0.15" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/fragment_single_recipe.xml" value="0.33" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/list_item_edit_ingredient.xml" value="0.18958333333333333" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/list_item_pantry_ingredient.xml" value="0.5" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/list_item_recipe.xml" value="0.25" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/list_item_recipe_ingredients.xml" value="0.2644927536231884" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/list_item_shopping_list.xml" value="0.3641304347826087" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/spinner_item_unit_dropdown.xml" value="0.18958333333333333" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/menu/bottom_nav_menu.xml" value="0.36666666666666664" />
-        <entry key="..\:/Users/ninpm/AndroidStudioProjects/MagicPantry/app/src/main/res/menu/manual_ingredient_input_action_menu.xml" value="0.36666666666666664" />
         <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/fragment_manual_ingredient_input_edit.xml" value="0.1" />
         <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/fragment_review_ingredients.xml" value="0.1" />
         <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/list_item_edit_ingredient.xml" value="0.1" />
