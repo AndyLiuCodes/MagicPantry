@@ -1,20 +1,15 @@
 package com.ala158.magicpantry.ui.recipes
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
-import com.ala158.magicpantry.MockData
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.RecipeListArrayAdapter
 import com.ala158.magicpantry.data.Ingredient
-import com.ala158.magicpantry.data.RecipeItem
-import com.ala158.magicpantry.data.RecipeWithRecipeItems
 import com.ala158.magicpantry.viewModel.IngredientViewModel
 import com.ala158.magicpantry.viewModel.RecipeItemViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModel
@@ -29,6 +24,8 @@ class RecipesFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
     private lateinit var recipeHeader: TextView
 
     private lateinit var recipeItemViewModel: RecipeItemViewModel
+
+    private lateinit var ingredients: List<Ingredient>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -60,24 +57,25 @@ class RecipesFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
         recipeListView.adapter = recipeListArrayAdapter
         recipeHeader = view.findViewById(R.id.header_recipe)
 
-/*        recipeViewModel.allRecipes.observe(viewLifecycleOwner) {
+        recipeViewModel.allRecipes.observe(viewLifecycleOwner) {
             recipeViewModel.updateCurrentCookable()
-            if(!currentCookableCheckBox.isChecked) {
+            if (!currentCookableCheckBox.isChecked && it.isNotEmpty()) {
                 recipeListArrayAdapter.replace(it)
                 recipeListArrayAdapter.notifyDataSetChanged()
             }
         }
-        recipeViewModel.cookableRecipes.observe(viewLifecycleOwner){
+        recipeViewModel.cookableRecipes.observe(viewLifecycleOwner) {
             //If the checkBox is checked it will show the list of recipes available to be cooked
-            if(currentCookableCheckBox.isChecked) {
+            if (currentCookableCheckBox.isChecked) {
                 recipeListArrayAdapter.replace(it)
                 recipeListArrayAdapter.notifyDataSetChanged()
             }
-        }*/
+        }
 
         ingredientViewModel.allIngredientsLiveData.observe(viewLifecycleOwner) {
             //If a recipe gets changed i.e gets added/removed/restocked. It will proceed to update the
             //current cookable list in the viewModel
+            ingredients = it
             recipeViewModel.updateCurrentCookable()
         }
         recipeListView.setOnItemClickListener { _, _, _, id ->
@@ -86,8 +84,6 @@ class RecipesFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
         currentCookableCheckBox.setOnCheckedChangeListener(this)
 
         addRecipeButton.setOnClickListener {
-            recipeViewModel.insert(MockData.recipe)
-            recipeViewModel.insert(MockData.recipe2)
         }
 
         return view

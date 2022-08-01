@@ -104,4 +104,9 @@ object Util {
             }
         }
     }
+
+    const val INGREDIENT_ADD_LIST = "INGREDIENT_ADD_LIST"
+    const val INGREDIENT_ADD_LIST_RECIPE_POSITION = "INGREDIENT_ADD_LIST_RECIPE_POSITIOn"
+    const val INGREDIENT_ADD_SHOPPING_LIST = 0
+    const val INGREDIENT_ADD_RECIPE = 1
 }
