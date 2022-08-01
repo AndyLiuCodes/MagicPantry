@@ -8,9 +8,10 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.data.Ingredient
-import com.ala158.magicpantry.data.RecipeWithIngredients
+import com.ala158.magicpantry.data.RecipeItemAndIngredient
+import com.ala158.magicpantry.data.RecipeWithRecipeItems
 
-class RecipeIngredientArrayAdapter(private val context: Context, private var recipeIngredients:List<Ingredient>, private var allIngredients:List<Ingredient>): BaseAdapter() {
+class RecipeIngredientArrayAdapter(private val context: Context, private var recipeIngredients:List<RecipeItemAndIngredient>): BaseAdapter() {
     override fun getCount(): Int {
         return recipeIngredients.size
     }
@@ -20,7 +21,7 @@ class RecipeIngredientArrayAdapter(private val context: Context, private var rec
     }
 
     override fun getItemId(position: Int): Long {
-        return recipeIngredients[position].ingredientId
+        return recipeIngredients[position].recipeItem.recipeItemId
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
@@ -28,27 +29,20 @@ class RecipeIngredientArrayAdapter(private val context: Context, private var rec
         val ingredientAmount: TextView = view.findViewById<TextView>(R.id.recipe_ingredient_amount)
         val ingredientName: TextView = view.findViewById<TextView>(R.id.recipe_ingredient_name)
         val alertSymbol: ImageView = view.findViewById<ImageView>(R.id.recipeIngredient_low_stock_icon)
-        ingredientAmount.text = "${recipeIngredients[position].amount} ${recipeIngredients[position].unit}"
-        ingredientName.text = "${recipeIngredients[position].name}"
-        val findIngredient = allIngredients.find {it.name.lowercase() == recipeIngredients[position].name.lowercase()}
-        if (findIngredient != null) {
-            if(findIngredient.amount < recipeIngredients[position].amount){
-                alertSymbol.visibility = View.VISIBLE
-            }else{
-                alertSymbol.visibility = View.INVISIBLE
-            }
+        val ingredient = recipeIngredients[position]
+        ingredientAmount.text = "${ingredient.recipeItem.recipeAmount}"
+        ingredientName.text = "${ingredient.ingredient.name} ${ingredient.ingredient.unit}"
+        if(ingredient.recipeItem.recipeAmount > ingredient.ingredient.amount){
+            alertSymbol.visibility = View.VISIBLE
         }
         else{
-            alertSymbol.visibility = View.VISIBLE
+            alertSymbol.visibility = View.INVISIBLE
         }
         return view
     }
 
-    fun replaceRecipeIngredients(newRecipes:List<Ingredient>){
+    fun replaceRecipeIngredients(newRecipes: List<RecipeItemAndIngredient>){
         recipeIngredients = newRecipes.toList()
     }
 
-    fun replaceAllIngredients(newIngredients:List<Ingredient>){
-        allIngredients = newIngredients.toList()
-    }
 }

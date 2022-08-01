@@ -12,6 +12,8 @@ import com.ala158.magicpantry.MockData
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.RecipeListArrayAdapter
+import com.ala158.magicpantry.data.Ingredient
+import com.ala158.magicpantry.data.RecipeItem
 import com.ala158.magicpantry.ui.manualingredientinput.edit.PantryEditIngredientActivity
 import com.ala158.magicpantry.ui.pantry.PantryFragment
 import com.ala158.magicpantry.ui.singlerecipe.SingleRecipeActivity
@@ -29,6 +31,7 @@ class RecipesFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
     private lateinit var recipeHeader: TextView
 
     private lateinit var recipeItemViewModel: RecipeItemViewModel
+    private lateinit var ingredients: List<Ingredient>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -60,7 +63,7 @@ class RecipesFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
         recipeListView.adapter = recipeListArrayAdapter
         recipeHeader = view.findViewById(R.id.header_recipe)
 
-/*        recipeViewModel.allRecipes.observe(viewLifecycleOwner) {
+        recipeViewModel.allRecipes.observe(viewLifecycleOwner) {
             recipeViewModel.updateCurrentCookable()
             if(!currentCookableCheckBox.isChecked) {
                 recipeListArrayAdapter.replace(it)
@@ -73,11 +76,13 @@ class RecipesFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
                 recipeListArrayAdapter.replace(it)
                 recipeListArrayAdapter.notifyDataSetChanged()
             }
-        }*/
+        }
 
         ingredientViewModel.allIngredientsLiveData.observe(viewLifecycleOwner) {
             //If a recipe gets changed i.e gets added/removed/restocked. It will proceed to update the
             //current cookable list in the viewModel
+            ingredients = it
+            recipeViewModel.updateCurrentCookable()
         }
 
         recipeListView.setOnItemClickListener { _, _, position, _ ->
@@ -93,8 +98,7 @@ class RecipesFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
         currentCookableCheckBox.setOnCheckedChangeListener(this)
 
         addRecipeButton.setOnClickListener {
-            recipeViewModel.insert(MockData.recipe)
-            recipeViewModel.insert(MockData.recipe2)
+
         }
 
         return view

@@ -9,9 +9,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.RecipeIngredientArrayAdapter
-import com.ala158.magicpantry.arrayAdapter.RecipeListArrayAdapter
-import com.ala158.magicpantry.data.RecipeWithIngredients
+import com.ala158.magicpantry.data.RecipeWithRecipeItems
 import com.ala158.magicpantry.viewModel.IngredientViewModel
+import com.ala158.magicpantry.viewModel.RecipeItemViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModel
 
 class SingleRecipeActivity : AppCompatActivity() {
@@ -28,6 +28,7 @@ class SingleRecipeActivity : AppCompatActivity() {
     private lateinit var editRecipeButton: Button
     private lateinit var addIngredientsButton: Button
     private lateinit var recipeIngredientArrayAdapter: RecipeIngredientArrayAdapter
+    private lateinit var recipeItemViewModel: RecipeItemViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,6 +43,12 @@ class SingleRecipeActivity : AppCompatActivity() {
             IngredientViewModel::class.java,
             Util.DataType.INGREDIENT
         )
+
+        recipeItemViewModel = Util.createViewModel(
+            this,
+            RecipeItemViewModel::class.java,
+            Util.DataType.RECIPE_ITEM
+        )
         recipeName = findViewById(R.id.singleRecipeName)
         recipeDescription = findViewById(R.id.recipe_description)
         ingredientListView = findViewById(R.id.listview_all_recipe_ingredients)
@@ -54,13 +61,13 @@ class SingleRecipeActivity : AppCompatActivity() {
 
         val id = intent.getIntExtra("RECIPE_KEY",-1)
         val id2 = intent.getIntExtra("RECIPE_KEY_COOKABLE",-1)
-        recipeIngredientArrayAdapter = RecipeIngredientArrayAdapter(this, ArrayList(), ArrayList())
+        recipeIngredientArrayAdapter = RecipeIngredientArrayAdapter(this, ArrayList())
         ingredientListView.adapter = recipeIngredientArrayAdapter
 
         recipeViewModel.allRecipes.observe(this) {
             recipeViewModel.updateCurrentCookable()
             if(id != -1) {
-                var recipeWithIngredients: RecipeWithIngredients = it[id]
+                var recipeWithIngredients: RecipeWithRecipeItems = it[id]
                 recipeName.text = recipeWithIngredients.recipe.title
                 recipeDescription.text = recipeWithIngredients.recipe.description
                 cookingTimeView.text = "${recipeWithIngredients.recipe.timeToCook}"
@@ -73,14 +80,15 @@ class SingleRecipeActivity : AppCompatActivity() {
                     isAbleToCookImageView.setImageResource(R.drawable.low_stock)
                     isAbleToCookTextView.text = "Missing ${recipeWithIngredients.recipe.numMissingIngredients} ingredients"
                 }
-                recipeIngredientArrayAdapter.replaceRecipeIngredients(it[id].ingredients)
+                recipeIngredientArrayAdapter.replaceRecipeIngredients(recipeWithIngredients.recipeItems)
                 recipeIngredientArrayAdapter.notifyDataSetChanged()
             }
         }
         recipeViewModel.cookableRecipes.observe(this){
             if(id2 != -1) {
-                var recipeWithIngredients: RecipeWithIngredients = it[id2]
+                var recipeWithIngredients: RecipeWithRecipeItems = it[id2]
                 recipeName.text = recipeWithIngredients.recipe.title
+                recipeDescription.text = recipeWithIngredients.recipe.description
                 cookingTimeView.text = "${recipeWithIngredients.recipe.timeToCook}"
                 numOfServingsView.text = "${recipeWithIngredients.recipe.servings}"
                 if(recipeWithIngredients.recipe.numMissingIngredients == 0){
@@ -91,14 +99,9 @@ class SingleRecipeActivity : AppCompatActivity() {
                     isAbleToCookImageView.setImageResource(R.drawable.low_stock)
                     isAbleToCookTextView.text = "Missing ${recipeWithIngredients.recipe.numMissingIngredients} ingredients"
                 }
-                recipeIngredientArrayAdapter.replaceRecipeIngredients(it[id2].ingredients)
+                recipeIngredientArrayAdapter.replaceRecipeIngredients(recipeWithIngredients.recipeItems)
                 recipeIngredientArrayAdapter.notifyDataSetChanged()
             }
-        }
-
-        ingredientViewModel.allIngredientsLiveData.observe(this){
-            recipeIngredientArrayAdapter.replaceAllIngredients(it)
-            recipeIngredientArrayAdapter.notifyDataSetChanged()
         }
 
         editRecipeButton.setOnClickListener{
