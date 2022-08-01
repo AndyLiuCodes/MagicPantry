@@ -1,9 +1,12 @@
 package com.ala158.magicpantry.ui.ingredientlistadd
 
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.widget.Button
 import android.widget.ListView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
@@ -11,12 +14,13 @@ import com.ala158.magicpantry.arrayAdapter.IngredientListAddAdapter
 import com.ala158.magicpantry.data.Ingredient
 import com.ala158.magicpantry.data.RecipeItem
 import com.ala158.magicpantry.data.ShoppingListItem
+import com.ala158.magicpantry.dialogs.IngredientListAddDialog
 import com.ala158.magicpantry.viewModel.IngredientViewModel
 import com.ala158.magicpantry.viewModel.RecipeItemViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModel
 import com.ala158.magicpantry.viewModel.ShoppingListItemViewModel
 
-class IngredientListAddActivity : AppCompatActivity() {
+class IngredientListAddActivity : AppCompatActivity(), IngredientListAddDialog.IngredientListAddDialogListener {
     private lateinit var header: TextView
     private lateinit var ingredientListView: ListView
     private lateinit var ingredientListAddAdapter: IngredientListAddAdapter
@@ -122,6 +126,13 @@ class IngredientListAddActivity : AppCompatActivity() {
                     recipeItemViewModel.insert(recipeItem, recipeId)
                 }
             }
+
+            if (isIngredientAddShoppingList && ingredients.isNotEmpty()) {
+                Toast.makeText(this, "Ingredients added to Shopping List!", Toast.LENGTH_SHORT).show()
+            } else if (!isIngredientAddShoppingList && ingredients.isNotEmpty()) {
+                Toast.makeText(this, "Ingredients added to Recipe!", Toast.LENGTH_SHORT).show()
+            }
+
             finish()
         }
     }
@@ -133,5 +144,33 @@ class IngredientListAddActivity : AppCompatActivity() {
         } else {
             recipeViewModel.toBeAddedToRecipeIngredients = ingredientListAddAdapter.ingredientsToAdd
         }
+    }
+
+    // Used the following resource to create the options menu:
+    // https://www.techotopia.com/index.php/Creating_and_Managing_Overflow_Menus_on_Android_with_Kotlin
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.ingredient_list_add_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    // Had help from https://developer.android.com/training/appbar/actions#handle-actions
+    // detecting when a user presses on an item on the top menu
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.item_menu_ingredientlist_add) {
+            val ingredientListAddDialog = IngredientListAddDialog()
+            ingredientListAddDialog.show(supportFragmentManager, "Ingredient List Add")
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onIngredientListAddDialogClick(newIngredientName: String, newIngredientUnit: String) {
+        val newIngredient = Ingredient(
+            newIngredientName,
+            0,
+            newIngredientUnit,
+            0.0,
+            0
+        )
+        ingredientViewModel.insert(newIngredient)
     }
 }

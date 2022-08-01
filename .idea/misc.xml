@@ -20,6 +20,7 @@
         <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/layout/activity_pantry_edit_ingredient.xml" value="0.27708333333333335" />
         <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/layout/dialog_add_to_shopping_list.xml" value="0.1" />
         <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/layout/dialog_change_shopping_item_amount.xml" value="0.18885869565217392" />
+        <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/layout/dialog_ingredient_list_add.xml" value="0.24479166666666666" />
         <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/layout/fragment_manual_ingredient_input.xml" value="0.17604166666666668" />
         <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/layout/fragment_manual_ingredient_input_edit.xml" value="0.17604166666666668" />
         <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/layout/fragment_review_ingredients.xml" value="0.27708333333333335" />
@@ -27,6 +28,7 @@
         <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/layout/list_item_pantry_ingredient.xml" value="0.25" />
         <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/layout/list_item_shopping_list.xml" value="0.22" />
         <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/layout/spinner_item_unit_dropdown.xml" value="0.2296875" />
+        <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/menu/ingredient_list_add_menu.xml" value="0.24479166666666666" />
         <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/menu/manual_ingredient_input_action_menu.xml" value="0.27708333333333335" />
         <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/activity_main.xml" value="0.19947916666666668" />
         <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/activity_receipt_scanner.xml" value="0.1" />
