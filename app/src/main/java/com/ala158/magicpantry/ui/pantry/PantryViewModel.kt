@@ -35,7 +35,7 @@ class PantryViewModel(private val repository: IngredientRepository) : ViewModel(
         CoroutineScope(Dispatchers.IO).launch {
             val lowStockArrayList = ArrayList<Ingredient>()
             for (ingredient in allIngredientsLiveData.value!!) {
-                if (ingredient.amount < 3) {
+                if (ingredient.amount <= ingredient.notifyThreshold) {
                     lowStockArrayList.add(ingredient)
                 }
             }

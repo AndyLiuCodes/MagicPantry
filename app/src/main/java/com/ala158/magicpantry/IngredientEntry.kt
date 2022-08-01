@@ -6,6 +6,8 @@ class IngredientEntry {
     private var amount: Int = 0
     private var unit: String = "unit"
     private var price: Double = 0.0
+    private var isNotify: Boolean = false
+    private var notifyThreshold: Int = 0
 
     fun getId() : Long {
         return id
@@ -44,5 +46,21 @@ class IngredientEntry {
 
     fun setPrice(newPrice: Double) {
         price = newPrice
+    }
+
+    fun getIsNotify() : Boolean {
+        return isNotify
+    }
+
+    fun setIsNotify(newIsNotify: Boolean) {
+        isNotify = newIsNotify
+    }
+
+    fun getNotifyThreshold() : Int {
+        return notifyThreshold
+    }
+
+    fun setNotifyThreshold(newNotifyThreshold : Int) {
+        notifyThreshold = newNotifyThreshold
     }
 }

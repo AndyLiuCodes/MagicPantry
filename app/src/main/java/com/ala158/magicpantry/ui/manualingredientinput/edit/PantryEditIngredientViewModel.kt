@@ -25,6 +25,8 @@ class PantryEditIngredientViewModel(private val repository: IngredientRepository
                 ingredient.setAmount(ingredientDbEntry.amount)
                 ingredient.setUnit(ingredientDbEntry.unit)
                 ingredient.setPrice(ingredientDbEntry.price)
+                ingredient.setNotifyThreshold(ingredientDbEntry.notifyThreshold)
+                ingredient.setIsNotify(ingredientDbEntry.isNotify)
                 ingredientEntry.value = ingredient
             }
         }
@@ -40,7 +42,9 @@ class PantryEditIngredientViewModel(private val repository: IngredientRepository
             ingredientEntry.value!!.getName(),
             ingredientEntry.value!!.getAmount(),
             ingredientEntry.value!!.getUnit(),
-            ingredientEntry.value!!.getPrice()
+            ingredientEntry.value!!.getPrice(),
+            ingredientEntry.value!!.getIsNotify(),
+            ingredientEntry.value!!.getNotifyThreshold()
         )
         repository.updateIngredient(dbIngredient)
     }

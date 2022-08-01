@@ -19,6 +19,7 @@
     <string name="manual_amount_label">Amount *</string>
     <string name="manual_unit_label">Unit</string>
     <string name="manual_price_label">Price per Unit</string>
+    <string name="manual_threshold_label">Amount Threshold for Low Stock</string>
     <string name="manual_add_item_btn">Add to Pantry</string>
     <string name="add_all_button_text">Add All</string>
     <string name="cancel_button_text">Cancel</string>
