@@ -1,20 +1,15 @@
 package com.ala158.magicpantry.ui.recipes
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.findNavController
-import com.ala158.magicpantry.MockData
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.RecipeListArrayAdapter
 import com.ala158.magicpantry.data.Ingredient
-import com.ala158.magicpantry.data.RecipeItem
-import com.ala158.magicpantry.data.RecipeWithRecipeItems
 import com.ala158.magicpantry.viewModel.IngredientViewModel
 import com.ala158.magicpantry.viewModel.RecipeItemViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModel
@@ -64,28 +59,16 @@ class RecipesFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
 
         recipeViewModel.allRecipes.observe(viewLifecycleOwner) {
             recipeViewModel.updateCurrentCookable()
-            if(!currentCookableCheckBox.isChecked && it.size >= 1) {
+            if (!currentCookableCheckBox.isChecked && it.isNotEmpty()) {
                 recipeListArrayAdapter.replace(it)
                 recipeListArrayAdapter.notifyDataSetChanged()
-                Log.d("RECIPES", "onCreateView: recipes ${it[0]}")
-                for (item in it[0].recipeItems) {
-                    Log.d("RECIPES", "onCreateView: recipesItems ${item}")
-                }
-                Log.d("RECIPES", "onCreateView: NUM: recipesItems ${it[0].recipeItems.size}")
             }
         }
-        recipeViewModel.cookableRecipes.observe(viewLifecycleOwner){
+        recipeViewModel.cookableRecipes.observe(viewLifecycleOwner) {
             //If the checkBox is checked it will show the list of recipes available to be cooked
-            if(currentCookableCheckBox.isChecked) {
+            if (currentCookableCheckBox.isChecked) {
                 recipeListArrayAdapter.replace(it)
                 recipeListArrayAdapter.notifyDataSetChanged()
-            }
-        }
-
-        val addMockIngredientsButton = view.findViewById<Button>(R.id.add_mock_ingredients)
-        addMockIngredientsButton.setOnClickListener {
-            for (ingredient in MockData.shoppingListIngredients) {
-                ingredientViewModel.insert(ingredient)
             }
         }
 
@@ -101,27 +84,6 @@ class RecipesFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
         currentCookableCheckBox.setOnCheckedChangeListener(this)
 
         addRecipeButton.setOnClickListener {
-            // TODO: Remove later - add mock data
-            recipeViewModel.insert(MockData.recipe)
-            val recipeId = recipeViewModel.newRecipeId.value!! + 1
-
-            val breadItem = RecipeItem(
-                recipeAmount = 4,
-                relatedIngredientId = ingredients[0].ingredientId,
-                recipeUnit = "unit"
-            )
-
-            val milkItem = RecipeItem(
-                recipeAmount = 50,
-                relatedIngredientId = ingredients[3].ingredientId,
-                recipeUnit = "mL"
-            )
-            Log.d("ADD ITEM", "onCreateView: adding ingredients to recipe ${ingredients[0]}")
-            Log.d("ADD ITEM", "onCreateView: adding recipeItem to recipe ${breadItem}")
-            Log.d("ADD ITEM", "onCreateView: adding ingredients to recipe ${ingredients[3]}")
-            Log.d("ADD ITEM", "onCreateView: adding recipeItem to recipe ${milkItem}")
-            recipeItemViewModel.insert(breadItem, recipeId)
-            recipeItemViewModel.insert(milkItem, recipeId)
         }
 
         return view

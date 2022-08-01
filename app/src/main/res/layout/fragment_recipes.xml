@@ -20,13 +20,6 @@
             android:orientation="horizontal"
             android:padding="10dp">
 
-            <Button
-                android:id="@+id/add_mock_ingredients"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_weight="12"
-                android:text="Add Mock Ingredients" />
-
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/add_recipe"
                 android:layout_width="382dp"

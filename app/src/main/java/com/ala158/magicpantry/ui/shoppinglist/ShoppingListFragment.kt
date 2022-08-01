@@ -75,10 +75,7 @@ class ShoppingListFragment : Fragment(), ShoppingListArrayAdapter.OnChangeShoppi
         addIngredientsButton.setOnClickListener {
             val intent = Intent(requireActivity(), IngredientListAddActivity::class.java)
             val bundle = Bundle()
-            // TODO: Swap this back to INGREDIENT_ADD_SHOPPING_LIST
-            bundle.putInt(Util.INGREDIENT_ADD_LIST, Util.INGREDIENT_ADD_RECIPE)
-            // TODO: When using the recipe, position will be passed instead
-            bundle.putInt(Util.INGREDIENT_ADD_LIST_RECIPE_POSITION, 0)
+            bundle.putInt(Util.INGREDIENT_ADD_LIST, Util.INGREDIENT_ADD_SHOPPING_LIST)
             intent.putExtras(bundle)
             startActivity(intent)
         }

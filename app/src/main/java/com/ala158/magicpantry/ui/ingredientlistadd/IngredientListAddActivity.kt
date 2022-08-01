@@ -1,11 +1,10 @@
 package com.ala158.magicpantry.ui.ingredientlistadd
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.ListView
 import android.widget.TextView
+import androidx.appcompat.app.AppCompatActivity
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.IngredientListAddAdapter
@@ -89,7 +88,6 @@ class IngredientListAddActivity : AppCompatActivity() {
             var shoppingListItem: ShoppingListItem
             var recipeItem: RecipeItem
             var ingredient: Ingredient
-            Log.d("ADD INGREDIENT", "onCreate: ingredients ${ingredients}")
             for (ingredientMap in ingredients) {
                 ingredient = ingredientMap.value
                 if (isIngredientAddShoppingList) {
