@@ -51,6 +51,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_weight="1"
+            android:background="#FFFFFF"
             android:gravity="center"
             android:padding="15dp">
 
@@ -85,8 +86,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:paddingTop="5dp"
-                        android:text="@string/cookingtime">
-                    </TextView>
+                        android:text="@string/cookingtime"></TextView>
                 </LinearLayout>
 
                 <LinearLayout
@@ -137,6 +137,17 @@
 
                     </TextView>
                 </LinearLayout>
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/Cook_now_btn"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:backgroundTint="@color/mp_yellow"
+                    android:gravity="center_vertical"
+                    android:text = "Cook Now!"
+                    app:cornerRadius="8dp"
+                    tools:ignore="SpeakableTextPresentCheck" />
+
             </LinearLayout>
 
         </LinearLayout>
