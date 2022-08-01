@@ -153,7 +153,60 @@
 
             </com.google.android.material.textfield.TextInputLayout>
 
+            <TextView
+                android:id="@+id/pantry_edit_threshold_label"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="@string/manual_threshold_label"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                android:layout_marginTop="10dp" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="horizontal" >
+
+                <com.google.android.material.textfield.TextInputLayout
+                    android:id="@+id/pantry_edit_threshold_area"
+                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:background="@color/mp_grey"
+                    app:boxStrokeColor="@color/mp_grey"
+                    app:boxStrokeWidth="0dp"
+                    app:boxStrokeWidthFocused="4dp"
+                    android:layout_weight="8">
+
+                    <com.google.android.material.textfield.TextInputEditText
+                        android:id="@+id/pantry_edit_threshold"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:inputType="number"
+                        android:textSize="20sp"
+                        android:maxLength="6"/>
+
+                </com.google.android.material.textfield.TextInputLayout>
+
+                <Space
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
+                    android:layout_weight="1" />
+
+                <TextView
+                    android:id="@+id/pantry_edit_threshold_unit"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="5"
+                    android:textSize="20sp"
+                    android:textColor="@color/black"
+                    android:gravity="center_vertical"
+                    android:layout_marginLeft="5dp" />
+
+            </LinearLayout>
+
         </LinearLayout>
+
     </ScrollView>
 
     <LinearLayout

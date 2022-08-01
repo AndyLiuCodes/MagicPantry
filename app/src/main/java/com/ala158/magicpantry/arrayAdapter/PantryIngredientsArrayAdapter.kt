@@ -32,7 +32,7 @@ class PantryIngredientsArrayAdapter(
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view = View.inflate(context, R.layout.list_item_pantry_ingredient, null)
-        val lowStockIconView = view.findViewById<ImageView>(R.id.pantry_low_stock_icon)
+        val stockStatusIconView = view.findViewById<ImageView>(R.id.pantry_low_stock_icon)
         val amountTextView = view.findViewById<TextView>(R.id.ingredient_amount)
         val ingredientNameTextView = view.findViewById<TextView>(R.id.ingredient_name)
         val ingredientPriceUnitTextView = view.findViewById<TextView>(R.id.ingredient_price_unit)
@@ -58,10 +58,9 @@ class PantryIngredientsArrayAdapter(
             val distanceString = distanceValueFormatter.format(ingredient.price)
             ingredientPriceUnitTextView.text = "$$distanceString/${ingredient.unit}"
         }
-
-        // TODO: Make this a configurable number - maybe in settings?
-        if (ingredient.amount < 3) {
-            lowStockIconView.visibility = View.VISIBLE
+        
+        if (ingredient.amount <= ingredient.notifyThreshold) {
+            stockStatusIconView.visibility = View.VISIBLE // Show low stock icon
         }
 
         addToShoppingListBtn.setOnClickListener {
