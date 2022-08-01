@@ -74,6 +74,9 @@ class ShoppingListFragment : Fragment(), ShoppingListArrayAdapter.OnChangeShoppi
 
         addIngredientsButton.setOnClickListener {
             val intent = Intent(requireActivity(), IngredientListAddActivity::class.java)
+            val bundle = Bundle()
+            bundle.putInt(Util.INGREDIENT_ADD_LIST, Util.INGREDIENT_ADD_SHOPPING_LIST)
+            intent.putExtras(bundle)
             startActivity(intent)
         }
 

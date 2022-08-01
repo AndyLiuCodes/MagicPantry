@@ -2,13 +2,11 @@ package com.ala158.magicpantry.ui.recipes
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
-import com.ala158.magicpantry.MockData
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.RecipeListArrayAdapter
@@ -31,6 +29,8 @@ class RecipesFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
     private lateinit var recipeHeader: TextView
 
     private lateinit var recipeItemViewModel: RecipeItemViewModel
+    private lateinit var ingredients: List<Ingredient>
+
     private lateinit var ingredients: List<Ingredient>
 
     override fun onCreateView(
@@ -65,14 +65,14 @@ class RecipesFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
 
         recipeViewModel.allRecipes.observe(viewLifecycleOwner) {
             recipeViewModel.updateCurrentCookable()
-            if(!currentCookableCheckBox.isChecked) {
+            if (!currentCookableCheckBox.isChecked && it.isNotEmpty()) {
                 recipeListArrayAdapter.replace(it)
                 recipeListArrayAdapter.notifyDataSetChanged()
             }
         }
-        recipeViewModel.cookableRecipes.observe(viewLifecycleOwner){
+        recipeViewModel.cookableRecipes.observe(viewLifecycleOwner) {
             //If the checkBox is checked it will show the list of recipes available to be cooked
-            if(currentCookableCheckBox.isChecked) {
+            if (currentCookableCheckBox.isChecked) {
                 recipeListArrayAdapter.replace(it)
                 recipeListArrayAdapter.notifyDataSetChanged()
             }
@@ -98,7 +98,6 @@ class RecipesFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
         currentCookableCheckBox.setOnCheckedChangeListener(this)
 
         addRecipeButton.setOnClickListener {
-
         }
 
         return view

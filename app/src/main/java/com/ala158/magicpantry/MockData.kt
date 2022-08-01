@@ -25,7 +25,7 @@ object MockData {
         Ingredient("Milk", 2, "L", 4.00),
         Ingredient("Orange Juice", 500, "ml", 2.50),
         Ingredient("Apple", 500, "g", 0.50),
-        Ingredient("Potatos", 1, "Kg", 2.00),
+        Ingredient("Potatoes", 1, "Kg", 2.00),
         Ingredient("Water", 1000, "ml", 0.25)
     )
 

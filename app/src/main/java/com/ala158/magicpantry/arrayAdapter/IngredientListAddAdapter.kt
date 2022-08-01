@@ -1,7 +1,6 @@
 package com.ala158.magicpantry.arrayAdapter
 
 import android.content.Context
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
@@ -9,29 +8,34 @@ import android.widget.CheckBox
 import android.widget.TextView
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.data.Ingredient
-import com.ala158.magicpantry.data.ShoppingListItem
+import com.ala158.magicpantry.data.RecipeItemAndIngredient
 import com.ala158.magicpantry.data.ShoppingListItemAndIngredient
 
 class IngredientListAddAdapter(
     private val context: Context,
+    private val isIngredientAddShoppingList: Boolean,
 ) : BaseAdapter() {
 
     private var ingredients: List<Ingredient> = ArrayList()
     private var shoppingListItems: List<ShoppingListItemAndIngredient> = ArrayList()
-    private var ingredientsNotInShoppingList: List<Ingredient> = ArrayList()
-    // Holds the IDs of which ingredients to be added to the shopping list
-    var ingredientsAddToShoppingList: MutableSet<Long> = mutableSetOf()
+    private var recipeItems: List<RecipeItemAndIngredient> = ArrayList()
+
+    // Holds the IDs of which ingredients to be added to the shopping list or recipe
+    var ingredientsToAdd: MutableMap<Long, Ingredient> = mutableMapOf()
+
+    // Only show ingredients that are not in the shopping list or in the recipe
+    private var filteredIngredients: List<Ingredient> = ArrayList()
 
     override fun getCount(): Int {
-        return ingredientsNotInShoppingList.size
+        return filteredIngredients.size
     }
 
     override fun getItem(position: Int): Any {
-        return ingredientsNotInShoppingList[position]
+        return filteredIngredients[position]
     }
 
     override fun getItemId(position: Int): Long {
-        return ingredientsNotInShoppingList[position].ingredientId
+        return filteredIngredients[position].ingredientId
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup?): View {
@@ -39,15 +43,15 @@ class IngredientListAddAdapter(
         val nameTextView = view.findViewById<TextView>(R.id.ingredient_list_item_name)
         val inListCheckBox = view.findViewById<CheckBox>(R.id.ingredient_list_is_in_list)
 
-        val ingredient = ingredientsNotInShoppingList[position]
+        val ingredient = filteredIngredients[position]
 
         nameTextView.text = ingredient.name
 
-        inListCheckBox.setOnCheckedChangeListener() { _, isChecked ->
+        inListCheckBox.setOnCheckedChangeListener { _, isChecked ->
             if (isChecked) {
-                ingredientsAddToShoppingList.add(ingredient.ingredientId)
+                ingredientsToAdd[ingredient.ingredientId] = ingredient
             } else {
-                ingredientsAddToShoppingList.remove(ingredient.ingredientId)
+                ingredientsToAdd.remove(ingredient.ingredientId)
             }
         }
 
@@ -64,13 +68,24 @@ class IngredientListAddAdapter(
         updateIngredientsNotInShoppingList()
     }
 
+    fun replaceRecipeItems(newRecipeItems: List<RecipeItemAndIngredient>) {
+        recipeItems = newRecipeItems
+        updateIngredientsNotInShoppingList()
+    }
+
     // Retrieve ingredients that aren't in the shopping list
     private fun updateIngredientsNotInShoppingList() {
-        val shoppingListIngredientIds =
-            shoppingListItems.map { it.shoppingListItem.relatedIngredientId }.toSet()
+        val filterIds: Set<Long>
+        if (isIngredientAddShoppingList) {
+            filterIds =
+                shoppingListItems.map { it.shoppingListItem.relatedIngredientId }.toSet()
+        } else {
+            filterIds =
+                recipeItems.map { it.ingredient.ingredientId }.toSet()
+        }
 
-        ingredientsNotInShoppingList =
-            ingredients.filter { it.ingredientId !in shoppingListIngredientIds }
+        filteredIngredients =
+            ingredients.filter { it.ingredientId !in filterIds }
 
         notifyDataSetChanged()
     }
