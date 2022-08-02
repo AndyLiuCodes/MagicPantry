@@ -46,8 +46,9 @@ class NotificationsFragment : Fragment() {
         notificationsListView = view.findViewById(R.id.notifications_list_view)
         notificationsListView.adapter = notificationsListArrayAdapter
 
-        notificationsListView.setOnItemClickListener { _, _, _, _ ->
+        notificationsListView.setOnItemClickListener { _, _, pos, _ ->
             val intent = Intent(requireContext(), LowIngredientActivity::class.java)
+            intent.putExtra("NotificationPosition", pos)
             startActivity(intent)
         }
 

@@ -72,7 +72,12 @@ class SingleRecipeActivity : AppCompatActivity() {
             if(id != -1) {
                 val recipeWithIngredients: RecipeWithIngredients = it[id]
                 recipeName.text = recipeWithIngredients.recipe.title
-                recipeImage.setImageURI(recipeWithIngredients.recipe.imageUri.toUri())
+                if (recipeWithIngredients.recipe.imageUri == "") {
+                    recipeImage.setImageResource(R.drawable.magic_pantry_app_logo)
+                }
+                else {
+                    recipeImage.setImageURI(recipeWithIngredients.recipe.imageUri.toUri())
+                }
                 recipeDescription.text = recipeWithIngredients.recipe.description
                 cookingTimeView.text = "${recipeWithIngredients.recipe.timeToCook}"
                 numOfServingsView.text = "${recipeWithIngredients.recipe.servings}"

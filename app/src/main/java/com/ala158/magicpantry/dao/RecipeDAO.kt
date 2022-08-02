@@ -1,7 +1,6 @@
 package com.ala158.magicpantry.dao
 
 import androidx.room.*
-import com.ala158.magicpantry.data.IngredientRecipeCrossRef
 import com.ala158.magicpantry.data.Recipe
 import com.ala158.magicpantry.data.RecipeWithIngredients
 import kotlinx.coroutines.flow.Flow

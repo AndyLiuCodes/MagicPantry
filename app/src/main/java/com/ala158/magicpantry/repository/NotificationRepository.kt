@@ -37,4 +37,10 @@ class NotificationRepository(private val notificationDAO: NotificationDAO) {
             notificationDAO.deleteAllNotificationCrossRefById(key)
         }
     }
+
+    fun updateRead(notification: Notification) {
+        CoroutineScope(Dispatchers.IO).launch {
+            notificationDAO.updateRead(notification)
+        }
+    }
 }

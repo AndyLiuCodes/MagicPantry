@@ -27,7 +27,7 @@
         <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/layout/spinner_item_unit_dropdown.xml" value="0.2296875" />
         <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/menu/manual_ingredient_input_action_menu.xml" value="0.27708333333333335" />
         <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/activity_add_recipe.xml" value="0.1" />
-        <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/activity_edit_recipe.xml" value="0.1" />
+        <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/activity_edit_recipe.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/activity_low_ingredient.xml" value="0.14673913043478262" />
         <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/activity_main.xml" value="0.19947916666666668" />
         <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/activity_receipt_scanner.xml" value="0.1" />
@@ -38,8 +38,12 @@
         <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/fragment_recipes.xml" value="0.1" />
         <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/fragment_review_ingredients.xml" value="0.1" />
         <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/fragment_single_recipe.xml" value="0.3333333333333333" />
+        <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/list_item_add_ingredient_to_recipe_list.xml" value="0.5" />
         <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/list_item_edit_ingredient.xml" value="0.1" />
+        <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/list_item_low_ingredient_list.xml" value="0.5" />
+        <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/list_item_notification.xml" value="0.3333333333333333" />
         <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/list_item_notification_list.xml" value="0.14673913043478262" />
+        <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/list_item_recipe_ingredients.xml" value="0.22" />
         <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/menu/edit_recipe_delete_menu.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_dashboard_black_24dp.xml" value="0.4895" />
         <entry key="app/src/main/res/drawable/ic_pen_to_square_solid.xml" value="0.4895" />

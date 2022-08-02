@@ -50,11 +50,7 @@ class EditRecipeActivity : AppCompatActivity() {
     private lateinit var servings : TextView
     private lateinit var description : TextView
 
-    private lateinit var myDataBase : MagicPantryDatabase
-    private lateinit var dbDao : RecipeDAO
-    private lateinit var repository : RecipeRepository
-    private lateinit var viewModelFactory : RecipeViewModelFactory
-    private lateinit var itemViewModel : RecipeViewModel
+    private lateinit var recipeViewModel : RecipeViewModel
 
     private var recipeArray = arrayOf<RecipeWithIngredients>()
     private var pos = 0
@@ -72,11 +68,11 @@ class EditRecipeActivity : AppCompatActivity() {
         sharedPrefFile = getSharedPreferences("MySharedPrefs", Context.MODE_PRIVATE)
 
         //start up database
-        myDataBase = MagicPantryDatabase.getInstance(this)
-        dbDao = myDataBase.recipeDAO
-        repository = RecipeRepository(dbDao)
-        viewModelFactory = RecipeViewModelFactory(repository)
-        itemViewModel = ViewModelProvider(this, viewModelFactory)[RecipeViewModel::class.java]
+        recipeViewModel = Util.createViewModel(
+            this,
+            RecipeViewModel::class.java,
+            Util.DataType.RECIPE
+        )
 
         imageView = findViewById(R.id.edit_recipe_edit_recipe_img)
         cameraBtn = findViewById(R.id.edit_recipe_btn_edit_recipe_pic)
@@ -86,7 +82,7 @@ class EditRecipeActivity : AppCompatActivity() {
         servings = findViewById(R.id.edit_recipe_edit_recipe_servings)
         description = findViewById(R.id.edit_recipe_edit_recipe_description)
 
-        itemViewModel.allRecipes.observe(this) {
+        recipeViewModel.allRecipes.observe(this) {
             val myList = it.toTypedArray()
 
             //if not empty
@@ -99,8 +95,13 @@ class EditRecipeActivity : AppCompatActivity() {
 
                 newUri = recipeArray[pos].recipe.imageUri
 
-                //set textViews
-                imageView!!.setImageURI(newUri.toUri())
+                //set textViews and imageView
+                if (newUri == "") {
+                    imageView!!.setImageResource(R.drawable.magic_pantry_app_logo)
+                }
+                else {
+                    imageView!!.setImageURI(newUri.toUri())
+                }
                 title.text = recipeArray[pos].recipe.title
                 cookTime.text = recipeArray[pos].recipe.timeToCook.toString()
                 servings.text = recipeArray[pos].recipe.servings.toString()
@@ -243,9 +244,10 @@ class EditRecipeActivity : AppCompatActivity() {
         else {
             cookTime.text.toString().toInt()
         }
-        itemViewModel.update(Recipe(id, title.text.toString(), newUri, newServings, newCookTime, description.text.toString(), 0))
+        recipeViewModel.update(Recipe(id, title.text.toString(), newUri, newServings, newCookTime, description.text.toString(), 0))
     }
 
+    //convert bitmap to uri
     private fun getImageUri(inContext: Context, inImage: Bitmap): Uri? {
         val bytes = ByteArrayOutputStream()
         inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
@@ -269,7 +271,7 @@ class EditRecipeActivity : AppCompatActivity() {
             //delete item from database
             deleteCurrItem()
 
-            //return to all recipes
+            //return to RecipesFragment
             val local = Intent()
             local.action = "FINISH"
             sendBroadcast(local)
@@ -283,10 +285,10 @@ class EditRecipeActivity : AppCompatActivity() {
     //delete current item from database
     private fun deleteCurrItem() {
         //remove observer from livedata
-        itemViewModel.allRecipes.removeObservers(this)
+        recipeViewModel.allRecipes.removeObservers(this)
 
         //delete item from viewModel
-        itemViewModel.deleteById(id)
+        recipeViewModel.deleteById(id)
     }
 
     override fun onResume() {

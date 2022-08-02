@@ -35,16 +35,12 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
     }
 
     fun update(recipe: Recipe) {
-        CoroutineScope(Dispatchers.IO).launch {
-            repository.updateRecipe(recipe)
-        }
+        repository.updateRecipe(recipe)
     }
 
     fun deleteById(key: Long) {
-        CoroutineScope(Dispatchers.IO).launch {
-            repository.deleteRecipeById(key)
-            repository.deleteAllRecipeCrossRef(key)
-        }
+        repository.deleteRecipeById(key)
+        repository.deleteAllRecipeCrossRef(key)
     }
 
     fun deleteCrossRef(recipeId: Long, ingredientId: Long) {

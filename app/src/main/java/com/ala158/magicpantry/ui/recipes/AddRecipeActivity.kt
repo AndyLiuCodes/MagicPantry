@@ -24,6 +24,7 @@ import com.ala158.magicpantry.data.Recipe
 import com.ala158.magicpantry.data.RecipeWithIngredients
 import com.ala158.magicpantry.database.MagicPantryDatabase
 import com.ala158.magicpantry.repository.RecipeRepository
+import com.ala158.magicpantry.viewModel.NotificationViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModelFactory
 import java.io.ByteArrayOutputStream
@@ -48,10 +49,6 @@ class AddRecipeActivity : AppCompatActivity() {
     private lateinit var description : TextView
     private lateinit var ingredients : ListView
 
-    private lateinit var myDataBase : MagicPantryDatabase
-    private lateinit var dbDao : RecipeDAO
-    private lateinit var repository : RecipeRepository
-    private lateinit var viewModelFactory : RecipeViewModelFactory
     private lateinit var recipeViewModel : RecipeViewModel
 
     private var recipeArray = arrayOf<RecipeWithIngredients>()
@@ -65,11 +62,11 @@ class AddRecipeActivity : AppCompatActivity() {
         val edit = sharedPrefFile.edit()
 
         //start up database
-        myDataBase = MagicPantryDatabase.getInstance(this)
-        dbDao = myDataBase.recipeDAO
-        repository = RecipeRepository(dbDao)
-        viewModelFactory = RecipeViewModelFactory(repository)
-        recipeViewModel = ViewModelProvider(this, viewModelFactory)[RecipeViewModel::class.java]
+        recipeViewModel = Util.createViewModel(
+            this,
+            RecipeViewModel::class.java,
+            Util.DataType.RECIPE
+        )
 
         imageView = findViewById(R.id.add_recipe_img)
         cameraBtn = findViewById(R.id.btn_add_recipe_pic)
@@ -92,7 +89,7 @@ class AddRecipeActivity : AppCompatActivity() {
         val adapter = AddRecipeArrayAdapter(this, recipeArray, recipeViewModel)
         ingredients.adapter = adapter
 
-        ingredients.setOnItemClickListener() { parent: AdapterView<*>, _: View, _: Int, _: Long->
+        ingredients.setOnItemClickListener { parent: AdapterView<*>, _: View, _: Int, _: Long->
             println("debug: $parent")
         }
 
@@ -152,7 +149,6 @@ class AddRecipeActivity : AppCompatActivity() {
 
         val addBtn = findViewById<Button>(R.id.add_recipe_btn_add_recipe)
         addBtn.setOnClickListener {
-            //TODO: save recipe to db
             updateDatabase()
             onBackPressed()
         }
