@@ -76,7 +76,7 @@ class PantryEditIngredientActivity : AppCompatActivity() {
             if (it.getPrice() != 0.0)
                 textInputEditPrice.setText(it.getPrice().toString())
 
-            if (it.getNotifyThreshold() != 0) {
+            if (it.getNotifyThreshold() != 0.0) {
                 lowStockThresholdField.setText(it.getNotifyThreshold().toString())
             }
         }
@@ -293,9 +293,9 @@ class PantryEditIngredientActivity : AppCompatActivity() {
         lowStockThresholdField.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 val thresholdAmountString = s.toString()
-                var thresholdAmount = 0
+                var thresholdAmount = 0.0
                 if (thresholdAmountString != "")
-                    thresholdAmount = thresholdAmountString.toInt()
+                    thresholdAmount = thresholdAmountString.toDouble()
 
                 pantryEditIngredientViewModel.ingredientEntry.value!!.setNotifyThreshold(
                     thresholdAmount

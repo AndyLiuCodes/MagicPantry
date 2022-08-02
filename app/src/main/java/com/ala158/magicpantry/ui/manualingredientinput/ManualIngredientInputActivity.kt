@@ -176,9 +176,9 @@ class ManualIngredientInputActivity : AppCompatActivity() {
         lowStockThresholdField.addTextChangedListener(object: TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 val thresholdAmountString = s.toString()
-                var thresholdAmount = 0
+                var thresholdAmount = 0.0
                 if (thresholdAmountString != "")
-                    thresholdAmount = thresholdAmountString.toInt()
+                    thresholdAmount = thresholdAmountString.toDouble()
 
                 manualIngredientsInputViewModel.ingredient.value!!.setNotifyThreshold(thresholdAmount)
                 return

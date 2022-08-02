@@ -170,7 +170,7 @@ class IngredientListAddActivity : AppCompatActivity(), IngredientListAddDialog.I
             0.0,
             newIngredientUnit,
             0.0,
-            0
+            0.0
         )
         ingredientViewModel.insert(newIngredient)
     }
