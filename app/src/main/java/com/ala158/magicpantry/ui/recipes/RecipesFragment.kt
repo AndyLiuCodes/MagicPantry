@@ -8,10 +8,10 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
-import com.ala158.magicpantry.MockData
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.RecipeListArrayAdapter
+import com.ala158.magicpantry.data.Ingredient
 import com.ala158.magicpantry.ui.singlerecipe.SingleRecipeActivity
 import com.ala158.magicpantry.viewModel.IngredientViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModel
@@ -95,35 +95,6 @@ class RecipesFragment : Fragment(),CompoundButton.OnCheckedChangeListener{
             startActivity(intent)
         }
 
-        val addIngredientsButton = view.findViewById<Button>(R.id.addIngredients)
-        val createRecipeButton = view.findViewById<Button>(R.id.createRecipes)
-
-        addIngredientsButton.setOnClickListener {
-            ingredientViewModel.insertAll(MockData.allIngredientsToastTest)
-        }
-
-        createRecipeButton.setOnClickListener {
-            recipeViewModel.insert(MockData.recipe)
-            // ID's begin at 1 when query by ID
-            val recipeId = recipeViewModel.newRecipeId.value!! + 1
-
-            val breadItem = RecipeItem(
-                recipeAmount = 4.0,
-                relatedIngredientId = ingredients[0].ingredientId,
-                recipeUnit = "unit",
-                relatedRecipeId = recipeId
-            )
-
-            val milkItem = RecipeItem(
-                recipeAmount = 2.0,
-                relatedIngredientId = ingredients[1].ingredientId,
-                recipeUnit = "mL",
-                relatedRecipeId = recipeId
-            )
-
-            recipeItemViewModel.insert(breadItem)
-            recipeItemViewModel.insert(milkItem)
-        }
         return view
     }
 
