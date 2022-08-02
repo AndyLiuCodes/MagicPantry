@@ -79,8 +79,8 @@ class SingleRecipeActivity : AppCompatActivity() {
                     recipeImage.setImageURI(recipeWithIngredients.recipe.imageUri.toUri())
                 }
                 recipeDescription.text = recipeWithIngredients.recipe.description
-                cookingTimeView.text = "${recipeWithIngredients.recipe.timeToCook}"
-                numOfServingsView.text = "${recipeWithIngredients.recipe.servings}"
+                cookingTimeView.text = "${recipeWithIngredients.recipe.timeToCook} mins"
+                numOfServingsView.text = "${recipeWithIngredients.recipe.servings} servings"
                 if(recipeWithIngredients.recipe.numMissingIngredients == 0){
                     isAbleToCookImageView.setImageResource(R.drawable.ic_baseline_check_box_24)
                     isAbleToCookTextView.text = "Ready to cook!"
@@ -97,8 +97,8 @@ class SingleRecipeActivity : AppCompatActivity() {
             if(id2 != -1) {
                 val recipeWithIngredients: RecipeWithRecipeItems = it[id2]
                 recipeName.text = recipeWithIngredients.recipe.title
-                cookingTimeView.text = "${recipeWithIngredients.recipe.timeToCook}"
-                numOfServingsView.text = "${recipeWithIngredients.recipe.servings}"
+                cookingTimeView.text = "${recipeWithIngredients.recipe.timeToCook} mins"
+                numOfServingsView.text = "${recipeWithIngredients.recipe.servings} servings"
                 if(recipeWithIngredients.recipe.numMissingIngredients == 0){
                     isAbleToCookImageView.setImageResource(R.drawable.ic_baseline_check_box_24)
                     isAbleToCookTextView.text = "Ready to cook!"
