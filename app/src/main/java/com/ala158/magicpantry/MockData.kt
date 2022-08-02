@@ -54,7 +54,7 @@ object MockData {
     val allIngredientsToastTest = arrayListOf(
         Ingredient("Bread", 10.0, "unit", 0.50),
         Ingredient("Milk", 2.0, "L", 1.00),
-        Ingredient("Cinnamon", 5.0, "g", 2.00),
+        Ingredient("Cinnamon", 100.0, "g", 3.00),
     )
 
     val shoppingListItems = arrayListOf(
@@ -87,12 +87,12 @@ object MockData {
         ),
         NotificationWithIngredients(
             Notification(
-                description = "Low on Cinnamon",
+                description = "Low on Milk",
                 isRead = true,
                 date = oldDate(Calendar.MONTH, 1)
             ),
             arrayListOf(
-                allIngredientsToastTest[2]
+                allIngredientsToastTest[1]
             )
         ),
     )

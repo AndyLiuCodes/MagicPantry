@@ -6,6 +6,7 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.ListView
@@ -19,6 +20,9 @@ import com.ala158.magicpantry.data.RecipeWithRecipeItems
 import com.ala158.magicpantry.ui.recipes.EditRecipeActivity
 import com.ala158.magicpantry.viewModel.IngredientViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class SingleRecipeActivity : AppCompatActivity() {
 
@@ -34,6 +38,7 @@ class SingleRecipeActivity : AppCompatActivity() {
     private lateinit var isAbleToCookTextView: TextView
     private lateinit var editRecipeButton: Button
     private lateinit var addIngredientsButton: Button
+    private lateinit var cookNowButton: Button
     private lateinit var recipeIngredientArrayAdapter: RecipeIngredientArrayAdapter
 
     private lateinit var broadcastReceiver: BroadcastReceiver
@@ -86,10 +91,12 @@ class SingleRecipeActivity : AppCompatActivity() {
                 if(recipeWithIngredients.recipe.numMissingIngredients == 0){
                     isAbleToCookImageView.setImageResource(R.drawable.ic_baseline_check_box_24)
                     isAbleToCookTextView.text = "Ready to cook!"
+                    cookNowButton.visibility = View.VISIBLE
                 } else {
                     isAbleToCookImageView.setImageResource(R.drawable.low_stock)
                     isAbleToCookTextView.text =
                         "Missing ${recipeWithRecipeItems.recipe.numMissingIngredients} ingredients"
+                    cookNowButton.visibility = View.INVISIBLE
                 }
                 recipeIngredientArrayAdapter.replaceRecipeIngredients(recipeWithRecipeItems.recipeItems)
                 recipeIngredientArrayAdapter.notifyDataSetChanged()
@@ -133,9 +140,11 @@ class SingleRecipeActivity : AppCompatActivity() {
             Log.d("SINGLE RECIPE", "onCreate: cook recipe!!!")
 
             if (id != -1) {
-                consumeIngredients()
-                // Now update all recipes' num of missing ingredients with the pantry being updated
-                updateRecipesMissingIngredients()
+                CoroutineScope(Dispatchers.IO).launch {
+                    consumeIngredients()
+                    // Now update all recipes' num of missing ingredients with the pantry being updated
+                    updateRecipesMissingIngredients()
+                }
             }
 
         }
@@ -168,27 +177,29 @@ class SingleRecipeActivity : AppCompatActivity() {
                 item.ingredient.unit,
                 item.recipeItem.recipeUnit
             )
+            Log.d(
+                "SINGLE_RECIPE",
+                "consumeIngredients: Ingredient: ${item.ingredient.name} CURR AMT: " +
+                        "${item.ingredient.amount}"
+            )
             item.ingredient.amount -= convertedUnitAmount
-            if (item.ingredient.amount < 0) {
-                item.ingredient.amount = 0.0
-            }
             Log.d(
                 "SINGLE_RECIPE",
                 "consumeIngredients: Ingredient: ${item.ingredient.name} New AMT: " +
                         "${item.ingredient.amount}"
             )
-            ingredientViewModel.update(item.ingredient)
+            ingredientViewModel.updateSync(item.ingredient)
         }
     }
 
-    private fun updateRecipesMissingIngredients() {
+    private suspend fun updateRecipesMissingIngredients() {
         // List of updated ingredient Ids that have been consumed
         val updatedIngredientsIds =
             recipeWithRecipeItems.recipeItems.map { it.ingredient.ingredientId }
 
         val recipesWithItemsNotEnough = mutableSetOf<Long>()
-        ingredientViewModel.findIngredientsWithRecipeItemsById(updatedIngredientsIds)
-        val ingredientsWithRecipeItems = ingredientViewModel.ingredientsWithRecipeItems.value!!
+        val ingredientsWithRecipeItems =
+            ingredientViewModel.findIngredientsWithRecipeItemsById(updatedIngredientsIds)
 
         for (ingredientWithRecipeItem in ingredientsWithRecipeItems) {
 
@@ -205,20 +216,28 @@ class SingleRecipeActivity : AppCompatActivity() {
                     "updateRecipesMissingIngredients: RecipeItemAMT: ${item.recipeAmount} " +
                             "IngredientAMT: ${ingredientWithRecipeItem.ingredient.amount}"
                 )
-                if (item.recipeAmount < ingredientWithRecipeItem.ingredient.amount) {
+                val convertedRecipeAmount = Util.unitConversion(
+                    item.recipeAmount,
+                    ingredientWithRecipeItem.ingredient.unit,
+                    item.recipeUnit
+                )
+                if (convertedRecipeAmount <= ingredientWithRecipeItem.ingredient.amount) {
+                    item.recipeIsEnough = true
+                } else {
                     item.recipeIsEnough = false
                     recipesWithItemsNotEnough.add(item.relatedRecipeId)
-                } else {
-                    item.recipeIsEnough = true
                 }
-                recipeItemViewModel.update(item)
+                Log.d(
+                    "SINGLE_RECIPE",
+                    "updateRecipesMissingIngredients: isEnough: ${item.recipeIsEnough}"
+                )
+                recipeItemViewModel.updateSync(item)
             }
         }
 
         // Update all recipes' num of missing ingredients that have had their recipeItems
         // isEnough set to false
-        recipeViewModel.getRecipesById(recipesWithItemsNotEnough.toList())
-        val recipes = recipeViewModel.currentRecipes.value!!
+        val recipes = recipeViewModel.getRecipesById(recipesWithItemsNotEnough.toList())
 
         for (recipe in recipes) {
             Log.d(
@@ -229,12 +248,20 @@ class SingleRecipeActivity : AppCompatActivity() {
             for (recipeItem in recipe.recipeItems) {
                 if (!recipeItem.recipeItem.recipeIsEnough) {
                     count += 1
+                    Log.d(
+                        "SINGLE_RECIPE",
+                        "updateRecipesMissingIngredients: ${recipeItem.recipeItem} not enough"
+                    )
                 }
             }
 
             Log.d(
                 "SINGLE_RECIPE",
                 "updateRecipesMissingIngredients: updated count $count"
+            )
+            Log.d(
+                "SINGLE_RECIPE",
+                "updateRecipesMissingIngredients: recipe $recipe"
             )
 
             // Update the recipe's number of missing ingredients

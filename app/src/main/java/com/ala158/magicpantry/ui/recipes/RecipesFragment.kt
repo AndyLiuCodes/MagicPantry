@@ -99,19 +99,14 @@ class RecipesFragment : Fragment(),CompoundButton.OnCheckedChangeListener{
         val createRecipeButton = view.findViewById<Button>(R.id.createRecipes)
 
         addIngredientsButton.setOnClickListener {
-            Log.d("Recipe", "onCreateView: add ingredients")
-            for (i in MockData.allIngredientsToastTest.indices) {
-                ingredientViewModel.insert(MockData.allIngredientsToastTest[i])
-            }
+            ingredientViewModel.insertAll(MockData.allIngredientsToastTest)
         }
+
         createRecipeButton.setOnClickListener {
-            Log.d("Recipe", "onCreateView: create")
             recipeViewModel.insert(MockData.recipe)
             // ID's begin at 1 when query by ID
             val recipeId = recipeViewModel.newRecipeId.value!! + 1
-            Log.d("Recipe", "onCreateView: $recipeId")
 
-            Log.d("Recipe", "onCreateView: add ingredient to recipe")
             val breadItem = RecipeItem(
                 recipeAmount = 4.0,
                 relatedIngredientId = ingredients[0].ingredientId,

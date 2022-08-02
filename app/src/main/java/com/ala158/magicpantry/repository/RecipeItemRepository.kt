@@ -31,4 +31,8 @@ class RecipeItemRepository(private val recipeItemDAO: RecipeItemDAO) {
             recipeItemDAO.updateRecipeItem(recipeItem)
         }
     }
+
+    fun updateRecipeItemSync(recipeItem: RecipeItem) {
+        recipeItemDAO.updateRecipeItemSync(recipeItem)
+    }
 }

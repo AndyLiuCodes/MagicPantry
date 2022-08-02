@@ -12,6 +12,9 @@ interface IngredientDAO {
     suspend fun insertIngredient(ingredient: Ingredient)
 
     @Insert
+    suspend fun insertIngredients(ingredients: List<Ingredient>)
+
+    @Insert
     suspend fun insertIngredientReturnId(ingredient: Ingredient): Long
 
     @Query("SELECT * FROM ingredient WHERE ingredientId = :key")
@@ -25,13 +28,16 @@ interface IngredientDAO {
 
     @Transaction
     @Query("SELECT * FROM ingredient WHERE ingredientId IN (:keys)")
-    fun getIngredientsWithRecipeItemsById(keys: List<Long>): Flow<List<IngredientWithRecipeItems>>
+    suspend fun getIngredientsWithRecipeItemsById(keys: List<Long>): List<IngredientWithRecipeItems>
 
     @Delete
     suspend fun deleteIngredient(ingredient: Ingredient)
 
     @Update
     suspend fun updateIngredient(ingredient: Ingredient)
+
+    @Update
+    fun updateIngredientSync(ingredient: Ingredient)
 
     @Query("DELETE FROM ingredient WHERE ingredientId = :key")
     suspend fun deleteIngredientById(key: Long)

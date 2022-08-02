@@ -23,14 +23,9 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
     val cookableRecipes = MutableLiveData<List<RecipeWithRecipeItems>>()
 
     var toBeAddedToRecipeIngredients: MutableMap<Long, Ingredient> = mutableMapOf()
-    private var _currentRecipes: LiveData<List<RecipeWithRecipeItems>> = MutableLiveData()
-    val currentRecipes: LiveData<List<RecipeWithRecipeItems>> = _currentRecipes
 
-    fun getRecipesById(keys: List<Long>) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val recipe = repository.getRecipesById(keys).asLiveData()
-            _currentRecipes = recipe
-        }
+    suspend fun getRecipesById(keys: List<Long>): List<RecipeWithRecipeItems> {
+        return repository.getRecipesById(keys)
     }
 
     fun insert(recipe: Recipe) {

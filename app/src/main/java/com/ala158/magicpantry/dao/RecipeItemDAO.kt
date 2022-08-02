@@ -20,4 +20,7 @@ interface RecipeItemDAO {
 
     @Update
     suspend fun updateRecipeItem(recipeItem: RecipeItem)
+
+    @Update
+    fun updateRecipeItemSync(recipeItem: RecipeItem)
 }

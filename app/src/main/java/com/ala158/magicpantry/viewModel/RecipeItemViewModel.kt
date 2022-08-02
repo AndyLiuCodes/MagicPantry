@@ -34,4 +34,8 @@ class RecipeItemViewModel(private val repository: RecipeItemRepository) : ViewMo
     fun update(recipeItem: RecipeItem) {
         repository.updateRecipeItem(recipeItem)
     }
+
+    fun updateSync(recipeItem: RecipeItem) {
+        repository.updateRecipeItemSync(recipeItem)
+    }
 }
