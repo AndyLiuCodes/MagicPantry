@@ -141,7 +141,7 @@
                     </TextView>
                 </LinearLayout>
                 <com.google.android.material.button.MaterialButton
-                    android:id="@+id/Cook_now_btn"
+                    android:id="@+id/cook_now_btn"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"

@@ -27,9 +27,9 @@ class SingleRecipeActivity : AppCompatActivity() {
     private lateinit var recipeViewModel: RecipeViewModel
     private lateinit var recipeItemViewModel: RecipeItemViewModel
     private lateinit var ingredientViewModel: IngredientViewModel
-    private lateinit var recipeName:TextView
-    private lateinit var recipeImage:ImageView
-    private lateinit var recipeDescription:TextView
+    private lateinit var recipeName: TextView
+    private lateinit var recipeImage: ImageView
+    private lateinit var recipeDescription: TextView
     private lateinit var ingredientListView: ListView
     private lateinit var cookingTimeView: TextView
     private lateinit var numOfServingsView: TextView
@@ -54,7 +54,7 @@ class SingleRecipeActivity : AppCompatActivity() {
         )
         recipeItemViewModel = Util.createViewModel(
             this,
-            recipeItemViewModel::class.java,
+            RecipeItemViewModel::class.java,
             Util.DataType.RECIPE_ITEM
         )
         ingredientViewModel = Util.createViewModel(
@@ -71,6 +71,7 @@ class SingleRecipeActivity : AppCompatActivity() {
         isAbleToCookImageView = findViewById(R.id.enoughIngredientsImage)
         isAbleToCookTextView = findViewById(R.id.EnoughIngredientsText)
         editRecipeButton = findViewById(R.id.edit_recipe_button)
+        cookNowButton = findViewById(R.id.cook_now_btn)
         addIngredientsButton = findViewById(R.id.add_ingredient_to_recipe_button)
 
         val id = intent.getIntExtra("RECIPE_KEY", -1)
@@ -80,13 +81,12 @@ class SingleRecipeActivity : AppCompatActivity() {
 
         recipeViewModel.allRecipes.observe(this) {
             recipeViewModel.updateCurrentCookable()
-            if(id != -1) {
+            if (id != -1) {
                 recipeWithRecipeItems = it[id]
                 recipeName.text = recipeWithRecipeItems.recipe.title
                 if (recipeWithRecipeItems.recipe.imageUri == "") {
                     recipeImage.setImageResource(R.drawable.magic_pantry_app_logo)
-                }
-                else {
+                } else {
                     recipeImage.setImageURI(recipeWithRecipeItems.recipe.imageUri.toUri())
                 }
                 recipeDescription.text = recipeWithRecipeItems.recipe.description
@@ -125,12 +125,12 @@ class SingleRecipeActivity : AppCompatActivity() {
             }
         }
 
-        ingredientViewModel.allIngredientsLiveData.observe(this){
+        ingredientViewModel.allIngredientsLiveData.observe(this) {
             //recipeIngredientArrayAdapter.replaceAllIngredients(it)
             recipeIngredientArrayAdapter.notifyDataSetChanged()
         }
 
-        editRecipeButton.setOnClickListener{
+        editRecipeButton.setOnClickListener {
             val intent = Intent(this, EditRecipeActivity::class.java)
             intent.putExtra("RecipeChosen", id)
             startActivity(intent)
