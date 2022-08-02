@@ -114,9 +114,9 @@ class ManualIngredientInputActivity : AppCompatActivity() {
         amountTextField.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 val amountString = s.toString()
-                var amount = 0
+                var amount = 0.0
                 if (amountString != "")
-                    amount = amountString.toInt()
+                    amount = amountString.toDouble()
                 manualIngredientsInputViewModel.ingredient.value!!.setAmount(amount)
                 amountLabel.setTextColor(resources.getColor(R.color.mp_textview_grey, null))
                 isAmountValid = true

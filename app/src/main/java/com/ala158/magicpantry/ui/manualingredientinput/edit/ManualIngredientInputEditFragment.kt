@@ -77,7 +77,7 @@ class ManualIngredientInputEditFragment : Fragment() {
 
     private fun saveIngredient() {
         val name = nameEditText.editText?.text.toString()
-        val amount = amountEditText.editText?.text.toString().toInt()
+        val amount = amountEditText.editText?.text.toString().toDouble()
         val unit = unitEditDropdown.text.toString()
         val price = priceEditText.editText?.text.toString().toDouble()
 

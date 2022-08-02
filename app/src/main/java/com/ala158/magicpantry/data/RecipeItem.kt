@@ -27,7 +27,7 @@ data class RecipeItem(
     var recipeItemId: Long = 0L,
 
     @ColumnInfo(name = "recipe_amount")
-    var recipeAmount: Int = 0,
+    var recipeAmount: Double = 0.0,
 
     @ColumnInfo(name = "recipe_unit")
     var recipeUnit: String = "",

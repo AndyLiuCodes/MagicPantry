@@ -113,14 +113,14 @@ class RecipesFragment : Fragment(),CompoundButton.OnCheckedChangeListener{
 
             Log.d("Recipe", "onCreateView: add ingredient to recipe")
             val breadItem = RecipeItem(
-                recipeAmount = 4,
+                recipeAmount = 4.0,
                 relatedIngredientId = ingredients[0].ingredientId,
                 recipeUnit = "unit",
                 relatedRecipeId = recipeId
             )
 
             val milkItem = RecipeItem(
-                recipeAmount = 2,
+                recipeAmount = 2.0,
                 relatedIngredientId = ingredients[1].ingredientId,
                 recipeUnit = "mL",
                 relatedRecipeId = recipeId

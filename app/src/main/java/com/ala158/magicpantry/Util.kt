@@ -107,7 +107,7 @@ object Util {
 
     private val smallUnits = arrayListOf("g", "mL")
     private val largeUnits = arrayListOf("kg", "L")
-    fun unitConversion(unitAmount: Int, ingredientUnit: String, itemUnit: String): Int {
+    fun unitConversion(unitAmount: Double, ingredientUnit: String, itemUnit: String): Double {
         var newUnitAmount = unitAmount
         // Make the unit of the recipe item match the unit of the ingredient
         val isIngredientSmallUnit =

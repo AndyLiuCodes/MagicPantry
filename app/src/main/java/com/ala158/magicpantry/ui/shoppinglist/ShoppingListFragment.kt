@@ -94,7 +94,7 @@ class ShoppingListFragment : Fragment(), ShoppingListArrayAdapter.OnChangeShoppi
 
         val savedShoppingListItemMessageListener = SavedShoppingListItemMessageListener(requireActivity())
         dialogData.putParcelable(DIALOG_SHOPPING_LIST_LISTENER_KEY, object : ShoppingListChangeAmountDialog.ShoppingListChangeAmountDialogListener {
-            override fun onShoppingListChangeAmountDialogClick(amount: Int) {
+            override fun onShoppingListChangeAmountDialogClick(amount: Double) {
                 shoppingListItem.itemAmount = amount
                 shoppingListItemViewModel.update(shoppingListItem)
                 savedShoppingListItemMessageListener.savedSuccessfullyMessage()

@@ -113,13 +113,13 @@ class IngredientListAddActivity : AppCompatActivity(), IngredientListAddDialog.I
                 if (isIngredientAddShoppingList) {
                     shoppingListItem =
                         ShoppingListItem(
-                            itemAmount = 0,
+                            itemAmount = 0.0,
                             relatedIngredientId = ingredient.ingredientId
                         )
                     shoppingListItemViewModel.insert(shoppingListItem)
                 } else {
                     recipeItem = RecipeItem(
-                        recipeAmount = 0,
+                        recipeAmount = 0.0,
                         recipeUnit = ingredient.unit,
                         relatedIngredientId = ingredient.ingredientId,
                         relatedRecipeId = recipeId
@@ -167,7 +167,7 @@ class IngredientListAddActivity : AppCompatActivity(), IngredientListAddDialog.I
     override fun onIngredientListAddDialogClick(newIngredientName: String, newIngredientUnit: String) {
         val newIngredient = Ingredient(
             newIngredientName,
-            0,
+            0.0,
             newIngredientUnit,
             0.0,
             0

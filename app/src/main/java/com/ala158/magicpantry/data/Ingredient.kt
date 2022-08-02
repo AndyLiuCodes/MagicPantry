@@ -13,7 +13,7 @@ data class Ingredient(
     var name: String = "",
 
     @ColumnInfo(name = "amount")
-    var amount: Int = 0,
+    var amount: Double = 0.0,
 
     @ColumnInfo(name = "unit")
     var unit: String = "unit",
@@ -27,14 +27,14 @@ data class Ingredient(
     @ColumnInfo(name = "notify_threshold")
     var notifyThreshold: Int = 0,
 ) {
-    constructor(name: String, amount: Int, unit: String, price: Double) : this() {
+    constructor(name: String, amount: Double, unit: String, price: Double) : this() {
         this.name = name
         this.amount = amount
         this.unit = unit
         this.price = price
     }
 
-    constructor(name: String, amount: Int, unit: String, price: Double, notifyThreshold: Int): this() {
+    constructor(name: String, amount: Double, unit: String, price: Double, notifyThreshold: Int): this() {
         this.name = name
         this.amount = amount
         this.unit = unit

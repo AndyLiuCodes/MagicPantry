@@ -54,13 +54,13 @@ class ReviewIngredientsActivity : AppCompatActivity() {
 
                     ingredient.name = temp[0]
                     ingredient.amount = if (quantity.substring(0, 1) == "G") {
-                        6
+                        6.0
                     } else {
-                        quantity.substring(0, 1).toInt()
+                        quantity.substring(0, 1).toDouble()
                     }
                 } else {
                     ingredient.name = prod[i]
-                    ingredient.amount = 1
+                    ingredient.amount = 1.0
                 }
                 ingredient.price = prices[i].filter { it.isDigit() || it == '.' }.toDouble()
 
@@ -98,7 +98,7 @@ class ReviewIngredientsActivity : AppCompatActivity() {
         if (sharedPreferences.contains("name")) {
             val ingredient = Ingredient()
             ingredient.name = sharedPreferences.getString("name", "") as String
-            ingredient.amount = sharedPreferences.getInt("amount", 0)
+            ingredient.amount = sharedPreferences.getString("amount", "")!!.toDouble()
             ingredient.price = sharedPreferences.getString("price", "")!!.toDouble()
             ingredient.unit = sharedPreferences.getString("unit", "") as String
 

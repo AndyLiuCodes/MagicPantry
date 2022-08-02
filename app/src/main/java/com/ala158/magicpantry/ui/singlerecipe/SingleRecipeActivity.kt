@@ -64,8 +64,6 @@ class SingleRecipeActivity : AppCompatActivity() {
         editRecipeButton = findViewById(R.id.edit_recipe_button)
         addIngredientsButton = findViewById(R.id.add_ingredient_to_recipe_button)
 
-        val cookNowButton = findViewById<Button>(R.id.cook_now_button)
-
         val id = intent.getIntExtra("RECIPE_KEY", -1)
         val id2 = intent.getIntExtra("RECIPE_KEY_COOKABLE", -1)
         recipeIngredientArrayAdapter = RecipeIngredientArrayAdapter(this, ArrayList())
@@ -172,7 +170,7 @@ class SingleRecipeActivity : AppCompatActivity() {
             )
             item.ingredient.amount -= convertedUnitAmount
             if (item.ingredient.amount < 0) {
-                item.ingredient.amount = 0
+                item.ingredient.amount = 0.0
             }
             Log.d(
                 "SINGLE_RECIPE",

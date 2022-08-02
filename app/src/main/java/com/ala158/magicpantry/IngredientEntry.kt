@@ -3,7 +3,7 @@ package com.ala158.magicpantry
 class IngredientEntry {
     private var id: Long = -1L
     private var name: String = ""
-    private var amount: Int = 0
+    private var amount: Double = 0.0
     private var unit: String = "unit"
     private var price: Double = 0.0
     private var isNotify: Boolean = false
@@ -24,11 +24,11 @@ class IngredientEntry {
         name = newName
     }
 
-    fun getAmount() : Int {
+    fun getAmount() : Double {
         return amount
     }
 
-    fun setAmount(newAmount: Int) {
+    fun setAmount(newAmount: Double) {
         amount = newAmount
     }
 

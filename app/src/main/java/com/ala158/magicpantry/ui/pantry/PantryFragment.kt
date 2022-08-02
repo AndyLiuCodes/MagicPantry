@@ -143,38 +143,44 @@ class PantryFragment : Fragment(),
 
         // Had help from https://stackoverflow.com/a/57789419 to pass a listener object to a DialogFragment
         // as a parcelable
-        val addedToShoppingListToastMessageListener = AddedToShoppingListToastMessageListener(requireActivity())
-        dialogData.putParcelable(DIALOG_ADD_SHOPPING_LIST_LISTENER_KEY, object : PantryAddShoppingListDialog.PantryAddShoppingListDialogListener {
-            private val addedToShoppingListListener = addedToShoppingListToastMessageListener
+        val addedToShoppingListToastMessageListener =
+            AddedToShoppingListToastMessageListener(requireActivity())
+        dialogData.putParcelable(
+            DIALOG_ADD_SHOPPING_LIST_LISTENER_KEY,
+            object : PantryAddShoppingListDialog.PantryAddShoppingListDialogListener {
+                private val addedToShoppingListListener = addedToShoppingListToastMessageListener
 
-            override fun onPantryAddShoppingListDialogClick(
-                unit: String, name: String, id: Long, amount: Int
-            ) {
-                if (amount == 0) {
-                    addedToShoppingListListener.nothingAddedMessage()
-                } else {
-                    // Add item to database
-                    val shoppingListItem = ShoppingListItem(
-                        amount,
-                        false
-                    )
-                    shoppingListItem.relatedIngredientId = id
-                    Log.d("PANTRY", "onPantryAddShoppingListDialogClick: shopping list item $shoppingListItem")
+                override fun onPantryAddShoppingListDialogClick(
+                    unit: String, name: String, id: Long, amount: Double
+                ) {
+                    if (amount == 0.0) {
+                        addedToShoppingListListener.nothingAddedMessage()
+                    } else {
+                        // Add item to database
+                        val shoppingListItem = ShoppingListItem(
+                            amount,
+                            false
+                        )
+                        shoppingListItem.relatedIngredientId = id
+                        Log.d(
+                            "PANTRY",
+                            "onPantryAddShoppingListDialogClick: shopping list item $shoppingListItem"
+                        )
 
-                    shoppingListItemRepository.insertShoppingListItemFromPantry(shoppingListItem)
+                        shoppingListItemRepository.insertShoppingListItemFromPantry(shoppingListItem)
 
-                    addedToShoppingListListener.addedSuccessfullyMessage(amount, unit, name)
+                        addedToShoppingListListener.addedSuccessfullyMessage(amount, unit, name)
+                    }
                 }
-            }
 
-            override fun describeContents(): Int {
-                return 0
-            }
+                override fun describeContents(): Int {
+                    return 0
+                }
 
-            override fun writeToParcel(dest: Parcel?, flags: Int) {
-                return
-            }
-        })
+                override fun writeToParcel(dest: Parcel?, flags: Int) {
+                    return
+                }
+            })
         pantryAddShoppingListDialog.arguments = dialogData
         pantryAddShoppingListDialog.show(parentFragmentManager, "Add to Shopping List")
 
@@ -191,7 +197,8 @@ class PantryFragment : Fragment(),
                 Toast.LENGTH_SHORT
             ).show()
         }
-        fun addedSuccessfullyMessage(amount: Int, unit: String, name: String) {
+
+        fun addedSuccessfullyMessage(amount: Double, unit: String, name: String) {
             Toast.makeText(
                 context,
                 "Added $amount $unit of $name to your shopping list!",
