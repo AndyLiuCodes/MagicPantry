@@ -19,6 +19,7 @@
     <string name="manual_amount_label">Amount *</string>
     <string name="manual_unit_label">Unit</string>
     <string name="manual_price_label">Price per Unit</string>
+    <string name="manual_threshold_label">Amount Threshold for Low Stock</string>
     <string name="manual_add_item_btn">Add to Pantry</string>
     <string name="add_all_button_text">Add All</string>
     <string name="cancel_button_text">Cancel</string>
@@ -31,6 +32,10 @@
     <string name="dialog_add_to_shopping_list_title">How much \"%s\" do you want to add to your shopping list?</string>
     <string name="dialog_add_button_text">Add</string>
     <string name="dialog_cancel_button_text">Cancel</string>
+
+    <!-- Change Shopping List Item amount Dialog -->
+    <string name="dialog_change_shopping_item_amount_title">What is the new amount of \"%s\" that you need to purchase?</string>
+    <string name="dialog_save_button_text">save</string>
 
     <!-- Shopping List Fragment -->
     <string name="shop_list_add_button">Add</string>
@@ -45,6 +50,21 @@
     <string name="cookingtime">CookingTime</string>
     <string name="noofservings">NoOfServings</string>
     <string name="enough_ingredients">Enough Ingredients</string>
+    <string name="title_activity_ingredient_list_add">IngredientListAdd</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <!-- Ingredient List Add Activity -->
+    <string name="item_menu_ingredient_add_title">Add Ingredient</string>
+    <string name="ingredient_add_dialog_title">Enter in the details of the new ingredient</string>
+    <string name="ingredient_add_dialog_btn_add">Add</string>
+    <string name="ingredient_add_dialog_btn_cancel">Cancel</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 
 
 </resources>

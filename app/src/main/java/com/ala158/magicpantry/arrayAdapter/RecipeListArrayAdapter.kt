@@ -8,10 +8,9 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.ala158.magicpantry.R
-import com.ala158.magicpantry.data.RecipeWithIngredients
-import java.net.URI
+import com.ala158.magicpantry.data.RecipeWithRecipeItems
 
-class RecipeListArrayAdapter(private val context: Context, private var recipes:List<RecipeWithIngredients>):BaseAdapter() {
+class RecipeListArrayAdapter(private val context: Context, private var recipes:List<RecipeWithRecipeItems>):BaseAdapter() {
     override fun getCount(): Int {
         return recipes.size
     }
@@ -52,7 +51,7 @@ class RecipeListArrayAdapter(private val context: Context, private var recipes:L
         return view
     }
 
-    fun replace(newRecipes:List<RecipeWithIngredients>){
+    fun replace(newRecipes:List<RecipeWithRecipeItems>){
         recipes = newRecipes.toList()
     }
 }

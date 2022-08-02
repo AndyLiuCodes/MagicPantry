@@ -11,6 +11,9 @@ interface ShoppingListItemDAO {
     @Query("SELECT * FROM shopping_list_item, ingredient WHERE related_ingredient_id = ingredientId")
     fun getAllShoppingListItems(): Flow<List<ShoppingListItemAndIngredient>>
 
+    @Query("SELECT * FROM shopping_list_item, ingredient where related_ingredient_id = :ingredientId")
+    suspend fun getShoppingListItemByIngredientId(ingredientId: Long): ShoppingListItemAndIngredient
+
     @Insert
     suspend fun insertShoppingListItem(item: ShoppingListItem)
 
@@ -19,5 +22,8 @@ interface ShoppingListItemDAO {
 
     @Query("DELETE FROM shopping_list_item where shoppingListItemId = :key")
     suspend fun deleteShoppingListItemById(key: Long)
+
+    @Query("DELETE FROM shopping_list_item where is_item_bought = 1")
+    suspend fun deleteAllIsBoughtShoppingListItems()
 
 }

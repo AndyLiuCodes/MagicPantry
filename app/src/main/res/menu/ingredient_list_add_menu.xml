@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto">
+    <item
+        android:id="@+id/item_menu_ingredientlist_add"
+        android:title="@string/item_menu_ingredient_add_title"
+        app:showAsAction="always" />
+</menu>

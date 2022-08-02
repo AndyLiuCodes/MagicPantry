@@ -18,19 +18,28 @@ object MockData {
         Ingredient("Apple", 1, "unit", 0.20),
     )
 
+    val shoppingListIngredients = arrayListOf(
+        Ingredient("Bread", 100, "Units", 1.00),
+        Ingredient("Corn", 5, "Units", 1.75),
+        Ingredient("Flour", 10, "Kg", 5.00),
+        Ingredient("Milk", 2, "L", 4.00),
+        Ingredient("Orange Juice", 500, "ml", 2.50),
+        Ingredient("Apple", 500, "g", 0.50),
+        Ingredient("Potatoes", 1, "Kg", 2.00),
+        Ingredient("Water", 1000, "ml", 0.25)
+    )
+
     val shoppingList = arrayListOf(
-        ShoppingListItem("Bread", 100, "Units", false),
-        ShoppingListItem("Corn", 5, "Units", true),
-        ShoppingListItem("Flour", 10, "Kg", false),
-        ShoppingListItem("Milk", 2, "L", true),
-        ShoppingListItem("Orange Juice", 500, "ml", false),
-        ShoppingListItem("Apple", 500, "g", false),
-        ShoppingListItem("Potatos", 1, "Kg", false),
-        ShoppingListItem("Water", 1000, "ml", false)
+        ShoppingListItem(100, false),
+        ShoppingListItem(5, true),
+        ShoppingListItem(10, false),
+        ShoppingListItem(2, true),
+        ShoppingListItem(500, false),
+        ShoppingListItem(500, false),
+        ShoppingListItem(1, false),
+        ShoppingListItem(1000, false)
     )
     val recipe = Recipe("French Toast", 2, 20, "Testing description")
-
-    val recipeIngredient =  Ingredient(name = "Banana", amount = 1, unit = "unit", price = 0.20, ingredientId = 400)
     val recipe2 = Recipe(
         title = "French Toast",
         servings = 2,
@@ -47,14 +56,10 @@ object MockData {
 
     val shoppingListItems = arrayListOf(
         ShoppingListItem(
-            itemName = allIngredientsToastTest[0].name,
             itemAmount = 10,
-            itemUnit = "unit"
         ),
         ShoppingListItem(
-            itemName = allIngredientsToastTest[1].name,
             itemAmount = 1,
-            itemUnit = "L"
         ),
     )
 
