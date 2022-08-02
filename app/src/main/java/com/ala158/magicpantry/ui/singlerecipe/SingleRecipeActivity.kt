@@ -1,6 +1,9 @@
 package com.ala158.magicpantry.ui.singlerecipe
 
+import android.content.BroadcastReceiver
+import android.content.Context
 import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
@@ -32,9 +35,12 @@ class SingleRecipeActivity : AppCompatActivity() {
     private lateinit var addIngredientsButton: Button
     private lateinit var recipeIngredientArrayAdapter: RecipeIngredientArrayAdapter
 
+    private lateinit var broadcastReceiver: BroadcastReceiver
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.fragment_single_recipe)
+
         recipeViewModel = Util.createViewModel(
             this,
             RecipeViewModel::class.java,
@@ -115,5 +121,20 @@ class SingleRecipeActivity : AppCompatActivity() {
         addIngredientsButton.setOnClickListener{
 
         }
+
+        broadcastReceiver = object : BroadcastReceiver() {
+            override fun onReceive(contxt: Context?, intent: Intent?) {
+                finish()
+            }
+        }
+
+        val intentFilter = IntentFilter()
+        intentFilter.addAction("FINISH")
+        registerReceiver(broadcastReceiver, intentFilter)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(broadcastReceiver)
     }
 }

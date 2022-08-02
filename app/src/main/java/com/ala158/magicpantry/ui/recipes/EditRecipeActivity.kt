@@ -19,16 +19,14 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
-import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.ViewModelProvider
-import com.ala158.magicpantry.MainActivity
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.dao.RecipeDAO
-import com.ala158.magicpantry.data.Recipe
 import com.ala158.magicpantry.data.RecipeWithIngredients
 import com.ala158.magicpantry.database.MagicPantryDatabase
 import com.ala158.magicpantry.repository.RecipeRepository
+import com.ala158.magicpantry.ui.singlerecipe.SingleRecipeActivity
 import com.ala158.magicpantry.viewModel.RecipeViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModelFactory
 import java.io.ByteArrayOutputStream
@@ -278,10 +276,12 @@ class EditRecipeActivity : AppCompatActivity() {
             //delete item from database
             deleteCurrItem()
 
-            //TODO make go to frag
             //return to all recipes
-            onBackPressed()
+            val local = Intent()
+            local.action = "FINISH"
+            sendBroadcast(local)
 
+            onBackPressed()
             return true
         }
         return super.onOptionsItemSelected(item)
@@ -292,6 +292,7 @@ class EditRecipeActivity : AppCompatActivity() {
         //remove observer from livedata
         itemViewModel.allRecipes.removeObservers(this)
 
+        //TODO: does not delete rn
         //delete item from viewModel
         itemViewModel.deleteById(pos.toLong())
     }
