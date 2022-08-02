@@ -6,11 +6,11 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.TextView
 import com.ala158.magicpantry.R
-import com.ala158.magicpantry.data.RecipeWithIngredients
+import com.ala158.magicpantry.data.RecipeWithRecipeItems
 
 class AddIngredientToRecipeArrayAdapter(
     private val context: Context,
-    private var recipes: Array<RecipeWithIngredients>
+    private var recipes: Array<RecipeWithRecipeItems>
 ) : BaseAdapter() {
 
     override fun getCount(): Int {
@@ -32,7 +32,7 @@ class AddIngredientToRecipeArrayAdapter(
 
         val recipe = recipes[position]
 
-        name.text = recipe.ingredients[1].toString()
+        name.text = recipe.recipeItems.toString()
 
         return view
     }

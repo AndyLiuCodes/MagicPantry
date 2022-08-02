@@ -9,7 +9,7 @@ import androidx.appcompat.app.AppCompatActivity
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.AddIngredientToRecipeArrayAdapter
-import com.ala158.magicpantry.data.RecipeWithIngredients
+import com.ala158.magicpantry.data.RecipeWithRecipeItems
 import com.ala158.magicpantry.viewModel.RecipeViewModel
 
 class AddIngredientToRecipeActivity : AppCompatActivity() {
@@ -17,7 +17,7 @@ class AddIngredientToRecipeActivity : AppCompatActivity() {
 
     private lateinit var recipeViewModel : RecipeViewModel
 
-    private var recipeIngredientArray = arrayOf<RecipeWithIngredients>()
+    private var recipeIngredientArray = arrayOf<RecipeWithRecipeItems>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

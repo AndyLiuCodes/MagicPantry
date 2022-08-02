@@ -14,7 +14,7 @@ import androidx.core.net.toUri
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.RecipeIngredientArrayAdapter
-import com.ala158.magicpantry.data.RecipeWithIngredients
+import com.ala158.magicpantry.data.RecipeWithRecipeItems
 import com.ala158.magicpantry.ui.recipes.EditRecipeActivity
 import com.ala158.magicpantry.viewModel.IngredientViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModel
@@ -64,13 +64,13 @@ class SingleRecipeActivity : AppCompatActivity() {
 
         val id = intent.getIntExtra("RECIPE_KEY",-1)
         val id2 = intent.getIntExtra("RECIPE_KEY_COOKABLE",-1)
-        recipeIngredientArrayAdapter = RecipeIngredientArrayAdapter(this, ArrayList(), ArrayList())
+        recipeIngredientArrayAdapter = RecipeIngredientArrayAdapter(this, ArrayList())
         ingredientListView.adapter = recipeIngredientArrayAdapter
 
         recipeViewModel.allRecipes.observe(this) {
             recipeViewModel.updateCurrentCookable()
             if(id != -1) {
-                val recipeWithIngredients: RecipeWithIngredients = it[id]
+                val recipeWithIngredients: RecipeWithRecipeItems = it[id]
                 recipeName.text = recipeWithIngredients.recipe.title
                 if (recipeWithIngredients.recipe.imageUri == "") {
                     recipeImage.setImageResource(R.drawable.magic_pantry_app_logo)
@@ -89,13 +89,13 @@ class SingleRecipeActivity : AppCompatActivity() {
                     isAbleToCookImageView.setImageResource(R.drawable.low_stock)
                     isAbleToCookTextView.text = "Missing ${recipeWithIngredients.recipe.numMissingIngredients} ingredients"
                 }
-                recipeIngredientArrayAdapter.replaceRecipeIngredients(it[id].ingredients)
+                recipeIngredientArrayAdapter.replaceRecipeIngredients(it[id].recipeItems)
                 recipeIngredientArrayAdapter.notifyDataSetChanged()
             }
         }
         recipeViewModel.cookableRecipes.observe(this){
             if(id2 != -1) {
-                val recipeWithIngredients: RecipeWithIngredients = it[id2]
+                val recipeWithIngredients: RecipeWithRecipeItems = it[id2]
                 recipeName.text = recipeWithIngredients.recipe.title
                 cookingTimeView.text = "${recipeWithIngredients.recipe.timeToCook}"
                 numOfServingsView.text = "${recipeWithIngredients.recipe.servings}"
@@ -107,13 +107,13 @@ class SingleRecipeActivity : AppCompatActivity() {
                     isAbleToCookImageView.setImageResource(R.drawable.low_stock)
                     isAbleToCookTextView.text = "Missing ${recipeWithIngredients.recipe.numMissingIngredients} ingredients"
                 }
-                recipeIngredientArrayAdapter.replaceRecipeIngredients(it[id2].ingredients)
+                recipeIngredientArrayAdapter.replaceRecipeIngredients(it[id2].recipeItems)
                 recipeIngredientArrayAdapter.notifyDataSetChanged()
             }
         }
 
         ingredientViewModel.allIngredientsLiveData.observe(this){
-            recipeIngredientArrayAdapter.replaceAllIngredients(it)
+            //recipeIngredientArrayAdapter.replaceAllIngredients(it)
             recipeIngredientArrayAdapter.notifyDataSetChanged()
         }
 

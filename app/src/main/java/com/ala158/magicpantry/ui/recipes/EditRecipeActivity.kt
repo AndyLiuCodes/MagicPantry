@@ -19,16 +19,11 @@ import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
-import androidx.lifecycle.ViewModelProvider
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
-import com.ala158.magicpantry.dao.RecipeDAO
 import com.ala158.magicpantry.data.Recipe
-import com.ala158.magicpantry.data.RecipeWithIngredients
-import com.ala158.magicpantry.database.MagicPantryDatabase
-import com.ala158.magicpantry.repository.RecipeRepository
+import com.ala158.magicpantry.data.RecipeWithRecipeItems
 import com.ala158.magicpantry.viewModel.RecipeViewModel
-import com.ala158.magicpantry.viewModel.RecipeViewModelFactory
 import java.io.ByteArrayOutputStream
 import java.io.File
 
@@ -52,9 +47,10 @@ class EditRecipeActivity : AppCompatActivity() {
 
     private lateinit var recipeViewModel : RecipeViewModel
 
-    private var recipeArray = arrayOf<RecipeWithIngredients>()
+    private var recipeArray = arrayOf<RecipeWithRecipeItems>()
     private var pos = 0
     private var id = 0L
+    private lateinit var recipeToEdit : RecipeWithRecipeItems
 
     private var newUri = ""
 
@@ -90,7 +86,7 @@ class EditRecipeActivity : AppCompatActivity() {
                 recipeArray = myList
 
                 //get id of recipe to edit or delete
-                val recipeToEdit = recipeArray[pos]
+                recipeToEdit = recipeArray[pos]
                 id = recipeToEdit.recipe.recipeId
 
                 newUri = recipeArray[pos].recipe.imageUri
@@ -288,7 +284,7 @@ class EditRecipeActivity : AppCompatActivity() {
         recipeViewModel.allRecipes.removeObservers(this)
 
         //delete item from viewModel
-        recipeViewModel.deleteById(id)
+        recipeViewModel.delete(recipeToEdit.recipe)
     }
 
     override fun onResume() {

@@ -15,18 +15,12 @@ import android.view.View
 import android.widget.*
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.lifecycle.ViewModelProvider
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.AddRecipeArrayAdapter
-import com.ala158.magicpantry.dao.RecipeDAO
 import com.ala158.magicpantry.data.Recipe
-import com.ala158.magicpantry.data.RecipeWithIngredients
-import com.ala158.magicpantry.database.MagicPantryDatabase
-import com.ala158.magicpantry.repository.RecipeRepository
-import com.ala158.magicpantry.viewModel.NotificationViewModel
+import com.ala158.magicpantry.data.RecipeWithRecipeItems
 import com.ala158.magicpantry.viewModel.RecipeViewModel
-import com.ala158.magicpantry.viewModel.RecipeViewModelFactory
 import java.io.ByteArrayOutputStream
 import java.io.File
 
@@ -51,7 +45,7 @@ class AddRecipeActivity : AppCompatActivity() {
 
     private lateinit var recipeViewModel : RecipeViewModel
 
-    private var recipeArray = arrayOf<RecipeWithIngredients>()
+    private var recipeArray = arrayOf<RecipeWithRecipeItems>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

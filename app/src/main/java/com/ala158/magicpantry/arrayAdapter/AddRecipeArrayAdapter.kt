@@ -7,12 +7,12 @@ import android.widget.BaseAdapter
 import android.widget.Button
 import android.widget.TextView
 import com.ala158.magicpantry.R
-import com.ala158.magicpantry.data.RecipeWithIngredients
+import com.ala158.magicpantry.data.RecipeWithRecipeItems
 import com.ala158.magicpantry.viewModel.RecipeViewModel
 
 class AddRecipeArrayAdapter(
     private val context: Context,
-    private var recipes: Array<RecipeWithIngredients>,
+    private var recipes: Array<RecipeWithRecipeItems>,
     recipeViewModel: RecipeViewModel
 ) : BaseAdapter() {
 
@@ -40,14 +40,14 @@ class AddRecipeArrayAdapter(
         val deleteBtn = view.findViewById<Button>(R.id.recipe_ingredient_list_item_delete_button)
 
         deleteBtn.setOnClickListener {
-            viewModel.deleteById(position.toLong())
+            viewModel.delete(recipes[position].recipe)
         }
 
         val recipe = recipes[position]
 
-        price.text = recipe.ingredients[2].toString()
-        unit.text = recipe.ingredients[3].toString()
-        name.text = recipe.ingredients[1].toString()
+        price.text = recipe.recipeItems[position].ingredient.price.toString()
+        unit.text = recipe.recipeItems[position].ingredient.unit
+        name.text = recipe.recipeItems[position].ingredient.name
 
         /*price.text = "4"
         unit.text = "kg"
