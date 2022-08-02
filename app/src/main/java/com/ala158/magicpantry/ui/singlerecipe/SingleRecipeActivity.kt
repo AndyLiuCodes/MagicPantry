@@ -1,14 +1,21 @@
 package com.ala158.magicpantry.ui.singlerecipe
 
+import android.content.BroadcastReceiver
+import android.content.Context
+import android.content.Intent
+import android.content.IntentFilter
 import android.os.Bundle
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.ListView
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.net.toUri
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.RecipeIngredientArrayAdapter
+import com.ala158.magicpantry.data.RecipeWithIngredients
+import com.ala158.magicpantry.ui.recipes.EditRecipeActivity
 import com.ala158.magicpantry.data.RecipeWithRecipeItems
 import com.ala158.magicpantry.viewModel.IngredientViewModel
 import com.ala158.magicpantry.viewModel.RecipeItemViewModel
@@ -19,6 +26,7 @@ class SingleRecipeActivity : AppCompatActivity() {
     private lateinit var recipeViewModel: RecipeViewModel
     private lateinit var ingredientViewModel: IngredientViewModel
     private lateinit var recipeName:TextView
+    private lateinit var recipeImage:ImageView
     private lateinit var recipeDescription:TextView
     private lateinit var ingredientListView: ListView
     private lateinit var cookingTimeView: TextView
@@ -31,9 +39,12 @@ class SingleRecipeActivity : AppCompatActivity() {
     private lateinit var recipeIngredientArrayAdapter: RecipeIngredientArrayAdapter
     private lateinit var recipeItemViewModel: RecipeItemViewModel
 
+    private lateinit var broadcastReceiver: BroadcastReceiver
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.fragment_single_recipe)
+
         recipeViewModel = Util.createViewModel(
             this,
             RecipeViewModel::class.java,
@@ -51,6 +62,7 @@ class SingleRecipeActivity : AppCompatActivity() {
             Util.DataType.RECIPE_ITEM
         )
         recipeName = findViewById(R.id.singleRecipeName)
+        recipeImage = findViewById(R.id.singleRecipeImage)
         recipeDescription = findViewById(R.id.recipe_description)
         ingredientListView = findViewById(R.id.listview_all_recipe_ingredients)
         cookingTimeView = findViewById(R.id.CookingTime)
@@ -69,8 +81,15 @@ class SingleRecipeActivity : AppCompatActivity() {
         recipeViewModel.allRecipes.observe(this) {
             recipeViewModel.updateCurrentCookable()
             if(id != -1) {
+                val recipeWithIngredients: RecipeWithIngredients = it[id]
                 var recipeWithIngredients: RecipeWithRecipeItems = it[id]
                 recipeName.text = recipeWithIngredients.recipe.title
+                if (recipeWithIngredients.recipe.imageUri == "") {
+                    recipeImage.setImageResource(R.drawable.magic_pantry_app_logo)
+                }
+                else {
+                    recipeImage.setImageURI(recipeWithIngredients.recipe.imageUri.toUri())
+                }
                 recipeDescription.text = recipeWithIngredients.recipe.description
                 cookingTimeView.text = "${recipeWithIngredients.recipe.timeToCook} minutes"
                 numOfServingsView.text = "${recipeWithIngredients.recipe.servings} servings"
@@ -88,6 +107,7 @@ class SingleRecipeActivity : AppCompatActivity() {
         }
         recipeViewModel.cookableRecipes.observe(this){
             if(id2 != -1) {
+                val recipeWithIngredients: RecipeWithIngredients = it[id2]
                 var recipeWithIngredients: RecipeWithRecipeItems = it[id2]
                 recipeName.text = recipeWithIngredients.recipe.title
                 recipeDescription.text = recipeWithIngredients.recipe.description
@@ -107,13 +127,29 @@ class SingleRecipeActivity : AppCompatActivity() {
         }
 
         editRecipeButton.setOnClickListener{
-
+            val intent = Intent(this, EditRecipeActivity::class.java)
+            intent.putExtra("RecipeChosen", id)
+            startActivity(intent)
         }
 
         addIngredientsButton.setOnClickListener{
 
         }
 
+        broadcastReceiver = object : BroadcastReceiver() {
+            override fun onReceive(contxt: Context?, intent: Intent?) {
+                finish()
+            }
+        }
+
+        val intentFilter = IntentFilter()
+        intentFilter.addAction("FINISH")
+        registerReceiver(broadcastReceiver, intentFilter)
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        unregisterReceiver(broadcastReceiver)
         cookNowButton.setOnClickListener{
 
         }

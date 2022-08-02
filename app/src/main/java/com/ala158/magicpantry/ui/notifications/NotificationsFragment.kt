@@ -1,5 +1,6 @@
 package com.ala158.magicpantry.ui.notifications
 
+import android.content.Intent
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -47,6 +48,12 @@ class NotificationsFragment : Fragment() {
 
         notificationsListView = view.findViewById(R.id.notifications_list_view)
         notificationsListView.adapter = notificationsListArrayAdapter
+
+        notificationsListView.setOnItemClickListener { _, _, pos, _ ->
+            val intent = Intent(requireContext(), LowIngredientActivity::class.java)
+            intent.putExtra("NotificationPosition", pos)
+            startActivity(intent)
+        }
 
 
         // TODO: add back in when notifications are generated

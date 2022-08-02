@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <LinearLayout
+        android:id="@+id/recipe_add_ingredients"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="15dp">
+
+        <TextView
+            android:id="@+id/header_edit_recipe"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/rounded_bg_blue"
+            android:paddingStart="15dp"
+            android:text="Add Ingredient to Recipe"
+            android:textColor="@color/white"
+            android:gravity="center_vertical"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            tools:ignore="RtlSymmetry" />
+
+        <ListView
+            android:layout_width="match_parent"
+            android:layout_height="500dp"
+            android:id="@+id/recipe_add_ingredient_listView" />
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center|bottom" >
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_add_all_ingredients_to_recipe"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:backgroundTint="@color/mp_blue"
+                android:text="Finish"
+                android:textSize="16sp"
+                app:cornerRadius="8dp"
+                android:layout_gravity="bottom" />
+        </RelativeLayout>
+    </LinearLayout>
+
+</LinearLayout>

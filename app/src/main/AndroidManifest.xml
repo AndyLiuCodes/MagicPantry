@@ -54,6 +54,38 @@
             android:value="ocr" />
 
         <activity
+            android:name=".ui.recipes.AddRecipeActivity"
+            android:exported="false" />
+
+        <meta-data
+            android:name="com.google.android.gms.vision.DEPENDENCIES"
+            android:value="ocr" />
+
+        <activity
+            android:name=".ui.recipes.AddIngredientToRecipeActivity"
+            android:exported="false" />
+
+        <meta-data
+            android:name="com.google.android.gms.vision.DEPENDENCIES"
+            android:value="ocr" />
+
+        <activity
+            android:name=".ui.recipes.EditRecipeActivity"
+            android:exported="false" />
+
+        <meta-data
+            android:name="com.google.android.gms.vision.DEPENDENCIES"
+            android:value="ocr" />
+
+        <activity
+            android:name=".ui.notifications.LowIngredientActivity"
+            android:exported="false" />
+
+        <meta-data
+            android:name="com.google.android.gms.vision.DEPENDENCIES"
+            android:value="ocr" />
+
+        <activity
             android:name=".ui.manualingredientinput.ManualIngredientInputActivity"
             android:exported="false" />
         <activity

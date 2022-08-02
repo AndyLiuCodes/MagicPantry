@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent" >
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:padding="15dp">
+
+        <TextView
+            android:id="@+id/header_add_recipe"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/rounded_bg_blue"
+            android:paddingStart="15dp"
+            android:layout_marginBottom="10dp"
+            android:text="Add Recipe"
+            android:textColor="@color/white"
+            android:gravity="center_vertical"
+            android:textSize="22sp"
+            android:textStyle="bold"
+            tools:ignore="RtlSymmetry" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="70dp" >
+
+            <ImageView
+                android:id="@+id/add_recipe_img"
+                android:layout_width="100dp"
+                android:layout_height="100dp"
+                android:backgroundTint="@color/mp_yellow"
+                app:cornerRadius="8dp"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="15dp" />
+
+            <Space
+                android:layout_width="70dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btn_add_recipe_pic"
+                android:layout_width="54dp"
+                android:layout_height="wrap_content"
+                android:layout_marginEnd="20dp"
+                app:icon="@drawable/ic_camera_solid"
+                app:cornerRadius="8dp"
+                android:backgroundTint="@color/mp_yellow" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Title"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:id="@+id/add_recipe_title" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="15sp"
+            android:background="@drawable/add_recipe_edit_text_style"
+            android:layout_marginBottom="5dp"
+            android:id="@+id/add_recipe_edit_recipe_title" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:orientation="horizontal" >
+
+            <TextView
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
+                android:text="Time to Cook (mins)"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:layout_marginEnd="20dp"
+                android:id="@+id/add_recipe_cook_time" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Servings"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:layout_marginStart="20dp"
+                android:id="@+id/add_recipe_servings" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_marginBottom="5dp"
+            android:layout_gravity="center_horizontal" >
+
+            <EditText
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:textSize="15sp"
+                android:background="@drawable/add_recipe_edit_text_style"
+                android:layout_marginEnd="60dp"
+                android:id="@+id/add_recipe_edit_recipe_cook_time" />
+
+            <EditText
+                android:layout_width="30dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:background="@drawable/add_recipe_edit_text_style"
+                android:textSize="15sp"
+                android:id="@+id/add_recipe_edit_recipe_servings" />
+        </LinearLayout>
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Description"
+            android:textSize="15sp"
+            android:textStyle="bold"
+            android:textColor="@color/black"
+            android:id="@+id/add_recipe_description" />
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:minHeight="100dp"
+            android:textSize="15sp"
+            android:inputType="text|textMultiLine"
+            android:background="@drawable/add_recipe_edit_text_style"
+            android:gravity="top"
+            android:layout_marginBottom="5dp"
+            android:scrollbars="vertical"
+            android:id="@+id/add_recipe_edit_recipe_description" />
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_gravity="center_horizontal" >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Ingredient List"
+                android:textSize="15sp"
+                android:textStyle="bold"
+                android:textColor="@color/black"
+                android:id="@+id/add_recipe_ingredient_list_text" />
+
+            <Button
+                android:id="@+id/add_recipe_btn_add_ingredient_to_recipe"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:background="@android:color/transparent"
+                android:minWidth="10dp"
+                android:minHeight="10dp"
+                android:textColor="#000000"
+                app:icon="@drawable/ic_plus_solid"
+                app:iconGravity="textStart"
+                android:text="Add"
+                android:textStyle="bold"
+                app:iconPadding="0dp"
+                app:iconSize="15sp"
+                android:textSize="15sp"
+                app:iconTint="#000000"
+                android:focusable="false" />
+        </LinearLayout>
+
+        <ListView
+            android:id="@+id/add_recipe_ingredient_listView"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="5dp"/>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:orientation="horizontal"
+            android:layout_weight="1"
+            android:gravity="center|bottom" >
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/add_recipe_btn_cancel_recipe"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:text="Cancel"
+                android:layout_weight="12"
+                android:textSize="16sp"
+                android:textColor="@color/black"
+                app:cornerRadius="8dp"
+                android:backgroundTint="@color/mp_grey"
+                android:layout_gravity="center|bottom"/>
+
+            <Space
+                android:layout_width="0dp"
+                android:layout_height="1dp"
+                android:layout_weight="1" />
+
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/add_recipe_btn_add_recipe"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="12"
+                android:backgroundTint="@color/mp_blue"
+                android:text="Finish"
+                android:textSize="16sp"
+                app:cornerRadius="8dp"
+                android:layout_gravity="center|bottom" />
+        </LinearLayout>
+    </LinearLayout>
+
+</LinearLayout>

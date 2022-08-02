@@ -96,7 +96,12 @@ class RecipesFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
         }
         currentCookableCheckBox.setOnCheckedChangeListener(this)
 
+        addRecipeButton.setOnClickListener{
+           //Button to add recipe to recipe list
+            val intent = Intent(requireContext(), AddRecipeActivity::class.java)
+            startActivity(intent)
         addRecipeButton.setOnClickListener {
+
         }
 
         return view

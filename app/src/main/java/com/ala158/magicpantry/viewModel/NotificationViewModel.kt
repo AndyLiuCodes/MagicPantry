@@ -34,4 +34,8 @@ class NotificationViewModel(private val repository: NotificationRepository) : Vi
         repository.deleteNotificationById(key)
         repository.deleteAllNotificationCrossRefById(key)
     }
+
+    fun updateRead(notification: Notification) {
+        repository.updateRead(notification)
+    }
 }

@@ -24,4 +24,8 @@ interface NotificationDAO {
     // Deleting all ingredients from a recipe
     @Query("DELETE FROM ingredient_notification_cross_ref where notificationId = :key")
     suspend fun deleteAllNotificationCrossRefById(key: Long)
+
+    //update value of is_read
+    @Update
+    suspend fun updateRead(notification: Notification)
 }
