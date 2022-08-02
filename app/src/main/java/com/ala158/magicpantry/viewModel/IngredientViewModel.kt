@@ -14,8 +14,10 @@ import kotlinx.coroutines.launch
 class IngredientViewModel(private val repository: IngredientRepository) : ViewModel() {
     val allIngredientsLiveData: LiveData<List<Ingredient>> = repository.allIngredients.asLiveData()
 
-    private var _ingredientWithRecipeItems: LiveData<IngredientWithRecipeItems> = MutableLiveData()
-    val ingredientWithRecipeItems: LiveData<IngredientWithRecipeItems> = _ingredientWithRecipeItems
+    private var _ingredientsWithRecipeItems: LiveData<List<IngredientWithRecipeItems>> =
+        MutableLiveData()
+    val ingredientsWithRecipeItems: LiveData<List<IngredientWithRecipeItems>> =
+        _ingredientsWithRecipeItems
 
     private val _newIngredientId = MutableLiveData(0L)
     val newIngredientId: LiveData<Long> = _newIngredientId
@@ -27,10 +29,10 @@ class IngredientViewModel(private val repository: IngredientRepository) : ViewMo
         }
     }
 
-    fun findIngredientWithRecipeItemsById(key: Long) {
+    fun findIngredientsWithRecipeItemsById(keys: List<Long>) {
         CoroutineScope(Dispatchers.IO).launch {
-            val ingredient = repository.getIngredientWithRecipeItemsById(key).asLiveData()
-            _ingredientWithRecipeItems = ingredient
+            val ingredients = repository.getIngredientsWithRecipeItemsById(keys).asLiveData()
+            _ingredientsWithRecipeItems = ingredients
         }
     }
 

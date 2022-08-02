@@ -15,7 +15,6 @@ import androidx.core.net.toUri
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.RecipeIngredientArrayAdapter
-import com.ala158.magicpantry.data.IngredientWithRecipeItems
 import com.ala158.magicpantry.data.RecipeWithRecipeItems
 import com.ala158.magicpantry.ui.recipes.EditRecipeActivity
 import com.ala158.magicpantry.viewModel.IngredientViewModel
@@ -172,25 +171,45 @@ class SingleRecipeActivity : AppCompatActivity() {
                 item.recipeItem.recipeUnit
             )
             item.ingredient.amount -= convertedUnitAmount
+            if (item.ingredient.amount < 0) {
+                item.ingredient.amount = 0
+            }
+            Log.d(
+                "SINGLE_RECIPE",
+                "consumeIngredients: Ingredient: ${item.ingredient.name} New AMT: " +
+                        "${item.ingredient.amount}"
+            )
             ingredientViewModel.update(item.ingredient)
         }
     }
 
     private fun updateRecipesMissingIngredients() {
-        // List of updated ingredients
-        val updatedIngredients = recipeWithRecipeItems.recipeItems.map { it.ingredient }
+        // List of updated ingredient Ids that have been consumed
+        val updatedIngredientsIds =
+            recipeWithRecipeItems.recipeItems.map { it.ingredient.ingredientId }
 
-        val recipeItemsNotEnough = mutableSetOf<Long>()
-        for (ingredient in updatedIngredients) {
-            ingredientViewModel.findIngredientWithRecipeItemsById(ingredient.ingredientId)
+        val recipesWithItemsNotEnough = mutableSetOf<Long>()
+        ingredientViewModel.findIngredientsWithRecipeItemsById(updatedIngredientsIds)
+        val ingredientsWithRecipeItems = ingredientViewModel.ingredientsWithRecipeItems.value!!
 
-            val ingredientWithItems = ingredientViewModel.ingredientWithRecipeItems.value!!
+        for (ingredientWithRecipeItem in ingredientsWithRecipeItems) {
+
+            Log.d(
+                "SINGLE_RECIPE",
+                "updateRecipesMissingIngredients: ingredient " +
+                        ingredientWithRecipeItem.ingredient.name
+            )
 
             // Update all recipe items if the amount is enough to cook with
-            for (item in ingredientWithItems.recipeItems) {
-                if (item.recipeAmount < ingredient.amount) {
+            for (item in ingredientWithRecipeItem.recipeItems) {
+                Log.d(
+                    "SINGLE_RECIPE",
+                    "updateRecipesMissingIngredients: RecipeItemAMT: ${item.recipeAmount} " +
+                            "IngredientAMT: ${ingredientWithRecipeItem.ingredient.amount}"
+                )
+                if (item.recipeAmount < ingredientWithRecipeItem.ingredient.amount) {
                     item.recipeIsEnough = false
-                    recipeItemsNotEnough.add(item.recipeItemId)
+                    recipesWithItemsNotEnough.add(item.relatedRecipeId)
                 } else {
                     item.recipeIsEnough = true
                 }
@@ -199,18 +218,30 @@ class SingleRecipeActivity : AppCompatActivity() {
         }
 
         // Update all recipes' num of missing ingredients that have had their recipeItems
-        // set isEnough to false
-        for (recipeItemId in recipeItemsNotEnough) {
-            recipeItemViewModel.getRecipesByRecipeItemId(recipeItemId)
-            val recipeItemAndRecipe = recipeItemViewModel.recipeItem.value!!
+        // isEnough set to false
+        recipeViewModel.getRecipesById(recipesWithItemsNotEnough.toList())
+        val recipes = recipeViewModel.currentRecipes.value!!
+
+        for (recipe in recipes) {
+            Log.d(
+                "SINGLE_RECIPE",
+                "updateRecipesMissingIngredients: recipeItem: ${recipe.recipe.title}"
+            )
             var count = 0
-            for (recipeItem in recipeItemAndRecipe.recipe.recipeItems) {
+            for (recipeItem in recipe.recipeItems) {
                 if (!recipeItem.recipeItem.recipeIsEnough) {
                     count += 1
                 }
             }
-            recipeItemAndRecipe.recipe.recipe.numMissingIngredients = count
-            recipeViewModel.update(recipeItemAndRecipe.recipe.recipe)
+
+            Log.d(
+                "SINGLE_RECIPE",
+                "updateRecipesMissingIngredients: updated count $count"
+            )
+
+            // Update the recipe's number of missing ingredients
+            recipe.recipe.numMissingIngredients = count
+            recipeViewModel.update(recipe.recipe)
         }
     }
 

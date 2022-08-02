@@ -23,8 +23,8 @@ class IngredientRepository(private val ingredientDAO: IngredientDAO) {
         return ingredientDAO.getIngredientEntryByNameAndUnit(name, unit)
     }
 
-    fun getIngredientWithRecipeItemsById(key: Long): Flow<IngredientWithRecipeItems> {
-        return ingredientDAO.getIngredientWithRecipeItemsById(key)
+    fun getIngredientsWithRecipeItemsById(keys: List<Long>): Flow<List<IngredientWithRecipeItems>> {
+        return ingredientDAO.getIngredientsWithRecipeItemsById(keys)
     }
 
     fun insertIngredient(ingredient: Ingredient) {

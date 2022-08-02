@@ -24,8 +24,8 @@ interface IngredientDAO {
     fun getAllIngredients(): Flow<List<Ingredient>>
 
     @Transaction
-    @Query("SELECT * FROM ingredient WHERE ingredientId = :key")
-    fun getIngredientWithRecipeItemsById(key: Long): Flow<IngredientWithRecipeItems>
+    @Query("SELECT * FROM ingredient WHERE ingredientId IN (:keys)")
+    fun getIngredientsWithRecipeItemsById(keys: List<Long>): Flow<List<IngredientWithRecipeItems>>
 
     @Delete
     suspend fun deleteIngredient(ingredient: Ingredient)
