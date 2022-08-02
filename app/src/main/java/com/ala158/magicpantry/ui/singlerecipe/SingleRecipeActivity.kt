@@ -16,6 +16,7 @@ import com.ala158.magicpantry.arrayAdapter.RecipeIngredientArrayAdapter
 import com.ala158.magicpantry.data.RecipeWithRecipeItems
 import com.ala158.magicpantry.ui.recipes.EditRecipeActivity
 import com.ala158.magicpantry.viewModel.IngredientViewModel
+import com.ala158.magicpantry.viewModel.RecipeItemViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -24,6 +25,7 @@ import kotlinx.coroutines.launch
 class SingleRecipeActivity : AppCompatActivity() {
 
     private lateinit var recipeViewModel: RecipeViewModel
+    private lateinit var recipeItemViewModel: RecipeItemViewModel
     private lateinit var ingredientViewModel: IngredientViewModel
     private lateinit var recipeName:TextView
     private lateinit var recipeImage:ImageView
@@ -50,6 +52,11 @@ class SingleRecipeActivity : AppCompatActivity() {
             RecipeViewModel::class.java,
             Util.DataType.RECIPE
         )
+        recipeItemViewModel = Util.createViewModel(
+            this,
+            recipeItemViewModel::class.java,
+            Util.DataType.RECIPE_ITEM
+        )
         ingredientViewModel = Util.createViewModel(
             this,
             IngredientViewModel::class.java,
@@ -75,17 +82,17 @@ class SingleRecipeActivity : AppCompatActivity() {
             recipeViewModel.updateCurrentCookable()
             if(id != -1) {
                 recipeWithRecipeItems = it[id]
-                recipeName.text = recipeWithIngredients.recipe.title
-                if (recipeWithIngredients.recipe.imageUri == "") {
+                recipeName.text = recipeWithRecipeItems.recipe.title
+                if (recipeWithRecipeItems.recipe.imageUri == "") {
                     recipeImage.setImageResource(R.drawable.magic_pantry_app_logo)
                 }
                 else {
-                    recipeImage.setImageURI(recipeWithIngredients.recipe.imageUri.toUri())
+                    recipeImage.setImageURI(recipeWithRecipeItems.recipe.imageUri.toUri())
                 }
-                recipeDescription.text = recipeWithIngredients.recipe.description
-                cookingTimeView.text = "${recipeWithIngredients.recipe.timeToCook} mins"
-                numOfServingsView.text = "${recipeWithIngredients.recipe.servings} servings"
-                if(recipeWithIngredients.recipe.numMissingIngredients == 0){
+                recipeDescription.text = recipeWithRecipeItems.recipe.description
+                cookingTimeView.text = "${recipeWithRecipeItems.recipe.timeToCook} mins"
+                numOfServingsView.text = "${recipeWithRecipeItems.recipe.servings} servings"
+                if(recipeWithRecipeItems.recipe.numMissingIngredients == 0){
                     isAbleToCookImageView.setImageResource(R.drawable.ic_baseline_check_box_24)
                     isAbleToCookTextView.text = "Ready to cook!"
                     cookNowButton.visibility = View.VISIBLE

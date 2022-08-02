@@ -14,6 +14,7 @@ import com.ala158.magicpantry.arrayAdapter.RecipeListArrayAdapter
 import com.ala158.magicpantry.data.Ingredient
 import com.ala158.magicpantry.ui.singlerecipe.SingleRecipeActivity
 import com.ala158.magicpantry.viewModel.IngredientViewModel
+import com.ala158.magicpantry.viewModel.RecipeItemViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModel
 
 class RecipesFragment : Fragment(),CompoundButton.OnCheckedChangeListener{
@@ -24,9 +25,6 @@ class RecipesFragment : Fragment(),CompoundButton.OnCheckedChangeListener{
     private lateinit var recipeListArrayAdapter: RecipeListArrayAdapter
     private lateinit var currentCookableCheckBox: CheckBox
     private lateinit var recipeHeader: TextView
-
-    private lateinit var recipeItemViewModel: RecipeItemViewModel
-    private lateinit var ingredients: List<Ingredient>
 
     override fun onCreateView(
         inflater: LayoutInflater,
