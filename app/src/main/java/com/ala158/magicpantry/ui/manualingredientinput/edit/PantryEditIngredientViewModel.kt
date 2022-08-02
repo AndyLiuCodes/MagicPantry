@@ -14,6 +14,8 @@ import kotlinx.coroutines.withContext
 class PantryEditIngredientViewModel(private val repository: IngredientRepository) : ViewModel() {
     val ingredientEntry = MutableLiveData<IngredientEntry>()
 
+    val oldAmount = MutableLiveData(0.0)
+
     fun getIngredientEntry(id: Long) {
         CoroutineScope(IO).launch {
             val ingredientDbEntry = repository.getIngredient(id)
@@ -28,6 +30,7 @@ class PantryEditIngredientViewModel(private val repository: IngredientRepository
                 ingredient.setNotifyThreshold(ingredientDbEntry.notifyThreshold)
                 ingredient.setIsNotify(ingredientDbEntry.isNotify)
                 ingredientEntry.value = ingredient
+                oldAmount.value = ingredientDbEntry.amount
             }
         }
     }
@@ -46,6 +49,6 @@ class PantryEditIngredientViewModel(private val repository: IngredientRepository
             ingredientEntry.value!!.getIsNotify(),
             ingredientEntry.value!!.getNotifyThreshold()
         )
-        repository.updateIngredient(dbIngredient)
+        repository.updateIngredientSync(dbIngredient)
     }
 }

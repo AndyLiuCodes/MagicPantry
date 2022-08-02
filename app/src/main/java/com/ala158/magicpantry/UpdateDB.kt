@@ -59,8 +59,8 @@ object UpdateDB {
         parentIngredientViewModel: IngredientViewModel,
         parentRecipeItemViewModel: RecipeItemViewModel,
 
-    ): List<Long> {
-        val recipesWithItemsNotEnough = mutableSetOf<Long>()
+        ): List<Long> {
+        val recipeIdsToUpdate = mutableSetOf<Long>()
         val ingredientsWithRecipeItems =
             parentIngredientViewModel.findIngredientsWithRecipeItemsById(updatedIngredientIds)
 
@@ -84,12 +84,8 @@ object UpdateDB {
                     ingredientWithRecipeItem.ingredient.unit,
                     item.recipeUnit
                 )
-                if (convertedRecipeAmount <= ingredientWithRecipeItem.ingredient.amount) {
-                    item.recipeIsEnough = true
-                } else {
-                    item.recipeIsEnough = false
-                    recipesWithItemsNotEnough.add(item.relatedRecipeId)
-                }
+                item.recipeIsEnough = convertedRecipeAmount <= ingredientWithRecipeItem.ingredient.amount
+                recipeIdsToUpdate.add(item.relatedRecipeId)
                 Log.d(
                     "SINGLE_RECIPE",
                     "updateRecipesMissingIngredients: isEnough: ${item.recipeIsEnough}"
@@ -97,16 +93,16 @@ object UpdateDB {
                 parentRecipeItemViewModel.updateSync(item)
             }
         }
-        return recipesWithItemsNotEnough.toList()
+        return recipeIdsToUpdate.toList()
     }
 
-    suspend fun updateRecipesMissingIngredients(
-        recipesWithItemsNotEnough: List<Long>,
+    private suspend fun updateRecipesMissingIngredients(
+        recipeIdsToUpdate: List<Long>,
         parentRecipeViewModel: RecipeViewModel
     ) {
         // Update all recipes' num of missing ingredients that have had their recipeItems
         // isEnough set to false
-        val recipes = parentRecipeViewModel.getRecipesById(recipesWithItemsNotEnough)
+        val recipes = parentRecipeViewModel.getRecipesById(recipeIdsToUpdate)
 
         for (recipe in recipes) {
             Log.d(

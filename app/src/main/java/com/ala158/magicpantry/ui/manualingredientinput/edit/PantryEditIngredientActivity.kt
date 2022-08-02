@@ -9,9 +9,16 @@ import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import com.ala158.magicpantry.R
+import com.ala158.magicpantry.UpdateDB
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.ui.pantry.PantryFragment
+import com.ala158.magicpantry.viewModel.IngredientViewModel
+import com.ala158.magicpantry.viewModel.RecipeItemViewModel
+import com.ala158.magicpantry.viewModel.RecipeViewModel
 import com.google.android.material.textfield.TextInputEditText
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class PantryEditIngredientActivity : AppCompatActivity() {
     private lateinit var ingredientNameLabel: TextView
@@ -27,10 +34,16 @@ class PantryEditIngredientActivity : AppCompatActivity() {
     private lateinit var btnSave: Button
     private lateinit var pantryEditIngredientViewModel: PantryEditIngredientViewModel
 
+    private lateinit var ingredientViewModel: IngredientViewModel
+    private lateinit var recipeItemViewModel: RecipeItemViewModel
+    private lateinit var recipeViewModel: RecipeViewModel
+
     private var ingredientId = -1L
     private var isIngredientNameValid = true
     private var isAmountValid = true
     private var isPricePerUnitValid = true
+
+    private var oldAmount = 0.0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -68,6 +81,10 @@ class PantryEditIngredientActivity : AppCompatActivity() {
             }
         }
 
+        pantryEditIngredientViewModel.oldAmount.observe(this) {
+            oldAmount = it
+        }
+
         if (pantryEditIngredientViewModel.ingredientEntry.value == null) {
             pantryEditIngredientViewModel.getIngredientEntry(ingredientId)
         }
@@ -78,14 +95,28 @@ class PantryEditIngredientActivity : AppCompatActivity() {
 
         btnSave.setOnClickListener {
             if (validateIngredientInput()) {
-                pantryEditIngredientViewModel.updateIngredientEntry(ingredientId)
+                CoroutineScope(Dispatchers.IO).launch {
+                    pantryEditIngredientViewModel.updateIngredientEntry(ingredientId)
+                    val newAmount =
+                        pantryEditIngredientViewModel.ingredientEntry.value!!.getAmount()
+                    if (oldAmount != newAmount) {
+                        // Update all recipes that use this ingredient
+                        val ingredientIds = arrayListOf(ingredientId)
+                        UpdateDB.postUpdatesAfterModifyIngredient(
+                            ingredientIds,
+                            ingredientViewModel,
+                            recipeItemViewModel,
+                            recipeViewModel
+                        )
+                    }
+                }
                 Toast.makeText(this, "Saved ingredient!", Toast.LENGTH_SHORT).show()
                 finish()
             }
         }
     }
 
-    private fun getAppropriateUnitAdapter(unit: String) : ArrayAdapter<CharSequence> {
+    private fun getAppropriateUnitAdapter(unit: String): ArrayAdapter<CharSequence> {
         if (unit == "kg" || unit == "g") {
             return ArrayAdapter.createFromResource(
                 this,
@@ -109,7 +140,7 @@ class PantryEditIngredientActivity : AppCompatActivity() {
         )
     }
 
-    private fun getAppropriateDropdownMapping(unit: String) : Map<String, Int> {
+    private fun getAppropriateDropdownMapping(unit: String): Map<String, Int> {
         if (unit == "kg" || unit == "g") {
             return UNIT_MASS_DROPDOWN_MAPPING
         }
@@ -162,6 +193,22 @@ class PantryEditIngredientActivity : AppCompatActivity() {
             this,
             PantryEditIngredientViewModel::class.java,
             Util.DataType.INGREDIENT
+        )
+
+        ingredientViewModel = Util.createViewModel(
+            this,
+            IngredientViewModel::class.java,
+            Util.DataType.INGREDIENT
+        )
+        recipeItemViewModel = Util.createViewModel(
+            this,
+            RecipeItemViewModel::class.java,
+            Util.DataType.RECIPE_ITEM
+        )
+        recipeViewModel = Util.createViewModel(
+            this,
+            RecipeViewModel::class.java,
+            Util.DataType.RECIPE
         )
     }
 
@@ -243,14 +290,16 @@ class PantryEditIngredientActivity : AppCompatActivity() {
             }
         })
 
-        lowStockThresholdField.addTextChangedListener(object: TextWatcher {
+        lowStockThresholdField.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 val thresholdAmountString = s.toString()
                 var thresholdAmount = 0
                 if (thresholdAmountString != "")
                     thresholdAmount = thresholdAmountString.toInt()
 
-                pantryEditIngredientViewModel.ingredientEntry.value!!.setNotifyThreshold(thresholdAmount)
+                pantryEditIngredientViewModel.ingredientEntry.value!!.setNotifyThreshold(
+                    thresholdAmount
+                )
                 return
             }
 
@@ -281,7 +330,7 @@ class PantryEditIngredientActivity : AppCompatActivity() {
         return super.onOptionsItemSelected(item)
     }
 
-    private fun validateIngredientInput() : Boolean {
+    private fun validateIngredientInput(): Boolean {
         var errorMsg = ""
 
         if (textInputEditIngredientName.text.toString().trim() == "") {
@@ -320,25 +369,25 @@ class PantryEditIngredientActivity : AppCompatActivity() {
         val IS_PRICE_PER_UNIT_VALID_KEY = "IS_PRICE_PER_UNIT_VALID_KEY"
 
         val UNIT_DROPDOWN_MAPPING = mapOf<String, Int>(
-            "kg"    to 0,
-            "g"     to 1,
-            "mL"    to 2,
-            "L"     to 3,
-            "unit"  to 4
+            "kg" to 0,
+            "g" to 1,
+            "mL" to 2,
+            "L" to 3,
+            "unit" to 4
         )
 
         val UNIT_VOLUME_DROPDOWN_MAPPING = mapOf<String, Int>(
-            "mL"    to 0,
-            "L"     to 1
+            "mL" to 0,
+            "L" to 1
         )
 
         val UNIT_MASS_DROPDOWN_MAPPING = mapOf<String, Int>(
-            "kg"    to 0,
-            "g"     to 1
+            "kg" to 0,
+            "g" to 1
         )
 
         val UNIT_UNIT_DROPDOWN_MAPPING = mapOf<String, Int>(
-            "unit"    to 0
+            "unit" to 0
         )
     }
 }

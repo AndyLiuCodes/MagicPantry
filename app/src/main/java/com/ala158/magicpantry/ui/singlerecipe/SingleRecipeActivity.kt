@@ -7,10 +7,7 @@ import android.content.IntentFilter
 import android.os.Bundle
 import android.util.Log
 import android.view.View
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.ListView
-import android.widget.TextView
+import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import com.ala158.magicpantry.R
@@ -138,8 +135,6 @@ class SingleRecipeActivity : AppCompatActivity() {
         }
 
         cookNowButton.setOnClickListener {
-            Log.d("SINGLE RECIPE", "onCreate: cook recipe!!!")
-
             if (id != -1) {
                 CoroutineScope(Dispatchers.IO).launch {
                     UpdateDB.consumeIngredients(recipeWithRecipeItems, ingredientViewModel)
@@ -153,6 +148,7 @@ class SingleRecipeActivity : AppCompatActivity() {
                         recipeViewModel
                     )
                 }
+                Toast.makeText(this, "Recipe Cooked!", Toast.LENGTH_LONG).show()
                 finish()
             }
         }
