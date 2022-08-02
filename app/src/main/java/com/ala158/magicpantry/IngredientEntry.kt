@@ -3,11 +3,11 @@ package com.ala158.magicpantry
 class IngredientEntry {
     private var id: Long = -1L
     private var name: String = ""
-    private var amount: Int = 0
+    private var amount: Double = 0.0
     private var unit: String = "unit"
     private var price: Double = 0.0
     private var isNotify: Boolean = false
-    private var notifyThreshold: Int = 0
+    private var notifyThreshold: Double = 0.0
 
     fun getId() : Long {
         return id
@@ -24,11 +24,11 @@ class IngredientEntry {
         name = newName
     }
 
-    fun getAmount() : Int {
+    fun getAmount() : Double {
         return amount
     }
 
-    fun setAmount(newAmount: Int) {
+    fun setAmount(newAmount: Double) {
         amount = newAmount
     }
 
@@ -56,11 +56,11 @@ class IngredientEntry {
         isNotify = newIsNotify
     }
 
-    fun getNotifyThreshold() : Int {
+    fun getNotifyThreshold() : Double {
         return notifyThreshold
     }
 
-    fun setNotifyThreshold(newNotifyThreshold : Int) {
+    fun setNotifyThreshold(newNotifyThreshold : Double) {
         notifyThreshold = newNotifyThreshold
     }
 }

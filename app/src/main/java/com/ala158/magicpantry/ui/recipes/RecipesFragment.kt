@@ -2,6 +2,7 @@ package com.ala158.magicpantry.ui.recipes
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,8 +11,10 @@ import androidx.fragment.app.Fragment
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.RecipeListArrayAdapter
+import com.ala158.magicpantry.data.Ingredient
 import com.ala158.magicpantry.ui.singlerecipe.SingleRecipeActivity
 import com.ala158.magicpantry.viewModel.IngredientViewModel
+import com.ala158.magicpantry.viewModel.RecipeItemViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModel
 
 class RecipesFragment : Fragment(),CompoundButton.OnCheckedChangeListener{
@@ -49,7 +52,13 @@ class RecipesFragment : Fragment(),CompoundButton.OnCheckedChangeListener{
 
         recipeViewModel.allRecipes.observe(viewLifecycleOwner) {
             recipeViewModel.updateCurrentCookable()
-            if(!currentCookableCheckBox.isChecked) {
+            if (!currentCookableCheckBox.isChecked && it.isNotEmpty()) {
+                Log.d("RECIPE", "onCreateView: $it")
+                for (recipe in it) {
+                    for (item in recipe.recipeItems) {
+                        Log.d("RECIPE", "onCreateView: $item")
+                    }
+                }
                 recipeListArrayAdapter.replace(it)
                 recipeListArrayAdapter.notifyDataSetChanged()
             }
@@ -69,10 +78,9 @@ class RecipesFragment : Fragment(),CompoundButton.OnCheckedChangeListener{
 
         recipeListView.setOnItemClickListener { _, _, position, _ ->
             val intent = Intent(requireActivity(), SingleRecipeActivity::class.java)
-            if(currentCookableCheckBox.isChecked){
+            if (currentCookableCheckBox.isChecked) {
                 intent.putExtra("RECIPE_KEY_COOKABLE", position)
-            }
-            else{
+            } else {
                 intent.putExtra("RECIPE_KEY", position)
             }
             startActivity(intent)

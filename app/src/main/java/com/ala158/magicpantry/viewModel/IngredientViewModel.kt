@@ -6,7 +6,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import com.ala158.magicpantry.data.Ingredient
 import com.ala158.magicpantry.data.IngredientWithRecipeItems
-import com.ala158.magicpantry.data.RecipeItemWithRecipes
 import com.ala158.magicpantry.repository.IngredientRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
@@ -14,9 +13,6 @@ import kotlinx.coroutines.launch
 
 class IngredientViewModel(private val repository: IngredientRepository) : ViewModel() {
     val allIngredientsLiveData: LiveData<List<Ingredient>> = repository.allIngredients.asLiveData()
-
-    private var _ingredientWithRecipeItems: LiveData<IngredientWithRecipeItems> = MutableLiveData()
-    val ingredientWithRecipeItems: LiveData<IngredientWithRecipeItems> = _ingredientWithRecipeItems
 
     private val _newIngredientId = MutableLiveData(0L)
     val newIngredientId: LiveData<Long> = _newIngredientId
@@ -28,15 +24,16 @@ class IngredientViewModel(private val repository: IngredientRepository) : ViewMo
         }
     }
 
-    fun findIngredientWithRecipeItemsById(key: Long) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val ingredient = repository.getIngredientWithRecipeItemsById(key).asLiveData()
-            _ingredientWithRecipeItems = ingredient
-        }
+    suspend fun findIngredientsWithRecipeItemsById(keys: List<Long>): List<IngredientWithRecipeItems> {
+        return repository.getIngredientsWithRecipeItemsById(keys)
     }
 
     fun insert(ingredient: Ingredient) {
         repository.insertIngredient(ingredient)
+    }
+
+    fun insertAll(ingredients: List<Ingredient>) {
+        repository.insertIngredients(ingredients)
     }
 
     fun delete(ingredient: Ingredient) {
@@ -45,6 +42,10 @@ class IngredientViewModel(private val repository: IngredientRepository) : ViewMo
 
     fun update(ingredient: Ingredient) {
         repository.updateIngredient(ingredient)
+    }
+
+    fun updateSync(ingredient: Ingredient) {
+        repository.updateIngredientSync(ingredient)
     }
 }
 

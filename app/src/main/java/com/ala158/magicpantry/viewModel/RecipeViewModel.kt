@@ -24,6 +24,10 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
 
     var toBeAddedToRecipeIngredients: MutableMap<Long, Ingredient> = mutableMapOf()
 
+    suspend fun getRecipesById(keys: List<Long>): List<RecipeWithRecipeItems> {
+        return repository.getRecipesById(keys)
+    }
+
     fun insert(recipe: Recipe) {
         CoroutineScope(Dispatchers.IO).launch {
             val id = repository.insertRecipe(recipe)

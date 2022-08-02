@@ -12,6 +12,10 @@ interface RecipeDAO {
     @Query("SELECT * FROM recipe")
     fun getAllRecipes(): Flow<List<RecipeWithRecipeItems>>
 
+    @Transaction
+    @Query("SELECT * FROM recipe WHERE recipeId IN (:keys)")
+    suspend fun getRecipesById(keys: List<Long>): List<RecipeWithRecipeItems>
+
     @Insert
     suspend fun insertRecipe(recipe: Recipe): Long
 

@@ -23,13 +23,19 @@ class IngredientRepository(private val ingredientDAO: IngredientDAO) {
         return ingredientDAO.getIngredientEntryByNameAndUnit(name, unit)
     }
 
-    fun getIngredientWithRecipeItemsById(key: Long): Flow<IngredientWithRecipeItems> {
-        return ingredientDAO.getIngredientWithRecipeItemsById(key)
+    suspend fun getIngredientsWithRecipeItemsById(keys: List<Long>): List<IngredientWithRecipeItems> {
+        return ingredientDAO.getIngredientsWithRecipeItemsById(keys)
     }
 
     fun insertIngredient(ingredient: Ingredient) {
         CoroutineScope(IO).launch {
             ingredientDAO.insertIngredient(ingredient)
+        }
+    }
+
+    fun insertIngredients(ingredients: List<Ingredient>) {
+        CoroutineScope(IO).launch {
+            ingredientDAO.insertIngredients(ingredients)
         }
     }
 
@@ -43,6 +49,10 @@ class IngredientRepository(private val ingredientDAO: IngredientDAO) {
         CoroutineScope(IO).launch {
             ingredientDAO.updateIngredient(ingredient)
         }
+    }
+
+    fun updateIngredientSync(ingredient: Ingredient) {
+        ingredientDAO.updateIngredientSync(ingredient)
     }
 
     fun deleteIngredientById(id: Long) {

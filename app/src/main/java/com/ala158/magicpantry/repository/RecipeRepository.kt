@@ -11,6 +11,10 @@ import kotlinx.coroutines.launch
 class RecipeRepository(private val recipeDAO: RecipeDAO) {
     val allRecipes: Flow<List<RecipeWithRecipeItems>> = recipeDAO.getAllRecipes()
 
+    suspend fun getRecipesById(keys: List<Long>): List<RecipeWithRecipeItems> {
+        return recipeDAO.getRecipesById(keys)
+    }
+
     suspend fun insertRecipe(recipe: Recipe): Long {
         return recipeDAO.insertRecipe(recipe)
     }
@@ -32,6 +36,4 @@ class RecipeRepository(private val recipeDAO: RecipeDAO) {
             recipeDAO.deleteRecipeById(id)
         }
     }
-
-
 }

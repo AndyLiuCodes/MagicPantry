@@ -19,20 +19,20 @@ class ManualIngredientInputViewModel(private val repository: IngredientRepositor
     fun insertIngredient() {
         // Check if an existing ingredient exists, if so, add to the amount and update the price
         CoroutineScope(Dispatchers.IO).launch {
-            val existingtDbEntry = repository.getIngredientByNameAndUnit(
+            val existingDbEntry = repository.getIngredientByNameAndUnit(
                 ingredient.value!!.getName(),
                 ingredient.value!!.getUnit()
             )
 
-            if (existingtDbEntry != null) {
+            if (existingDbEntry != null) {
                 val dbIngredient = Ingredient(
                     ingredient.value!!.getName(),
-                    ingredient.value!!.getAmount() + existingtDbEntry.amount,
+                    ingredient.value!!.getAmount() + existingDbEntry.amount,
                     ingredient.value!!.getUnit(),
                     ingredient.value!!.getPrice(), // Update the price with the newly entered in one
                     ingredient.value!!.getNotifyThreshold()
                 )
-                dbIngredient.ingredientId = existingtDbEntry.ingredientId
+                dbIngredient.ingredientId = existingDbEntry.ingredientId
                 repository.updateIngredient(dbIngredient)
             } else {
                 // If not existing item exists, then add the ingredient to the db

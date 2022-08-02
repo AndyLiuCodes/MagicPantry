@@ -19,7 +19,7 @@ class ShoppingListChangeAmountDialog : DialogFragment(), DialogInterface.OnClick
     private var ingredientUnit = ""
 
     interface ShoppingListChangeAmountDialogListener : Parcelable {
-        fun onShoppingListChangeAmountDialogClick(amount: Int)
+        fun onShoppingListChangeAmountDialogClick(amount: Double)
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
@@ -64,7 +64,7 @@ class ShoppingListChangeAmountDialog : DialogFragment(), DialogInterface.OnClick
             if (amountView.text.toString() == "") {
                 dismiss()
             } else {
-                val amount = amountView.text.toString().toInt()
+                val amount = amountView.text.toString().toDouble()
 
                 if (shoppingListChangeAmountDialogListener != null) {
                     shoppingListChangeAmountDialogListener!!.onShoppingListChangeAmountDialogClick(amount)
