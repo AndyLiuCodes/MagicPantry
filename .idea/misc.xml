@@ -14,10 +14,13 @@
         <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/drawable/ic_pen_to_square_solid.xml" value="0.3065" />
         <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/drawable/ic_plus_solid.xml" value="0.3065" />
         <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/drawable/rounded_bg_grey.xml" value="0.1" />
+        <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/layout/activity_ingredient_list_add.xml" value="0.24583333333333332" />
         <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/layout/activity_main.xml" value="0.1514360313315927" />
         <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/layout/activity_manual_ingredient_input.xml" value="0.17604166666666668" />
         <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/layout/activity_pantry_edit_ingredient.xml" value="0.27708333333333335" />
         <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/layout/dialog_add_to_shopping_list.xml" value="0.1" />
+        <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/layout/dialog_change_shopping_item_amount.xml" value="0.18885869565217392" />
+        <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/layout/dialog_ingredient_list_add.xml" value="0.24479166666666666" />
         <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/layout/fragment_manual_ingredient_input.xml" value="0.17604166666666668" />
         <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/layout/fragment_manual_ingredient_input_edit.xml" value="0.17604166666666668" />
         <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/layout/fragment_review_ingredients.xml" value="0.27708333333333335" />
@@ -29,6 +32,8 @@
         <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/activity_add_recipe.xml" value="0.1" />
         <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/activity_edit_recipe.xml" value="0.16666666666666666" />
         <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/activity_low_ingredient.xml" value="0.14673913043478262" />
+        <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/menu/ingredient_list_add_menu.xml" value="0.24479166666666666" />
+        <entry key="..\:/Users/andyl/AndroidStudioProjects/School/MagicPantry/app/src/main/res/menu/manual_ingredient_input_action_menu.xml" value="0.27708333333333335" />
         <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/activity_main.xml" value="0.19947916666666668" />
         <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/activity_receipt_scanner.xml" value="0.1" />
         <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/fragment_dashboard.xml" value="0.1" />
@@ -45,6 +50,8 @@
         <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/list_item_notification_list.xml" value="0.14673913043478262" />
         <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/list_item_recipe_ingredients.xml" value="0.22" />
         <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/menu/edit_recipe_delete_menu.xml" value="0.1" />
+        <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/fragment_review_ingredients.xml" value="0.1" />
+        <entry key="..\:/Users/elain/AndroidStudioProjects/MagicPantry/app/src/main/res/layout/list_item_edit_ingredient.xml" value="0.1" />
         <entry key="app/src/main/res/drawable/ic_dashboard_black_24dp.xml" value="0.4895" />
         <entry key="app/src/main/res/drawable/ic_pen_to_square_solid.xml" value="0.4895" />
         <entry key="app/src/main/res/drawable/rounded_bg.xml" value="0.4895" />

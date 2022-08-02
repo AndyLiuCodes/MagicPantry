@@ -6,12 +6,8 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.*
-import androidx.lifecycle.ViewModelProvider
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
-import com.ala158.magicpantry.dao.IngredientDAO
-import com.ala158.magicpantry.database.MagicPantryDatabase
-import com.ala158.magicpantry.ui.reviewingredients.ReviewIngredientsViewModel
 import com.google.android.material.textfield.TextInputEditText
 
 class ManualIngredientInputActivity : AppCompatActivity() {
@@ -24,8 +20,8 @@ class ManualIngredientInputActivity : AppCompatActivity() {
     private lateinit var unitEditDropdown: Spinner
     private lateinit var priceLabel: TextView
     private lateinit var priceTextField: TextInputEditText
-    private lateinit var database: MagicPantryDatabase
-    private lateinit var ingredientDAO: IngredientDAO
+    private lateinit var lowStockThresholdField: TextInputEditText
+    private lateinit var lowStockThresholdUnitTextView: TextView
     private lateinit var manualIngredientsInputViewModel: ManualIngredientInputViewModel
     private var isIngredientNameValid = true
     private var isAmountValid = true
@@ -40,6 +36,8 @@ class ManualIngredientInputActivity : AppCompatActivity() {
         ingredientNameTextField = findViewById(R.id.manual_input_ingredient_name)
         amountTextField = findViewById(R.id.manual_input_amount)
         amountLabel = findViewById(R.id.manual_input_amount_label)
+        lowStockThresholdField = findViewById(R.id.manual_input_threshold)
+        lowStockThresholdUnitTextView = findViewById(R.id.manual_input_threshold_unit)
 
         val unitAdapter = ArrayAdapter.createFromResource(
             this,
@@ -51,6 +49,7 @@ class ManualIngredientInputActivity : AppCompatActivity() {
         unitEditDropdown.adapter = unitAdapter
         // Default unit is unit
         unitEditDropdown.setSelection(UNIT_DROPDOWN_MAPPING["unit"]!!)
+        lowStockThresholdUnitTextView.text = unitEditDropdown.selectedItem.toString()
 
         priceTextField = findViewById(R.id.manual_input_price)
         priceLabel = findViewById(R.id.manual_price_label)
@@ -147,6 +146,7 @@ class ManualIngredientInputActivity : AppCompatActivity() {
             ) {
                 val unitString = parent!!.getItemAtPosition(position).toString()
                 manualIngredientsInputViewModel.ingredient.value!!.setUnit(unitString)
+                lowStockThresholdUnitTextView.text = unitString
             }
         }
 
@@ -161,6 +161,26 @@ class ManualIngredientInputActivity : AppCompatActivity() {
 
                 priceLabel.setTextColor(resources.getColor(R.color.mp_textview_grey, null))
                 isPricePerUnitValid = true
+                return
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                return
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                return
+            }
+        })
+
+        lowStockThresholdField.addTextChangedListener(object: TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                val thresholdAmountString = s.toString()
+                var thresholdAmount = 0
+                if (thresholdAmountString != "")
+                    thresholdAmount = thresholdAmountString.toInt()
+
+                manualIngredientsInputViewModel.ingredient.value!!.setNotifyThreshold(thresholdAmount)
                 return
             }
 
@@ -191,11 +211,10 @@ class ManualIngredientInputActivity : AppCompatActivity() {
             isIngredientNameValid = false
         }
 
-        val amount = manualIngredientsInputViewModel.ingredient.value!!.getAmount()
-        if (amountTextField.text.toString() == "" || amount == 0) {
+        if (amountTextField.text.toString() == "") {
             if (errorMsg != "")
                 errorMsg += "\n"
-            errorMsg += "• The amount of ingredient cannot be empty or zero"
+            errorMsg += "• The amount of ingredient cannot be empty"
             amountLabel.setTextColor(resources.getColor(R.color.mp_red, null))
             isAmountValid = false
         }

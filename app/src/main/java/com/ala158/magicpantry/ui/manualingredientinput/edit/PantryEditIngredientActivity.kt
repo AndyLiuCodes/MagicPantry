@@ -8,12 +8,8 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
-import androidx.lifecycle.ViewModelProvider
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
-import com.ala158.magicpantry.dao.IngredientDAO
-import com.ala158.magicpantry.database.MagicPantryDatabase
-import com.ala158.magicpantry.ui.manualingredientinput.ManualIngredientInputViewModel
 import com.ala158.magicpantry.ui.pantry.PantryFragment
 import com.google.android.material.textfield.TextInputEditText
 
@@ -25,10 +21,10 @@ class PantryEditIngredientActivity : AppCompatActivity() {
     private lateinit var unitDropdown: Spinner
     private lateinit var priceLabel: TextView
     private lateinit var textInputEditPrice: TextInputEditText
+    private lateinit var lowStockThresholdField: TextInputEditText
+    private lateinit var lowStockThresholdUnitTextView: TextView
     private lateinit var btnCancel: Button
     private lateinit var btnSave: Button
-    private lateinit var magicPantryDatabase: MagicPantryDatabase
-    private lateinit var ingredientDAO: IngredientDAO
     private lateinit var pantryEditIngredientViewModel: PantryEditIngredientViewModel
 
     private var ingredientId = -1L
@@ -46,12 +42,30 @@ class PantryEditIngredientActivity : AppCompatActivity() {
         initTextWatchers()
 
         pantryEditIngredientViewModel.ingredientEntry.observe(this) {
+            // Depending on what the ingredient's unit are, we limit what they can change the unit to
+            val unitAdapter = getAppropriateUnitAdapter(it.getUnit())
+            unitAdapter.setDropDownViewResource(R.layout.spinner_item_unit_dropdown)
+            unitDropdown.adapter = unitAdapter
+
             textInputEditIngredientName.setText(it.getName())
             textInputEditAmount.setText(it.getAmount().toString())
             // Had help from https://stackoverflow.com/a/57119977 for setting the dropdown value
-            unitDropdown.setSelection(UNIT_DROPDOWN_MAPPING[it.getUnit()]!!)
+            val dropdownMapping = getAppropriateDropdownMapping(it.getUnit())
+            unitDropdown.setSelection(dropdownMapping[it.getUnit()]!!)
+            lowStockThresholdUnitTextView.text = it.getUnit()
+
+            if (it.getUnit() == "unit") {
+                // Disable the unit dropdown when the ingredient uses unit type "unit"
+                unitDropdown.isEnabled = false
+                unitDropdown.isClickable = false
+            }
+
             if (it.getPrice() != 0.0)
                 textInputEditPrice.setText(it.getPrice().toString())
+
+            if (it.getNotifyThreshold() != 0) {
+                lowStockThresholdField.setText(it.getNotifyThreshold().toString())
+            }
         }
 
         if (pantryEditIngredientViewModel.ingredientEntry.value == null) {
@@ -69,6 +83,42 @@ class PantryEditIngredientActivity : AppCompatActivity() {
                 finish()
             }
         }
+    }
+
+    private fun getAppropriateUnitAdapter(unit: String) : ArrayAdapter<CharSequence> {
+        if (unit == "kg" || unit == "g") {
+            return ArrayAdapter.createFromResource(
+                this,
+                R.array.unit_mass,
+                R.layout.spinner_item_unit_dropdown
+            )
+        }
+
+        if (unit == "L" || unit == "mL") {
+            return ArrayAdapter.createFromResource(
+                this,
+                R.array.unit_volume,
+                R.layout.spinner_item_unit_dropdown
+            )
+        }
+
+        return ArrayAdapter.createFromResource(
+            this,
+            R.array.unit_unit,
+            R.layout.spinner_item_unit_dropdown
+        )
+    }
+
+    private fun getAppropriateDropdownMapping(unit: String) : Map<String, Int> {
+        if (unit == "kg" || unit == "g") {
+            return UNIT_MASS_DROPDOWN_MAPPING
+        }
+
+        if (unit == "L" || unit == "mL") {
+            return UNIT_VOLUME_DROPDOWN_MAPPING
+        }
+
+        return UNIT_UNIT_DROPDOWN_MAPPING
     }
 
     override fun onSaveInstanceState(outState: Bundle) {
@@ -96,20 +146,13 @@ class PantryEditIngredientActivity : AppCompatActivity() {
     private fun initViews() {
         textInputEditIngredientName = findViewById(R.id.pantry_edit_name)
         textInputEditAmount = findViewById(R.id.pantry_edit_amount)
-
-        val unitAdapter = ArrayAdapter.createFromResource(
-            this,
-            R.array.unit_items,
-            R.layout.spinner_item_unit_dropdown
-        )
-        unitAdapter.setDropDownViewResource(R.layout.spinner_item_unit_dropdown)
         unitDropdown = findViewById(R.id.pantry_edit_unit_dropdown)
-        unitDropdown.adapter = unitAdapter
-
         textInputEditPrice = findViewById(R.id.pantry_edit_price)
         ingredientNameLabel = findViewById(R.id.ingredient_edit_name_label)
         amountLabel = findViewById(R.id.ingredient_edit_amount_label)
         priceLabel = findViewById(R.id.ingredient_edit_price_label)
+        lowStockThresholdField = findViewById(R.id.pantry_edit_threshold)
+        lowStockThresholdUnitTextView = findViewById(R.id.pantry_edit_threshold_unit)
         btnCancel = findViewById(R.id.btn_cancel_pantry_edit)
         btnSave = findViewById(R.id.btn_save_pantry_edit)
     }
@@ -175,6 +218,7 @@ class PantryEditIngredientActivity : AppCompatActivity() {
             ) {
                 val unitString = parent!!.getItemAtPosition(position).toString()
                 pantryEditIngredientViewModel.ingredientEntry.value!!.setUnit(unitString)
+                lowStockThresholdUnitTextView.text = unitString
             }
         }
 
@@ -187,6 +231,26 @@ class PantryEditIngredientActivity : AppCompatActivity() {
                 pantryEditIngredientViewModel.ingredientEntry.value!!.setPrice(price)
                 priceLabel.setTextColor(resources.getColor(R.color.mp_textview_grey, null))
                 isPricePerUnitValid = true
+                return
+            }
+
+            override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {
+                return
+            }
+
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                return
+            }
+        })
+
+        lowStockThresholdField.addTextChangedListener(object: TextWatcher {
+            override fun afterTextChanged(s: Editable?) {
+                val thresholdAmountString = s.toString()
+                var thresholdAmount = 0
+                if (thresholdAmountString != "")
+                    thresholdAmount = thresholdAmountString.toInt()
+
+                pantryEditIngredientViewModel.ingredientEntry.value!!.setNotifyThreshold(thresholdAmount)
                 return
             }
 
@@ -221,20 +285,23 @@ class PantryEditIngredientActivity : AppCompatActivity() {
         var errorMsg = ""
 
         if (textInputEditIngredientName.text.toString().trim() == "") {
-            errorMsg += "• The ingredient name cannot be empty \n"
+            errorMsg += "• The ingredient name cannot be empty"
             ingredientNameLabel.setTextColor(resources.getColor(R.color.mp_red, null))
             isIngredientNameValid = false
         }
 
-        val amount = pantryEditIngredientViewModel.ingredientEntry.value!!.getAmount()
-        if (textInputEditAmount.text.toString() == "" || amount == 0) {
-            errorMsg += "• The amount of ingredient cannot be empty or zero\n"
+        if (textInputEditAmount.text.toString() == "") {
+            if (errorMsg != "")
+                errorMsg += "\n"
+            errorMsg += "• The amount of ingredient cannot be empty"
             amountLabel.setTextColor(resources.getColor(R.color.mp_red, null))
             isAmountValid = false
         }
 
         if (textInputEditPrice.text.toString() == ".") {
-            errorMsg += "• The price per unit is invalid \n"
+            if (errorMsg != "")
+                errorMsg += "\n"
+            errorMsg += "• The price per unit is invalid"
             priceLabel.setTextColor(resources.getColor(R.color.mp_red, null))
             isPricePerUnitValid = false
         }
@@ -258,6 +325,20 @@ class PantryEditIngredientActivity : AppCompatActivity() {
             "mL"    to 2,
             "L"     to 3,
             "unit"  to 4
+        )
+
+        val UNIT_VOLUME_DROPDOWN_MAPPING = mapOf<String, Int>(
+            "mL"    to 0,
+            "L"     to 1
+        )
+
+        val UNIT_MASS_DROPDOWN_MAPPING = mapOf<String, Int>(
+            "kg"    to 0,
+            "g"     to 1
+        )
+
+        val UNIT_UNIT_DROPDOWN_MAPPING = mapOf<String, Int>(
+            "unit"    to 0
         )
     }
 }
