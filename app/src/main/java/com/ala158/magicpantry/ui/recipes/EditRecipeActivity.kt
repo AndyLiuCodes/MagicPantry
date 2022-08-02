@@ -23,16 +23,14 @@ import androidx.lifecycle.ViewModelProvider
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.dao.RecipeDAO
+import com.ala158.magicpantry.data.Recipe
 import com.ala158.magicpantry.data.RecipeWithIngredients
 import com.ala158.magicpantry.database.MagicPantryDatabase
 import com.ala158.magicpantry.repository.RecipeRepository
-import com.ala158.magicpantry.ui.singlerecipe.SingleRecipeActivity
 import com.ala158.magicpantry.viewModel.RecipeViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModelFactory
 import java.io.ByteArrayOutputStream
 import java.io.File
-
-//TODO: delete button (myRuns style)
 
 class EditRecipeActivity : AppCompatActivity() {
     private lateinit var imageUri: Uri
@@ -60,6 +58,9 @@ class EditRecipeActivity : AppCompatActivity() {
 
     private var recipeArray = arrayOf<RecipeWithIngredients>()
     private var pos = 0
+    private var id = 0L
+
+    private var newUri = ""
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -92,7 +93,14 @@ class EditRecipeActivity : AppCompatActivity() {
             if (myList.isNotEmpty()) {
                 recipeArray = myList
 
-                imageView!!.setImageURI(recipeArray[pos].recipe.imageUri.toUri())
+                //get id of recipe to edit or delete
+                val recipeToEdit = recipeArray[pos]
+                id = recipeToEdit.recipe.recipeId
+
+                newUri = recipeArray[pos].recipe.imageUri
+
+                //set textViews
+                imageView!!.setImageURI(newUri.toUri())
                 title.text = recipeArray[pos].recipe.title
                 cookTime.text = recipeArray[pos].recipe.timeToCook.toString()
                 servings.text = recipeArray[pos].recipe.servings.toString()
@@ -144,7 +152,6 @@ class EditRecipeActivity : AppCompatActivity() {
 
         val doneBtn = findViewById<Button>(R.id.edit_recipe_btn_add_recipe)
         doneBtn.setOnClickListener {
-            //TODO: save recipe to db
             updateDatabase()
             onBackPressed()
         }
@@ -221,36 +228,22 @@ class EditRecipeActivity : AppCompatActivity() {
 
     //update database
     private fun updateDatabase() {
-        itemViewModel.allRecipes.observe(this) {
-            val myList = it.toTypedArray()
-
-            //if not empty
-            if (myList.isNotEmpty()) {
-                recipeArray = myList
-                val recipeToEdit = recipeArray[pos]
-
-                recipeToEdit.recipe.title = title.text.toString()
-                recipeToEdit.recipe.timeToCook = if (cookTime.text.toString() == "") {
-                    0
-                }
-                else {
-                    cookTime.text.toString().toInt()
-                }
-                recipeToEdit.recipe.servings = if (servings.text.toString() == "") {
-                    0
-                }
-                else {
-                    servings.text.toString().toInt()
-                }
-                recipeToEdit.recipe.description = description.text.toString()
-                recipeToEdit.recipe.imageUri = if (bitmap != null) {
-                    getImageUri(this, bitmap!!).toString()
-                }
-                else {
-                    ""
-                }
-            }
+        if (bitmap != null) {
+            newUri = getImageUri(this, bitmap!!).toString()
         }
+        val newServings = if (servings.text.toString() == "") {
+            0
+        }
+        else {
+            servings.text.toString().toInt()
+        }
+        val newCookTime = if (cookTime.text.toString() == "") {
+            0
+        }
+        else {
+            cookTime.text.toString().toInt()
+        }
+        itemViewModel.update(Recipe(id, title.text.toString(), newUri, newServings, newCookTime, description.text.toString(), 0))
     }
 
     private fun getImageUri(inContext: Context, inImage: Bitmap): Uri? {
@@ -292,9 +285,8 @@ class EditRecipeActivity : AppCompatActivity() {
         //remove observer from livedata
         itemViewModel.allRecipes.removeObservers(this)
 
-        //TODO: does not delete rn
         //delete item from viewModel
-        itemViewModel.deleteById(pos.toLong())
+        itemViewModel.deleteById(id)
     }
 
     override fun onResume() {

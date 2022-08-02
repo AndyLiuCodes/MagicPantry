@@ -1,5 +1,6 @@
 package com.ala158.magicpantry.viewModel
 
+import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -34,12 +35,16 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
     }
 
     fun update(recipe: Recipe) {
-        repository.updateRecipe(recipe)
+        CoroutineScope(Dispatchers.IO).launch {
+            repository.updateRecipe(recipe)
+        }
     }
 
     fun deleteById(key: Long) {
-        repository.deleteRecipeById(key)
-        repository.deleteAllRecipeCrossRef(key)
+        CoroutineScope(Dispatchers.IO).launch {
+            repository.deleteRecipeById(key)
+            repository.deleteAllRecipeCrossRef(key)
+        }
     }
 
     fun deleteCrossRef(recipeId: Long, ingredientId: Long) {
