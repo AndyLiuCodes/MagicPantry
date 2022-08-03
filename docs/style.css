@@ -104,3 +104,11 @@ dt,
 dd {
   margin-bottom: 2%;
 }
+
+.carousel-control-prev {
+  margin-left: -100px;
+}
+
+.carousel-control-next {
+  margin-right: -100px;
+}
