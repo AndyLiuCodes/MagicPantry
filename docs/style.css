@@ -112,3 +112,7 @@ dd {
 .carousel-control-next {
   margin-right: -100px;
 }
+
+.carousel-indicators {
+  margin-bottom: -30px;
+}
