@@ -108,3 +108,10 @@ dd {
 .carousel-control {
     background-image: none !important;
 }
+.carousel-control-prev {
+  margin-left: -100px;
+}
+
+.carousel-control-next {
+  margin-right: -100px;
+}
