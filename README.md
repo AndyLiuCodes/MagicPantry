@@ -26,6 +26,26 @@ An Android application to scan grocery receipts, keep track of ingredients in yo
   - Setup database with ingredients table [Tyler]
   - Giving preview of ingredients and fix mistakes before submitting [Tyler]
 
+## Show and Tell Demo 2
+- Pantry
+  - Add ingredient to shopping list [Andy]
+  - Added error checking for adding an ingredient [Andy]
+  - Users can specify when an ingredient is low [Andy]
+  - Improve robustness of scanner [Jason]
+- Recipe
+  - Add, edit and delete a recipe [Elaine/Andy]
+  - Cook a recipe to consume pantry ingredients [Tyler]
+  - View all recipes [Jason]
+  - View a single recipe [Jason]
+- Shopping List
+  - Add, edit and delete from the shopping list [Andy]
+  - Adding ingredients to your pantry from the shopping list [Andy]
+- Notification
+  - View all notifications [Elaine/Tyler]
+  - View single notification [Elaine]
+  - Android notifications not complete yet - using mock data currently
+
+
 ## Team
 
 | Name              | Email           | Student # |
