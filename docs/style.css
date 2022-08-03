@@ -104,3 +104,7 @@ dt,
 dd {
   margin-bottom: 2%;
 }
+
+.carousel-control {
+    background-image: none !important;
+}
