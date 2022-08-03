@@ -7,51 +7,47 @@ import android.widget.BaseAdapter
 import android.widget.Button
 import android.widget.TextView
 import com.ala158.magicpantry.R
+import com.ala158.magicpantry.data.RecipeItem
+import com.ala158.magicpantry.data.RecipeItemAndIngredient
 import com.ala158.magicpantry.data.RecipeWithRecipeItems
+import com.ala158.magicpantry.ui.pantry.PantryViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModel
 
 class AddRecipeArrayAdapter(
     private val context: Context,
-    private var recipes: Array<RecipeWithRecipeItems>,
-    recipeViewModel: RecipeViewModel
+    private var recipeItemAndIngredients: ArrayList<RecipeItemAndIngredient>
 ) : BaseAdapter() {
 
-    val viewModel = recipeViewModel
-
     override fun getCount(): Int {
-        return recipes.size
+        return recipeItemAndIngredients.size
     }
 
     override fun getItem(position: Int): Any {
-        return recipes[position]
+        return recipeItemAndIngredients[position]
     }
 
     override fun getItemId(position: Int): Long {
-        return position.toLong()
+        return recipeItemAndIngredients[position].ingredient.ingredientId
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view: View = View.inflate(context, R.layout.list_item_recipe_ingredient_list, null)
 
-        val price = view.findViewById<TextView>(R.id.recipe_ingredient_list_item_amount)
+        val amount = view.findViewById<TextView>(R.id.recipe_ingredient_list_item_amount)
         val unit = view.findViewById<TextView>(R.id.recipe_ingredient_list_item_unit)
         val name = view.findViewById<TextView>(R.id.recipe_ingredient_list_item_name)
 
         val deleteBtn = view.findViewById<Button>(R.id.recipe_ingredient_list_item_delete_button)
 
         deleteBtn.setOnClickListener {
-            viewModel.delete(recipes[position].recipe)
+            println("Delete $name")
         }
 
-        val recipe = recipes[position]
+        val recipeItemAndIngredient = recipeItemAndIngredients[position]
 
-        price.text = recipe.recipeItems[position].ingredient.price.toString()
-        unit.text = recipe.recipeItems[position].ingredient.unit
-        name.text = recipe.recipeItems[position].ingredient.name
-
-        /*price.text = "4"
-        unit.text = "kg"
-        name.text = "bread"*/
+        amount.text = recipeItemAndIngredient.recipeItem.recipeAmount.toString()
+        unit.text = recipeItemAndIngredient.recipeItem.recipeUnit
+        name.text = recipeItemAndIngredient.ingredient.name
 
         return view
     }

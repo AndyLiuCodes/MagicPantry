@@ -13,18 +13,25 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
 import android.widget.*
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.AddRecipeArrayAdapter
 import com.ala158.magicpantry.data.Recipe
+import com.ala158.magicpantry.data.RecipeItem
+import com.ala158.magicpantry.data.RecipeItemAndIngredient
 import com.ala158.magicpantry.data.RecipeWithRecipeItems
+import com.ala158.magicpantry.ui.ingredientlistadd.IngredientListAddActivity
+import com.ala158.magicpantry.viewModel.RecipeItemViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModel
 import java.io.ByteArrayOutputStream
 import java.io.File
 
 class AddRecipeActivity : AppCompatActivity() {
+    private lateinit var recipeItemViewModel: RecipeItemViewModel
     private lateinit var imageUri : Uri
     private var bitmap : Bitmap? = null
 
@@ -45,7 +52,8 @@ class AddRecipeActivity : AppCompatActivity() {
 
     private lateinit var recipeViewModel : RecipeViewModel
 
-    private var recipeArray = arrayOf<RecipeWithRecipeItems>()
+    private var ingredientToBeAdded = ArrayList<RecipeItemAndIngredient>()
+    private lateinit var addIngredientToRecipeLauncher: ActivityResultLauncher<Intent>
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -62,6 +70,12 @@ class AddRecipeActivity : AppCompatActivity() {
             Util.DataType.RECIPE
         )
 
+        recipeItemViewModel = Util.createViewModel(
+            this,
+            RecipeItemViewModel::class.java,
+            Util.DataType.RECIPE_ITEM
+        )
+
         imageView = findViewById(R.id.add_recipe_img)
         cameraBtn = findViewById(R.id.btn_add_recipe_pic)
 
@@ -71,20 +85,29 @@ class AddRecipeActivity : AppCompatActivity() {
         description = findViewById(R.id.add_recipe_edit_recipe_description)
         ingredients = findViewById(R.id.add_recipe_ingredient_listView)
 
-        recipeViewModel.allRecipes.observe(this) {
-            val myList = it.toTypedArray()
-
-            //if not empty
-            if (myList.isNotEmpty()) {
-                recipeArray = myList
+        addIngredientToRecipeLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK && it.data != null) {
+                if (it.data!!.hasExtra(ADDED_INGREDIENTS_KEY)) {
+                    val newlyAddedIngredients = it.data!!.getSerializableExtra(ADDED_INGREDIENTS_KEY)
+                    val existingAddedIngredients: ArrayList<RecipeItemAndIngredient> =
+                        recipeViewModel.addedRecipeItemAndIngredient.value!!
+                    existingAddedIngredients.addAll(newlyAddedIngredients as ArrayList<RecipeItemAndIngredient>)
+                    recipeViewModel.addedRecipeItemAndIngredient.value = existingAddedIngredients
+                }
             }
         }
 
-        val adapter = AddRecipeArrayAdapter(this, recipeArray, recipeViewModel)
+        val adapter = AddRecipeArrayAdapter(this, ingredientToBeAdded)
         ingredients.adapter = adapter
 
         ingredients.setOnItemClickListener { parent: AdapterView<*>, _: View, _: Int, _: Long->
             println("debug: $parent")
+        }
+
+        recipeViewModel.addedRecipeItemAndIngredient.observe(this) {
+            ingredientToBeAdded.clear()
+            ingredientToBeAdded.addAll(it)
+            adapter.notifyDataSetChanged()
         }
 
         cameraBtn.setOnClickListener {
@@ -132,19 +155,30 @@ class AddRecipeActivity : AppCompatActivity() {
             edit.putString("recipe_description", description.text.toString())
             edit.apply()
 
-            val intent = Intent(this, AddIngredientToRecipeActivity::class.java)
-            startActivity(intent)
+            val intent = Intent(this, IngredientListAddActivity::class.java)
+            val bundle = Bundle()
+            bundle.putInt(Util.INGREDIENT_ADD_LIST, Util.INGREDIENT_ADD_RECIPE)
+            val idToFilter = ArrayList<Int>()
+            val iterator = recipeViewModel.addedRecipeItemAndIngredient.value!!.listIterator()
+            // Get all the ids to filter from the IngredientListAddActivity
+            for (recipeItemAndIngredient in iterator) {
+                idToFilter.add(recipeItemAndIngredient.ingredient.ingredientId.toInt())
+            }
+            // Send the Ids t o filter to the IngredientListAddActivity
+            bundle.putIntegerArrayList(IDS_TO_FILTER_KEY, idToFilter)
+            intent.putExtras(bundle)
+            addIngredientToRecipeLauncher.launch(intent)
         }
 
         val cancelBtn = findViewById<Button>(R.id.add_recipe_btn_cancel_recipe)
         cancelBtn.setOnClickListener {
-            onBackPressed()
+            finish()
         }
 
         val addBtn = findViewById<Button>(R.id.add_recipe_btn_add_recipe)
         addBtn.setOnClickListener {
             updateDatabase()
-            onBackPressed()
+            finish()
         }
     }
 
@@ -240,7 +274,7 @@ class AddRecipeActivity : AppCompatActivity() {
         else {
             ""
         }
-        recipeViewModel.insert(recipe)
+        recipeViewModel.insert(recipe, recipeItemViewModel)
     }
 
     private fun getImageUri(inContext: Context, inImage: Bitmap): Uri? {
@@ -278,5 +312,10 @@ class AddRecipeActivity : AppCompatActivity() {
         // Delete image once we are done with it
         if (imageToScan != null && imageToScan!!.exists())
             imageToScan!!.delete()
+    }
+
+    companion object {
+        const val ADDED_INGREDIENTS_KEY = "ADDED_INGREDIENTS_KEY"
+        const val IDS_TO_FILTER_KEY = "IDS_TO_FILTER_KEY"
     }
 }

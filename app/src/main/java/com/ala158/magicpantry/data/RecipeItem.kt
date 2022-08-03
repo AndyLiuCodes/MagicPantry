@@ -1,5 +1,7 @@
 package com.ala158.magicpantry.data
 
+import android.os.Parcel
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.ForeignKey
@@ -40,4 +42,37 @@ data class RecipeItem(
 
     @ColumnInfo(name = "related_recipe_id", index = true)
     var relatedRecipeId: Long = 0L
-)
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readLong(),
+        parcel.readDouble(),
+        parcel.readString() ?: "unit",
+        parcel.readByte() != 0.toByte(),
+        parcel.readLong(),
+        parcel.readLong()
+    ) {
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeLong(recipeItemId)
+        parcel.writeDouble(recipeAmount)
+        parcel.writeString(recipeUnit)
+        parcel.writeByte(if (recipeIsEnough) 1 else 0)
+        parcel.writeLong(relatedIngredientId)
+        parcel.writeLong(relatedRecipeId)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<RecipeItem> {
+        override fun createFromParcel(parcel: Parcel): RecipeItem {
+            return RecipeItem(parcel)
+        }
+
+        override fun newArray(size: Int): Array<RecipeItem?> {
+            return arrayOfNulls(size)
+        }
+    }
+}
