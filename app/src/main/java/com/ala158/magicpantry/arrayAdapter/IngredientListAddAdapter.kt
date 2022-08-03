@@ -20,7 +20,7 @@ class IngredientListAddAdapter(
     private var ingredients: List<Ingredient> = ArrayList()
     private var shoppingListItems: List<ShoppingListItemAndIngredient> = ArrayList()
     private var recipeItems: List<RecipeItemAndIngredient> = ArrayList()
-
+    private var filterIngredientIds = ArrayList<Int>()
     // Holds the IDs of which ingredients to be added to the shopping list or recipe
     var ingredientsToAdd: MutableMap<Long, Ingredient> = mutableMapOf()
 
@@ -79,20 +79,19 @@ class IngredientListAddAdapter(
         updateIngredientsNotInShoppingList()
     }
 
-    fun replaceRecipeItems(newRecipeItems: List<RecipeItemAndIngredient>) {
-        recipeItems = newRecipeItems
+    fun replaceRecipeItems(newIdsToFilter: ArrayList<Int>) {
+        filterIngredientIds = newIdsToFilter
         updateIngredientsNotInShoppingList()
     }
 
-    // Retrieve ingredients that aren't in the shopping list
+    // Retrieve ingredients that aren't in the shopping list/Recipe
     private fun updateIngredientsNotInShoppingList() {
         val filterIds: Set<Long>
         if (isIngredientAddShoppingList) {
             filterIds =
                 shoppingListItems.map { it.shoppingListItem.relatedIngredientId }.toSet()
         } else {
-            filterIds =
-                recipeItems.map { it.ingredient.ingredientId }.toSet()
+            filterIds = filterIngredientIds.map { it.toLong() }.toSet()
         }
 
         filteredIngredients =

@@ -1,5 +1,7 @@
 package com.ala158.magicpantry.data
 
+import android.os.Parcel
+import android.os.Parcelable
 import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
@@ -26,7 +28,17 @@ data class Ingredient(
 
     @ColumnInfo(name = "notify_threshold")
     var notifyThreshold: Double = 0.0,
-) {
+) : Parcelable {
+    constructor(parcel: Parcel) : this(
+        parcel.readLong(),
+        parcel.readString() ?: "",
+        parcel.readDouble(),
+        parcel.readString() ?: "unit",
+        parcel.readDouble(),
+        parcel.readByte() != 0.toByte(),
+        parcel.readDouble()
+    )
+
     constructor(name: String, amount: Double, unit: String, price: Double) : this() {
         this.name = name
         this.amount = amount
@@ -40,5 +52,29 @@ data class Ingredient(
         this.unit = unit
         this.price = price
         this.notifyThreshold = notifyThreshold
+    }
+
+    override fun writeToParcel(parcel: Parcel, flags: Int) {
+        parcel.writeLong(ingredientId)
+        parcel.writeString(name)
+        parcel.writeDouble(amount)
+        parcel.writeString(unit)
+        parcel.writeDouble(price)
+        parcel.writeByte(if (isNotify) 1 else 0)
+        parcel.writeDouble(notifyThreshold)
+    }
+
+    override fun describeContents(): Int {
+        return 0
+    }
+
+    companion object CREATOR : Parcelable.Creator<Ingredient> {
+        override fun createFromParcel(parcel: Parcel): Ingredient {
+            return Ingredient(parcel)
+        }
+
+        override fun newArray(size: Int): Array<Ingredient?> {
+            return arrayOfNulls(size)
+        }
     }
 }

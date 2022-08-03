@@ -10,6 +10,7 @@ import com.ala158.magicpantry.repository.IngredientRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class IngredientViewModel(private val repository: IngredientRepository) : ViewModel() {
     val allIngredientsLiveData: LiveData<List<Ingredient>> = repository.allIngredients.asLiveData()
