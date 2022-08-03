@@ -105,9 +105,6 @@ dd {
   margin-bottom: 2%;
 }
 
-.carousel-control {
-    background-image: none !important;
-}
 .carousel-control-prev {
   margin-left: -100px;
 }
