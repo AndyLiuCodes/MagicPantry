@@ -1,5 +1,7 @@
 package com.ala158.magicpantry.ui.ingredientlistadd
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
 import android.view.MenuItem
@@ -11,10 +13,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.IngredientListAddAdapter
-import com.ala158.magicpantry.data.Ingredient
-import com.ala158.magicpantry.data.RecipeItem
-import com.ala158.magicpantry.data.ShoppingListItem
+import com.ala158.magicpantry.data.*
 import com.ala158.magicpantry.dialogs.IngredientListAddDialog
+import com.ala158.magicpantry.ui.recipes.AddRecipeActivity.Companion.ADDED_INGREDIENTS_KEY
+import com.ala158.magicpantry.ui.recipes.AddRecipeActivity.Companion.IDS_TO_FILTER_KEY
 import com.ala158.magicpantry.viewModel.IngredientViewModel
 import com.ala158.magicpantry.viewModel.RecipeItemViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModel
@@ -81,17 +83,23 @@ class IngredientListAddActivity : AppCompatActivity(), IngredientListAddDialog.I
                 ingredientListAddAdapter.notifyDataSetChanged()
             }
         } else {
+            var ingredientsIdToFilter = ArrayList<Int>()
+            if (intent.extras != null) {
+                val extraData = intent.extras?.getIntegerArrayList(IDS_TO_FILTER_KEY)
+                ingredientsIdToFilter = extraData as ArrayList<Int> /* = java.util.ArrayList<kotlin.Int> */
+            }
             ingredientListAddAdapter = IngredientListAddAdapter(
                 this,
                 isIngredientAddShoppingList,
                 recipeViewModel.toBeAddedToRecipeIngredients
             )
-
+            recipeViewModel.idToFilter.value = ingredientsIdToFilter
             header.text = "Add Ingredients to Recipe"
             val position = intent.extras?.getInt(Util.INGREDIENT_ADD_LIST_RECIPE_POSITION)!!
-            recipeViewModel.allRecipes.observe(this) {
-                ingredientListAddAdapter.replaceRecipeItems(it[position].recipeItems)
-                recipeId = it[position].recipe.recipeId
+
+            recipeViewModel.idToFilter.observe(this) {
+                // If id's to filter has changed update the adapter. Occurs when new items are added/deleted
+                ingredientListAddAdapter.replaceRecipeItems(it)
                 ingredientListAddAdapter.notifyDataSetChanged()
             }
         }
@@ -108,6 +116,7 @@ class IngredientListAddActivity : AppCompatActivity(), IngredientListAddDialog.I
             var shoppingListItem: ShoppingListItem
             var recipeItem: RecipeItem
             var ingredient: Ingredient
+            var addedRecipeItemAndIngredient = ArrayList<RecipeItemAndIngredient>()
             for (ingredientMap in ingredients) {
                 ingredient = ingredientMap.value
                 if (isIngredientAddShoppingList) {
@@ -124,7 +133,8 @@ class IngredientListAddActivity : AppCompatActivity(), IngredientListAddDialog.I
                         relatedIngredientId = ingredient.ingredientId,
                         relatedRecipeId = recipeId
                     )
-                    recipeItemViewModel.insert(recipeItem)
+                    val recipeItemAndIngredient = RecipeItemAndIngredient(recipeItem, ingredient)
+                    addedRecipeItemAndIngredient.add(recipeItemAndIngredient)
                 }
             }
 
@@ -132,6 +142,9 @@ class IngredientListAddActivity : AppCompatActivity(), IngredientListAddDialog.I
                 Toast.makeText(this, "Ingredients added to Shopping List!", Toast.LENGTH_SHORT).show()
             } else if (!isIngredientAddShoppingList && ingredients.isNotEmpty()) {
                 Toast.makeText(this, "Ingredients added to Recipe!", Toast.LENGTH_SHORT).show()
+                val resultIntent = Intent()
+                resultIntent.putExtra(ADDED_INGREDIENTS_KEY, addedRecipeItemAndIngredient)
+                setResult(RESULT_OK, resultIntent)
             }
 
             finish()
