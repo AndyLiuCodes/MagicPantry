@@ -11,6 +11,7 @@ import androidx.room.PrimaryKey
     foreignKeys = [ForeignKey(
         entity = Ingredient::class,
         onUpdate = ForeignKey.CASCADE,
+        onDelete = ForeignKey.CASCADE,
         parentColumns = ["ingredientId"],
         childColumns = ["related_ingredient_id"]
     )]
