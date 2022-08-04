@@ -1,8 +1,21 @@
-# Magic Pantry
+<p align="center">
+  <img src="docs/images/icon_magic_book.png" alt="Bootstrap logo" width="200" height="200">
+</p>
 
-An Android application to scan grocery receipts, keep track of ingredients in your pantry and create recipes.
+<section>
+  <h1 align="center">
+    Magic Pantry
+  </h1>
+  <p align="center"> 
+    An Android application to scan grocery receipts, keep track of ingredients in your pantry and create recipes.
+  </p>
+  <h2 align="center">
+    <a href="https://andyliucodes.github.io/MagicPantry/">Explore more!</a>
+  </h2>
+  <hr/>
+</section>
 
-## Features
+## 📱 Features
 
 1. Keeps track of the ingredients in your pantry at home
 1. Scan your shopping receipts to automatically add the items to your pantry (OCR)
@@ -13,7 +26,7 @@ An Android application to scan grocery receipts, keep track of ingredients in yo
    1. Share your recipes with others
    1. Generate shopping list for missing ingredients in a recipe
 
-## Show and Tell Demo 1
+## ✨ Show and Tell Demo 1
 
 - UI mockup [Tyler]
 - MVVM UML Diagram [Jason]
@@ -26,7 +39,8 @@ An Android application to scan grocery receipts, keep track of ingredients in yo
   - Setup database with ingredients table [Tyler]
   - Giving preview of ingredients and fix mistakes before submitting [Tyler]
 
-## Show and Tell Demo 2
+## ⭐ Show and Tell Demo 2
+
 - Pantry
   - Add ingredient to shopping list [Andy]
   - Added error checking for adding an ingredient [Andy]
@@ -45,8 +59,13 @@ An Android application to scan grocery receipts, keep track of ingredients in yo
   - View single notification [Elaine]
   - Android notifications not complete yet - using mock data currently
 
+<!-- ## 🌟 Final Demo
 
-## Team
+- Notification
+  - Creates a notification when an ingredient amount falls below it's set threshold value
+  - Generates an Android notification that directs to notification -->
+
+## 👥 Team
 
 | Name              | Email           | Student # |
 | ----------------- | --------------- | --------- |
