@@ -172,9 +172,11 @@
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
+                android:layout_height="0dp"
+                android:orientation="vertical"
+                android:background="@drawable/rounded_bg_white"
+                android:elevation="10dp"
+                android:layout_weight="1">
 
                 <TextView
                     android:id="@+id/recipe_description"
@@ -182,7 +184,11 @@
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
                     android:text="DescriptionText"
-                    android:textSize="20sp"></TextView>
+                    android:textSize="12sp"
+                    android:paddingStart="5dp"
+                    android:paddingTop="5dp"
+                    android:paddingEnd="5dp"
+                    android:paddingBottom="5dp"></TextView>
             </LinearLayout>
         </LinearLayout>
 
@@ -200,7 +206,7 @@
                 android:layout_marginTop="15dp"
                 android:gravity="center_vertical"
                 android:text="Ingredient List"
-                android:textSize="15sp"></TextView>
+                android:textSize="18sp"></TextView>
 
             <Space
                 android:layout_width="0dp"
