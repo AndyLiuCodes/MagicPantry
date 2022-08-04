@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
+import com.ala158.magicpantry.data.Ingredient
 import com.ala158.magicpantry.data.Notification
 import com.ala158.magicpantry.data.NotificationWithIngredients
 import com.ala158.magicpantry.repository.NotificationRepository
@@ -16,17 +17,19 @@ class NotificationViewModel(private val repository: NotificationRepository) : Vi
     val allNotifications: LiveData<List<NotificationWithIngredients>> =
         repository.allNotifications.asLiveData()
 
-    private val _newNotificationId = MutableLiveData(0L)
-    val newNotificationId: LiveData<Long> = _newNotificationId
-
-    fun insert(notification: Notification) {
+    fun insert(
+        notification: Notification,
+        ingredients: List<Ingredient>,
+    ) {
         CoroutineScope(Dispatchers.IO).launch {
             val id = repository.insertNotification(notification)
-            _newNotificationId.postValue(id)
+            for (ingredient in ingredients) {
+                insertCrossRef(id, ingredient.ingredientId)
+            }
         }
     }
 
-    fun insertCrossRef(notificationId: Long, ingredientId: Long) {
+    private fun insertCrossRef(notificationId: Long, ingredientId: Long) {
         repository.insertNotificationCrossRef(notificationId, ingredientId)
     }
 

@@ -41,7 +41,7 @@ class NotificationsFragment : Fragment() {
         val view = inflater.inflate(R.layout.fragment_notifications, container, false)
 
         notificationsListArrayAdapter =
-            NotificationsListArrayAdapter(requireActivity(), MockData.notifications)
+            NotificationsListArrayAdapter(requireActivity(), ArrayList())
 
         notificationsListView = view.findViewById(R.id.notifications_list_view)
         notificationsListView.adapter = notificationsListArrayAdapter
@@ -52,13 +52,10 @@ class NotificationsFragment : Fragment() {
             startActivity(intent)
         }
 
-        // TODO: add back in when notifications are generated
-/*
         notificationViewModel.allNotifications.observe(requireActivity()) {
             notificationsListArrayAdapter.replace(it)
             notificationsListArrayAdapter.notifyDataSetChanged()
         }
-*/
 
         return view
     }

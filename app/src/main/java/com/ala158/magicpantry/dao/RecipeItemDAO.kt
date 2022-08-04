@@ -8,6 +8,9 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface RecipeItemDAO {
 
+    @Query("SELECT * FROM recipe_item")
+    fun getAllRecipeItems(): Flow<List<RecipeItem>>
+
     @Transaction
     @Query("SELECT * FROM recipe_item WHERE recipeItemId = :recipeItemId")
     fun getRecipeItemWithRecipesById(recipeItemId: Long): Flow<RecipeItemAndRecipe>
