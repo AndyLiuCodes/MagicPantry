@@ -2,18 +2,15 @@
   <img src="docs/images/icon_magic_book.png" alt="Bootstrap logo" width="200" height="200">
 </p>
 
-<section>
-  <h1 align="center">
-    Magic Pantry
-  </h1>
-  <p align="center"> 
-    An Android application to scan grocery receipts, keep track of ingredients in your pantry and create recipes.
-  </p>
-  <h2 align="center">
-    <a href="https://andyliucodes.github.io/MagicPantry/">Explore more!</a>
-  </h2>
-  <hr/>
-</section>
+<h1 align="center">
+  Magic Pantry
+</h1>
+<p align="center"> 
+  An Android application to scan grocery receipts, keep track of ingredients in your pantry and create recipes.
+</p>
+<p align="center">
+  <a href="https://andyliucodes.github.io/MagicPantry/">Explore more!</a>
+</p>
 
 ## 📱 Features
 
