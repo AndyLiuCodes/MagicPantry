@@ -30,6 +30,7 @@ class ManualIngredientInputViewModel(private val repository: IngredientRepositor
                     ingredient.value!!.getAmount() + existingDbEntry.amount,
                     ingredient.value!!.getUnit(),
                     ingredient.value!!.getPrice(), // Update the price with the newly entered in one
+                    ingredient.value!!.getIsNotify(),
                     ingredient.value!!.getNotifyThreshold()
                 )
                 dbIngredient.ingredientId = existingDbEntry.ingredientId
@@ -41,6 +42,7 @@ class ManualIngredientInputViewModel(private val repository: IngredientRepositor
                     ingredient.value!!.getAmount(),
                     ingredient.value!!.getUnit(),
                     ingredient.value!!.getPrice(),
+                    ingredient.value!!.getIsNotify(),
                     ingredient.value!!.getNotifyThreshold()
                 )
                 repository.insertIngredient(dbIngredient)

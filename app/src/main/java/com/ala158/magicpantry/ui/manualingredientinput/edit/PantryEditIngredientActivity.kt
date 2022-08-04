@@ -30,6 +30,8 @@ class PantryEditIngredientActivity : AppCompatActivity() {
     private lateinit var textInputEditPrice: TextInputEditText
     private lateinit var lowStockThresholdField: TextInputEditText
     private lateinit var lowStockThresholdUnitTextView: TextView
+    private lateinit var isNotifyCheckBoxView: CheckBox
+    private lateinit var thresholdSectionLayout: LinearLayout
     private lateinit var btnCancel: Button
     private lateinit var btnSave: Button
     private lateinit var pantryEditIngredientViewModel: PantryEditIngredientViewModel
@@ -79,6 +81,14 @@ class PantryEditIngredientActivity : AppCompatActivity() {
             if (it.getNotifyThreshold() != 0.0) {
                 lowStockThresholdField.setText(it.getNotifyThreshold().toString())
             }
+
+            if (it.getIsNotify()) {
+                isNotifyCheckBoxView.isChecked = true
+                thresholdSectionLayout.visibility = View.VISIBLE
+            } else {
+                isNotifyCheckBoxView.isChecked = false
+                thresholdSectionLayout.visibility = View.INVISIBLE
+            }
         }
 
         pantryEditIngredientViewModel.oldAmount.observe(this) {
@@ -87,6 +97,21 @@ class PantryEditIngredientActivity : AppCompatActivity() {
 
         if (pantryEditIngredientViewModel.ingredientEntry.value == null) {
             pantryEditIngredientViewModel.getIngredientEntry(ingredientId)
+        }
+
+        isNotifyCheckBoxView.setOnCheckedChangeListener() {
+                _, isChecked ->
+
+            if (isChecked) {
+                thresholdSectionLayout.visibility = View.VISIBLE
+            } else {
+                // Reset the threshold data if the user unchecks the notify when low on stock
+                lowStockThresholdField.setText("")
+                pantryEditIngredientViewModel.ingredientEntry.value!!.setNotifyThreshold(0.0)
+                thresholdSectionLayout.visibility = View.INVISIBLE
+            }
+
+            pantryEditIngredientViewModel.ingredientEntry.value!!.setIsNotify(isChecked)
         }
 
         btnCancel.setOnClickListener {
@@ -184,6 +209,8 @@ class PantryEditIngredientActivity : AppCompatActivity() {
         priceLabel = findViewById(R.id.ingredient_edit_price_label)
         lowStockThresholdField = findViewById(R.id.pantry_edit_threshold)
         lowStockThresholdUnitTextView = findViewById(R.id.pantry_edit_threshold_unit)
+        isNotifyCheckBoxView = findViewById(R.id.pantry_edit_checkbox_isnotify)
+        thresholdSectionLayout = findViewById(R.id.pantry_edit_threshold_section)
         btnCancel = findViewById(R.id.btn_cancel_pantry_edit)
         btnSave = findViewById(R.id.btn_save_pantry_edit)
     }

@@ -54,6 +54,15 @@ data class Ingredient(
         this.notifyThreshold = notifyThreshold
     }
 
+    constructor(name: String, amount: Double, unit: String, price: Double, isNotify: Boolean, notifyThreshold: Double) : this() {
+        this.name = name
+        this.amount = amount
+        this.unit = unit
+        this.price = price
+        this.isNotify = isNotify
+        this.notifyThreshold = notifyThreshold
+    }
+
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeLong(ingredientId)
         parcel.writeString(name)
