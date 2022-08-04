@@ -39,7 +39,6 @@ object MockData {
         ShoppingListItem(1.0, false),
         ShoppingListItem(1000.0, false)
     )
-    val recipe = Recipe("French Toast", 2, 20, "Testing description")
 
     val recipeIngredient =  Ingredient(name = "Banana", amount = 1.0, unit = "unit", price = 0.20, ingredientId = 400)
 

@@ -40,10 +40,13 @@
                 android:layout_height="48dp"
                 android:layout_gravity="center_vertical"
                 android:backgroundTint="@color/mp_yellow"
-                android:gravity="right"
                 app:cornerRadius="8dp"
                 app:icon="@drawable/ic_baseline_edit_24"
-                app:iconGravity="top"
+                app:iconGravity="textStart"
+                android:layout_centerInParent="true"
+                android:layout_alignParentEnd="true"
+                app:iconPadding="0dp"
+                android:gravity="center"
                 tools:ignore="SpeakableTextPresentCheck" />
         </LinearLayout>
 
@@ -53,6 +56,7 @@
             android:layout_weight="1"
             android:background="@drawable/rounded_bg_white"
             android:gravity="center"
+            android:elevation="2dp"
             android:padding="15dp">
 
             <ImageView
@@ -126,7 +130,8 @@
                         android:paddingTop="5dp"
                         android:paddingEnd="5dp"
                         android:paddingBottom="5dp"
-                        app:srcCompat="@drawable/low_stock">
+                        app:srcCompat="@drawable/low_stock"
+                        tools:ignore="ImageContrastCheck">
 
                     </ImageView>
 
@@ -155,37 +160,48 @@
 
         </LinearLayout>
 
+
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:baselineAligned="false"
             android:orientation="vertical"
-            android:padding="15dp">
+            android:paddingTop="15dp"
+            android:paddingBottom="15dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="15dp"
                 android:gravity="center_vertical"
+                android:padding="15dp"
                 android:text="Description"
-                android:textSize="18sp"></TextView>
+                android:textSize="18sp"
+                android:textStyle="bold"></TextView>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical">
-
+                android:layout_height="0dp"
+                android:layout_weight="1"
+                android:background="@drawable/rounded_bg_white"
+                android:elevation="10dp"
+                android:orientation="vertical"
+                android:paddingTop="15dp"
+                android:paddingBottom="15dp">
 
                 <TextView
                     android:id="@+id/recipe_description"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:gravity="center_vertical"
+                    android:paddingStart="20dp"
+                    android:paddingTop="5dp"
+                    android:paddingEnd="20dp"
+                    android:paddingBottom="5dp"
                     android:text="DescriptionText"
-                    android:textSize="20sp"></TextView>
+                    android:textSize="12sp"></TextView>
             </LinearLayout>
         </LinearLayout>
-
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -200,7 +216,8 @@
                 android:layout_marginTop="15dp"
                 android:gravity="center_vertical"
                 android:text="Ingredient List"
-                android:textSize="15sp"></TextView>
+                android:textSize="18sp"
+                android:textStyle="bold"></TextView>
 
             <Space
                 android:layout_width="0dp"
@@ -213,16 +230,19 @@
                 android:layout_height="48dp"
                 android:layout_gravity="center_vertical"
                 android:backgroundTint="@color/mp_yellow"
-                android:gravity="right"
                 app:cornerRadius="8dp"
                 app:icon="@drawable/ic_baseline_add_24"
-                app:iconGravity="top"
+                app:iconGravity="textStart"
+                android:layout_centerInParent="true"
+                android:layout_alignParentEnd="true"
+                app:iconPadding="0dp"
+                android:gravity="center"
                 tools:ignore="SpeakableTextPresentCheck" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:orientation="vertical">
 
             <ListView
@@ -231,7 +251,7 @@
                 android:layout_height="479dp"
                 android:layout_weight="1"
                 android:divider="@android:color/transparent"
-                android:dividerHeight="10sp"></ListView>
+                android:dividerHeight="17sp"></ListView>
         </LinearLayout>
     </LinearLayout>
 
