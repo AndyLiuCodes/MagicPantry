@@ -37,6 +37,7 @@ class PantryIngredientsArrayAdapter(
         val ingredientNameTextView = view.findViewById<TextView>(R.id.ingredient_name)
         val ingredientPriceUnitTextView = view.findViewById<TextView>(R.id.ingredient_price_unit)
         val addToShoppingListBtn = view.findViewById<Button>(R.id.ingredient_add_to_shopping_list_button)
+        val numberFormatter = DecimalFormat("#.##")
 
         val ingredient = ingredients[position]
 
@@ -47,16 +48,16 @@ class PantryIngredientsArrayAdapter(
             unit = ingredient.unit
         }
 
-        amountTextView.text = "${ingredient.amount} $unit"
+        val amountString = numberFormatter.format(ingredient.amount)
+        amountTextView.text = "$amountString $unit"
         ingredientNameTextView.text = ingredient.name
 
         if (ingredient.price > 0.0) {
             // Had help to format the distance value string to have at most 2 decimal places with
             // no trailing zeros from
             // https://www.java67.com/2014/06/how-to-format-float-or-double-number-java-example.html
-            val distanceValueFormatter = DecimalFormat("#.##")
-            val distanceString = distanceValueFormatter.format(ingredient.price)
-            ingredientPriceUnitTextView.text = "$$distanceString/${ingredient.unit}"
+            val priceString = numberFormatter.format(ingredient.price)
+            ingredientPriceUnitTextView.text = "$$priceString/${ingredient.unit}"
         }
         
         if (ingredient.amount <= ingredient.notifyThreshold) {

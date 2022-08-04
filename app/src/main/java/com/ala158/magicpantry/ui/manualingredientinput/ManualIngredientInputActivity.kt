@@ -22,6 +22,8 @@ class ManualIngredientInputActivity : AppCompatActivity() {
     private lateinit var priceTextField: TextInputEditText
     private lateinit var lowStockThresholdField: TextInputEditText
     private lateinit var lowStockThresholdUnitTextView: TextView
+    private lateinit var isNotifyCheckBoxView: CheckBox
+    private lateinit var thresholdSectionLayout: LinearLayout
     private lateinit var manualIngredientsInputViewModel: ManualIngredientInputViewModel
     private var isIngredientNameValid = true
     private var isAmountValid = true
@@ -38,6 +40,8 @@ class ManualIngredientInputActivity : AppCompatActivity() {
         amountLabel = findViewById(R.id.manual_input_amount_label)
         lowStockThresholdField = findViewById(R.id.manual_input_threshold)
         lowStockThresholdUnitTextView = findViewById(R.id.manual_input_threshold_unit)
+        isNotifyCheckBoxView = findViewById(R.id.manual_checkbox_isnotify)
+        thresholdSectionLayout = findViewById(R.id.manual_threshold_section)
 
         val unitAdapter = ArrayAdapter.createFromResource(
             this,
@@ -61,6 +65,21 @@ class ManualIngredientInputActivity : AppCompatActivity() {
         )
 
         initTextWatchers()
+
+        isNotifyCheckBoxView.setOnCheckedChangeListener() {
+            _, isChecked ->
+
+            if (isChecked) {
+                thresholdSectionLayout.visibility = View.VISIBLE
+            } else {
+                // Reset the threshold data if the user unchecks the notify when low on stock
+                lowStockThresholdField.setText("")
+                manualIngredientsInputViewModel.ingredient.value!!.setNotifyThreshold(0.0)
+                thresholdSectionLayout.visibility = View.INVISIBLE
+            }
+
+            manualIngredientsInputViewModel.ingredient.value!!.setIsNotify(isChecked)
+        }
 
         btnAddToPantry.setOnClickListener {
             addItemToPantry()
