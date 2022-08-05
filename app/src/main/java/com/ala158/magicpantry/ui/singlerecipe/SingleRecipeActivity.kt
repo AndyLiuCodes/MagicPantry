@@ -172,41 +172,8 @@ class SingleRecipeActivity : AppCompatActivity(),
             recipeIngredientArrayAdapter.notifyDataSetChanged()
         }
         notificationViewModel.newNotificationId.observe(this){
-            val resultIntent = Intent(this, LowIngredientActivity::class.java).apply {
-                putExtra("NotificationId", it)
-            }
-            // Create the TaskStackBuilder
-            val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
-                // Add the intent, which inflates the back stack
-                addNextIntentWithParentStack(resultIntent)
-                // Get the PendingIntent containing the entire back stack
-                getPendingIntent(
-                    0,
-                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-                )
-            }
-            var builder: NotificationCompat.Builder? = null
-            if (lowIngredients.size == 1) {
-                builder = NotificationCompat.Builder(this, "lowIngredients")
-                    .setSmallIcon(R.drawable.magic_pantry_app_logo)
-                    .setContentTitle("You are low on ${lowIngredients[0].name}")
-                    .setContentText("Click here to view")
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-                    .setAutoCancel(true)
-                    .setContentIntent(resultPendingIntent)
-            } else if (lowIngredients.size > 1) {
-                builder = NotificationCompat.Builder(this, "lowIngredients")
-                    .setSmallIcon(R.drawable.magic_pantry_app_logo)
-                    .setContentTitle("You are low on ${lowIngredients.size} ingredients")
-                    .setContentText("Click here to view")
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-                    .setAutoCancel(true)
-                    .setContentIntent(resultPendingIntent)
-            }
-            with(NotificationManagerCompat.from(this)) {
-                if (builder != null) {
-                    notify(it.toInt(), builder.build())
-                }
+            if(it != 0L) {
+                sendNotification(it)
             }
         }
 
@@ -243,7 +210,7 @@ class SingleRecipeActivity : AppCompatActivity(),
                         recipeItemViewModel,
                         recipeViewModel
                     )
-                    sendNotification(recipeWithRecipeItems)
+                    insertNotification(recipeWithRecipeItems)
                 }
 
                 Toast.makeText(this, "Recipe Cooked!", Toast.LENGTH_LONG).show()
@@ -262,7 +229,7 @@ class SingleRecipeActivity : AppCompatActivity(),
         registerReceiver(broadcastReceiver, intentFilter)
     }
 
-    private fun sendNotification(recipe: RecipeWithRecipeItems) {
+    private fun insertNotification(recipe: RecipeWithRecipeItems) {
         val notification = Notification()
         notification.date = Calendar.getInstance()
         val recipeItems = recipe.recipeItems
@@ -312,6 +279,45 @@ class SingleRecipeActivity : AppCompatActivity(),
             notificationManager =
                 getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
             notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    private fun sendNotification(l: Long) {
+        val resultIntent = Intent(this, LowIngredientActivity::class.java).apply {
+            putExtra("NotificationId", l)
+        }
+        // Create the TaskStackBuilder
+        val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
+            // Add the intent, which inflates the back stack
+            addNextIntentWithParentStack(resultIntent)
+            // Get the PendingIntent containing the entire back stack
+            getPendingIntent(
+                0,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+        }
+        var builder: NotificationCompat.Builder? = null
+        if (lowIngredients.size == 1) {
+            builder = NotificationCompat.Builder(this, "lowIngredients")
+                .setSmallIcon(R.drawable.magic_pantry_app_logo)
+                .setContentTitle("You are low on ${lowIngredients[0].name}")
+                .setContentText("Click here to view")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true)
+                .setContentIntent(resultPendingIntent)
+        } else if (lowIngredients.size > 1) {
+            builder = NotificationCompat.Builder(this, "lowIngredients")
+                .setSmallIcon(R.drawable.magic_pantry_app_logo)
+                .setContentTitle("You are low on ${lowIngredients.size} ingredients")
+                .setContentText("Click here to view")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true)
+                .setContentIntent(resultPendingIntent)
+        }
+        with(NotificationManagerCompat.from(this)) {
+            if (builder != null) {
+                notify(l.toInt(), builder.build())
+            }
         }
     }
 

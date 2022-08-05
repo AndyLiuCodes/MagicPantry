@@ -7,7 +7,6 @@ import android.app.TaskStackBuilder
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -15,6 +14,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 import com.ala158.magicpantry.R
@@ -33,7 +33,6 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
-import kotlin.properties.Delegates
 
 class PantryEditIngredientActivity : AppCompatActivity() {
     private lateinit var ingredientNameLabel: TextView
@@ -61,6 +60,7 @@ class PantryEditIngredientActivity : AppCompatActivity() {
     private var isPricePerUnitValid = true
 
     private var oldAmount = 0.0
+    private var oldThreshold = 0.0
 
     private lateinit var notificationViewModel: NotificationViewModel
     private lateinit var notificationManager: NotificationManager
@@ -111,46 +111,17 @@ class PantryEditIngredientActivity : AppCompatActivity() {
             }
         }
         notificationViewModel.newNotificationId.observe(this) {
-            val resultIntent = Intent(this, LowIngredientActivity::class.java).apply {
-                putExtra("NotificationId", it)
-            }
-            // Create the TaskStackBuilder
-            val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
-                // Add the intent, which inflates the back stack
-                addNextIntentWithParentStack(resultIntent)
-                // Get the PendingIntent containing the entire back stack
-                getPendingIntent(
-                    0,
-                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-                )
-            }
-            var builder: NotificationCompat.Builder? = null
-            if (lowIngredients.size == 1) {
-                builder = NotificationCompat.Builder(this, "lowIngredients")
-                    .setSmallIcon(R.drawable.magic_pantry_app_logo)
-                    .setContentTitle("You are low on ${lowIngredients[0].name}")
-                    .setContentText("Click here to view")
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-                    .setAutoCancel(true)
-                    .setContentIntent(resultPendingIntent)
-            } else if (lowIngredients.size > 1) {
-                builder = NotificationCompat.Builder(this, "lowIngredients")
-                    .setSmallIcon(R.drawable.magic_pantry_app_logo)
-                    .setContentTitle("You are low on ${lowIngredients.size} ingredients")
-                    .setContentText("Click here to view")
-                    .setPriority(NotificationCompat.PRIORITY_HIGH)
-                    .setAutoCancel(true)
-                    .setContentIntent(resultPendingIntent)
-            }
-            with(NotificationManagerCompat.from(this)) {
-                if (builder != null) {
-                    notify(it.toInt(), builder.build())
-                }
+            if(it != 0L) {
+                sendNotification(it)
             }
         }
 
         pantryEditIngredientViewModel.oldAmount.observe(this) {
             oldAmount = it
+        }
+
+        pantryEditIngredientViewModel.oldThreshold.observe(this){
+            oldThreshold = it
         }
 
         if (pantryEditIngredientViewModel.ingredientEntry.value == null) {
@@ -181,6 +152,7 @@ class PantryEditIngredientActivity : AppCompatActivity() {
                     pantryEditIngredientViewModel.updateIngredientEntry(ingredientId)
                     val newAmount =
                         pantryEditIngredientViewModel.ingredientEntry.value!!.getAmount()
+                    val newThreshold = pantryEditIngredientViewModel.ingredientEntry.value!!.getNotifyThreshold()
                     if (oldAmount != newAmount) {
                         // Update all recipes that use this ingredient
                         val ingredientIds = arrayListOf(ingredientId)
@@ -190,7 +162,10 @@ class PantryEditIngredientActivity : AppCompatActivity() {
                             recipeItemViewModel,
                             recipeViewModel
                         )
-                        sendNotification()
+                        prepNotification()
+                    }
+                    if(oldThreshold != newThreshold){
+                        prepNotification()
                     }
                 }
                 Toast.makeText(this, "Saved ingredient!", Toast.LENGTH_SHORT).show()
@@ -453,7 +428,7 @@ class PantryEditIngredientActivity : AppCompatActivity() {
         return true
     }
 
-    private suspend fun sendNotification() {
+    private suspend fun prepNotification() {
         val notification = Notification()
         notification.date = Calendar.getInstance()
         val ingredientIds = arrayListOf(ingredientId)
@@ -488,6 +463,48 @@ class PantryEditIngredientActivity : AppCompatActivity() {
             notificationManager.createNotificationChannel(channel)
         }
     }
+
+    private fun sendNotification(l: Long) {
+        val resultIntent = Intent(this, LowIngredientActivity::class.java).apply {
+            putExtra("NotificationId", l)
+        }
+        // Create the TaskStackBuilder
+        val iUniqueId = (System.currentTimeMillis() and 0xfffffff).toInt()
+        val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
+            // Add the intent, which inflates the back stack
+            addNextIntentWithParentStack(resultIntent)
+            // Get the PendingIntent containing the entire back stack
+            getPendingIntent(
+                iUniqueId,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+        }
+        var builder: NotificationCompat.Builder? = null
+        if (lowIngredients.size == 1) {
+            builder = NotificationCompat.Builder(this, "lowIngredients")
+                .setSmallIcon(R.drawable.magic_pantry_app_logo)
+                .setContentTitle("You are low on ${lowIngredients[0].name}")
+                .setContentText("Click here to view")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true)
+                .setContentIntent(resultPendingIntent)
+        } else if (lowIngredients.size > 1) {
+            builder = NotificationCompat.Builder(this, "lowIngredients")
+                .setSmallIcon(R.drawable.magic_pantry_app_logo)
+                .setContentTitle("You are low on ${lowIngredients.size} ingredients")
+                .setContentText("Click here to view")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true)
+                .setContentIntent(resultPendingIntent)
+        }
+        with(NotificationManagerCompat.from(this)) {
+            if (builder != null) {
+                notify(l.toInt(), builder.build())
+            }
+        }
+    }
+
+
 
     companion object {
         val IS_INGREDIENT_NAME_VALID_KEY = "IS_INGREDIENT_NAME_VALID_KEY"

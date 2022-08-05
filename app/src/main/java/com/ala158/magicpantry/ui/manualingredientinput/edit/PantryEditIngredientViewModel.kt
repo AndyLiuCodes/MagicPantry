@@ -15,6 +15,7 @@ class PantryEditIngredientViewModel(private val repository: IngredientRepository
     val ingredientEntry = MutableLiveData<IngredientEntry>()
 
     val oldAmount = MutableLiveData(0.0)
+    val oldThreshold = MutableLiveData(0.0)
 
     fun getIngredientEntry(id: Long) {
         CoroutineScope(IO).launch {
@@ -31,6 +32,7 @@ class PantryEditIngredientViewModel(private val repository: IngredientRepository
                 ingredient.setIsNotify(ingredientDbEntry.isNotify)
                 ingredientEntry.value = ingredient
                 oldAmount.value = ingredientDbEntry.amount
+                oldThreshold.value = ingredientDbEntry.notifyThreshold
             }
         }
     }
