@@ -5,9 +5,13 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import com.ala158.magicpantry.data.Ingredient
+import com.ala158.magicpantry.data.RecipeItemAndIngredient
 import com.ala158.magicpantry.data.ShoppingListItemAndIngredient
 import com.ala158.magicpantry.data.ShoppingListItem
 import com.ala158.magicpantry.repository.ShoppingListItemRepository
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class ShoppingListItemViewModel(private val repository: ShoppingListItemRepository) : ViewModel() {
 
@@ -30,6 +34,39 @@ class ShoppingListItemViewModel(private val repository: ShoppingListItemReposito
 
     fun update(shoppingListItem: ShoppingListItem) {
         repository.updateShoppingListItem(shoppingListItem)
+    }
+
+    suspend fun getShoppingListItemByIngredientId(id: Long) : ShoppingListItem? {
+        return repository.getShoppingListItemByIngredientId(id)
+    }
+
+    fun insertMissingRecipeIngredients(recipeItems: List<RecipeItemAndIngredient>) {
+        CoroutineScope(Dispatchers.IO).launch {
+            for (item in recipeItems) {
+                // If it is not enough then we add it to shopping list
+                if (!item.recipeItem.recipeIsEnough) {
+                    // Check if there is already an existing shopping list item, if so add the recipe amount to it
+                    val existingShoppingListItem = getShoppingListItemByIngredientId(
+                        item.recipeItem.relatedIngredientId
+                    )
+
+                    if (existingShoppingListItem != null) {
+                        // Update the existing shopping list item
+                        existingShoppingListItem.itemAmount += item.recipeItem.recipeAmount
+                        existingShoppingListItem.isItemBought = false
+                        update(existingShoppingListItem)
+                    } else {
+                        // Add new shopping list item
+                        val newShoppingListItem = ShoppingListItem(
+                            item.recipeItem.recipeAmount,
+                            false,
+                            item.recipeItem.relatedIngredientId
+                        )
+                        insert(newShoppingListItem)
+                    }
+                }
+            }
+        }
     }
 }
 

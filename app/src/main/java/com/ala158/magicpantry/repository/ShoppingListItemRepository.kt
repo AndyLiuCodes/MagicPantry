@@ -38,12 +38,16 @@ class ShoppingListItemRepository(private val shoppingListItemDAO: ShoppingListIt
         }
     }
 
+    suspend fun getShoppingListItemByIngredientId(id: Long) : ShoppingListItem? {
+        return shoppingListItemDAO.getShoppingListItemByIngredientId(id)
+    }
+
     fun insertShoppingListItemFromPantry(shoppingListItem: ShoppingListItem) {
         CoroutineScope(Dispatchers.IO).launch {
             try {
                 // Check if the existing shoppinglistitem already exist, if so get it
                 val existingShoppingListItem =
-                    shoppingListItemDAO.getShoppingListItemByIngredientId(
+                    shoppingListItemDAO.getShoppingListItemAndIngredientByIngredientId(
                         shoppingListItem.relatedIngredientId
                     ).shoppingListItem
 

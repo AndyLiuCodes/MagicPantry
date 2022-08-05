@@ -52,6 +52,15 @@
     <string name="noofservings">NoOfServings</string>
     <string name="enough_ingredients">Enough Ingredients</string>
     <string name="title_activity_ingredient_list_add">IngredientListAdd</string>
+
+    <!-- Single Recipe Activity -->
+    <string name="confirm_add_missing_ingredient_to_shopping_list_msg">
+        Do you want to add all the missing ingredients in this recipe to your shopping list?
+    </string>
+    <string name="dialog_add_missing_ingredients_title">Confirm?</string>
+    <string name="dialog_add_missing_ingredients_confirm">Confirm</string>
+    <string name="dialog_add_missing_ingredients_cancel">Cancel</string>
+
     <!-- Strings used for fragments for navigation -->
     <string name="first_fragment_label">First Fragment</string>
     <string name="second_fragment_label">Second Fragment</string>
