@@ -1,24 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/rounded_bg_white"
+    android:elevation="3dp"
+    android:padding="15dp"
+    android:paddingBottom="5dp"
+    tools:ignore="RtlSymmetry"
+    android:baselineAligned="false" >
 
     <TextView
         android:id="@+id/ingredient_list_item_name"
         android:layout_width="wrap_content"
-        android:layout_height="60dp"
-        android:gravity="center_vertical"
-        android:paddingLeft="5dp"
+        android:layout_height="22dp"
+        android:gravity="center"
+        android:paddingStart="10dp"
+        android:text="Bread"
         android:textColor="#000000"
-        android:textSize="14sp"
-        android:textStyle="bold" />
+        android:textSize="14sp" />
 
     <CheckBox
         android:id="@+id/ingredient_list_is_in_list"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_height="22dp"
         android:layout_alignParentEnd="true"
         android:layout_centerInParent="true"
         android:layout_marginStart="20dp"
