@@ -12,7 +12,6 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.text.method.ScrollingMovementMethod
-import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -284,9 +283,7 @@ class ReceiptScannerActivity : AppCompatActivity() {
             drawRect(mutableBitmap, blockFrame!!)
         }
 
-        // if line in block has "." and does not have
-        //  "phone", "save" or "/"
-        //  then add block to price list and add block before to product list
+        // add lines from block with prices and products to respective lists
         for (i in 0 until resultBlocks.size) {
             if (resultBlocks[i].text.contains(".")
                 && resultBlocks[i].text.any { it.isDigit() }
@@ -294,16 +291,11 @@ class ReceiptScannerActivity : AppCompatActivity() {
                 && !resultBlocks[i].text.contains("/")
                 && !resultBlocks[i].text.lowercase().contains("sav")
             ) {
-
                 if (resultBlocks[i].lines[0].text.count { it == '.' } == 1) {
-//                    Log.d("1 .", resultBlocks[i].lines[0].text)
-//                    Log.d("2 .", resultBlocks[i].text)
-
                     if (i > 0 && resultBlocks[i - 1].text.count { it.isLetter() } > 1
                     ) {
                         for (line in resultBlocks[i - 1].lines) {
                             helperProducts.add(line.text)
-//                            Log.d("3 .", line.text)
                         }
                     }
                     for (line in resultBlocks[i].lines) {
@@ -313,13 +305,8 @@ class ReceiptScannerActivity : AppCompatActivity() {
             }
         }
 
-//        Log.d("1 .", "${helperProducts.size} : ${helperPrice.size}")
-//        Log.d("1 .", "$helperProducts : $helperPrice")
-
-
-        // if product list size is not equal to price list size then
-        //  if product item is not all uppercase and does not have "gluten free item"
-        //  and does not have ("/" and anything other than letters) add to filtered product list
+        // filter through product block lines to get product name and
+        //  get amount of product bought if says
         for (i in 0 until helperProducts.size) {
             if (!(helperProducts[i].lowercase().contains("sav")) && helperProducts[i].contains("$") && helperProducts[i].any { it.isDigit() }) {
                 filteredProducts[filteredProducts.size - 1] =
@@ -331,8 +318,6 @@ class ReceiptScannerActivity : AppCompatActivity() {
                 filteredProducts.add(helperProducts[i])
             }
         }
-
-//        Log.d("1 .", "${filteredProducts.size} $filteredProducts")
 
         // add the two lists to make one
         for (item in 0 until filteredProducts.size) {
