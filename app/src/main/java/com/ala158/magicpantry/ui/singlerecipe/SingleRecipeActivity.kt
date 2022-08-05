@@ -21,8 +21,8 @@ import com.ala158.magicpantry.UpdateDB
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.RecipeIngredientArrayAdapter
 import com.ala158.magicpantry.data.Ingredient
+import com.ala158.magicpantry.data.Notification
 import com.ala158.magicpantry.data.RecipeWithRecipeItems
-import com.ala158.magicpantry.data.ShoppingListItem
 import com.ala158.magicpantry.dialogs.AddMissingIngredientsToShoppingListDialog
 import com.ala158.magicpantry.ui.notifications.LowIngredientActivity
 import com.ala158.magicpantry.ui.recipes.EditRecipeActivity
@@ -34,6 +34,8 @@ import com.ala158.magicpantry.viewModel.ShoppingListItemViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.*
+import kotlin.collections.ArrayList
 
 class SingleRecipeActivity : AppCompatActivity(),
     AddMissingIngredientsToShoppingListDialog.AddMissingIngredientDialogListener {
@@ -61,6 +63,7 @@ class SingleRecipeActivity : AppCompatActivity(),
 
     private lateinit var notificationViewModel: NotificationViewModel
     private lateinit var notificationManager: NotificationManager
+    private var lowIngredients:MutableList<Ingredient> = java.util.ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -168,6 +171,44 @@ class SingleRecipeActivity : AppCompatActivity(),
             //recipeIngredientArrayAdapter.replaceAllIngredients(it)
             recipeIngredientArrayAdapter.notifyDataSetChanged()
         }
+        notificationViewModel.newNotificationId.observe(this){
+            val resultIntent = Intent(this, LowIngredientActivity::class.java).apply {
+                putExtra("NotificationId", it)
+            }
+            // Create the TaskStackBuilder
+            val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
+                // Add the intent, which inflates the back stack
+                addNextIntentWithParentStack(resultIntent)
+                // Get the PendingIntent containing the entire back stack
+                getPendingIntent(
+                    0,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                )
+            }
+            var builder: NotificationCompat.Builder? = null
+            if (lowIngredients.size == 1) {
+                builder = NotificationCompat.Builder(this, "lowIngredients")
+                    .setSmallIcon(R.drawable.magic_pantry_app_logo)
+                    .setContentTitle("You are low on ${lowIngredients[0].name}")
+                    .setContentText("Click here to view")
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setAutoCancel(true)
+                    .setContentIntent(resultPendingIntent)
+            } else if (lowIngredients.size > 1) {
+                builder = NotificationCompat.Builder(this, "lowIngredients")
+                    .setSmallIcon(R.drawable.magic_pantry_app_logo)
+                    .setContentTitle("You are low on ${lowIngredients.size} ingredients")
+                    .setContentText("Click here to view")
+                    .setPriority(NotificationCompat.PRIORITY_HIGH)
+                    .setAutoCancel(true)
+                    .setContentIntent(resultPendingIntent)
+            }
+            with(NotificationManagerCompat.from(this)) {
+                if (builder != null) {
+                    notify(it.toInt(), builder.build())
+                }
+            }
+        }
 
         editRecipeButton.setOnClickListener {
             val intent = Intent(this, EditRecipeActivity::class.java)
@@ -202,8 +243,7 @@ class SingleRecipeActivity : AppCompatActivity(),
                         recipeItemViewModel,
                         recipeViewModel
                     )
-                    val list = UpdateDB.createNotification(recipeWithRecipeItems,notificationViewModel)
-                    sendNotification(list)
+                    sendNotification(recipeWithRecipeItems)
                 }
 
                 Toast.makeText(this, "Recipe Cooked!", Toast.LENGTH_LONG).show()
@@ -222,56 +262,26 @@ class SingleRecipeActivity : AppCompatActivity(),
         registerReceiver(broadcastReceiver, intentFilter)
     }
 
-    private fun sendNotification(list: List<Ingredient>) {
-        val notificationId = notificationViewModel.newNotificationId.value!! + 1
-        if(list.size == 1){
-            val resultIntent = Intent(this, LowIngredientActivity::class.java).apply{
-                putExtra("NotificationId",notificationId)
-            }
-            // Create the TaskStackBuilder
-            val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
-                // Add the intent, which inflates the back stack
-                addNextIntentWithParentStack(resultIntent)
-                // Get the PendingIntent containing the entire back stack
-                getPendingIntent(0,
-                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
-            }
-            val builder = NotificationCompat.Builder (this,"lowIngredients")
-                .setSmallIcon(R.drawable.magic_pantry_app_logo)
-                .setContentTitle("You are low on ${list[0].name}")
-                .setContentText("Click here to view")
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setAutoCancel(true)
-                .setContentIntent(resultPendingIntent)
-            with(NotificationManagerCompat.from(this)){
-                notify(notificationId.toInt(),builder.build())
+    private fun sendNotification(recipe: RecipeWithRecipeItems) {
+        val notification = Notification()
+        notification.date = Calendar.getInstance()
+        val recipeItems = recipe.recipeItems
+        for (item in recipeItems) {
+            if(item.ingredient.isNotify){
+                if(item.ingredient.amount <= item.ingredient.notifyThreshold){
+                    lowIngredients.add(item.ingredient)
+                }
             }
         }
-        else if(list.size > 1){
-            val resultIntent = Intent(this, LowIngredientActivity::class.java).apply{
-                putExtra("NotificationId",notificationId)
+        if(lowIngredients.size > 0 ){
+            if(lowIngredients.size == 1){
+                notification.description = "Low On ${lowIngredients[0].name}"
             }
-            // Create the TaskStackBuilder
-            val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
-                // Add the intent, which inflates the back stack
-                addNextIntentWithParentStack(resultIntent)
-                // Get the PendingIntent containing the entire back stack
-                getPendingIntent(0,
-                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+            else{
+                notification.description = "Low On ${lowIngredients.size}"
             }
-            val builder = NotificationCompat.Builder (this,"lowIngredients")
-                .setSmallIcon(R.drawable.magic_pantry_app_logo)
-                .setContentTitle("You are low on ${list.size} ingredients")
-                .setContentText("Click here to view")
-                .setPriority(NotificationCompat.PRIORITY_HIGH)
-                .setAutoCancel(true)
-                .setContentIntent(resultPendingIntent)
-            with(NotificationManagerCompat.from(this)){
-                notify(notificationId.toInt(),builder.build())
-            }
+            notificationViewModel.insert(notification,lowIngredients)
         }
-
-
     }
 
     override fun onConfirmationClick(isConfirm: Boolean) {

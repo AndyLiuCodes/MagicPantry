@@ -458,7 +458,6 @@ class PantryEditIngredientActivity : AppCompatActivity() {
         notification.date = Calendar.getInstance()
         val ingredientIds = arrayListOf(ingredientId)
         val ingredientsWithRecipeItems = ingredientViewModel.findIngredientsWithRecipeItemsById(ingredientIds)
-        lowIngredients = mutableListOf<(Ingredient)>()
         for (ingredientWithRecipeItem in ingredientsWithRecipeItems) {
             if (ingredientWithRecipeItem.ingredient.isNotify) {
                 if (ingredientWithRecipeItem.ingredient.amount <= ingredientWithRecipeItem.ingredient.notifyThreshold) {
