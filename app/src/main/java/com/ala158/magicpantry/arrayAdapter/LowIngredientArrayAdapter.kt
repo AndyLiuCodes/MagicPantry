@@ -7,12 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import com.ala158.magicpantry.R
+import com.ala158.magicpantry.data.Ingredient
 import com.ala158.magicpantry.data.NotificationWithIngredients
 import java.util.*
 
 class LowIngredientArrayAdapter(
     private val context: Context,
-    private var lowIngredientList: Array<String>
+    private var lowIngredientList: List<Ingredient>
 ) : BaseAdapter() {
 
     override fun getCount(): Int {
@@ -41,8 +42,12 @@ class LowIngredientArrayAdapter(
             Toast.makeText(view.context, "Added", Toast.LENGTH_SHORT).show()
         }
 
-        itemName.text = selectedNotification
+        itemName.text = selectedNotification.name
 
         return view
+    }
+
+    fun replace(newIngredient:List<Ingredient>){
+        lowIngredientList = newIngredient
     }
 }

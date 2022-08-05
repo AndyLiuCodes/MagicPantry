@@ -2,6 +2,8 @@ package com.ala158.magicpantry.ui.singlerecipe
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.TaskStackBuilder
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -22,6 +24,7 @@ import com.ala158.magicpantry.data.Ingredient
 import com.ala158.magicpantry.data.RecipeWithRecipeItems
 import com.ala158.magicpantry.data.ShoppingListItem
 import com.ala158.magicpantry.dialogs.AddMissingIngredientsToShoppingListDialog
+import com.ala158.magicpantry.ui.notifications.LowIngredientActivity
 import com.ala158.magicpantry.ui.recipes.EditRecipeActivity
 import com.ala158.magicpantry.viewModel.*
 import com.ala158.magicpantry.viewModel.IngredientViewModel
@@ -222,23 +225,47 @@ class SingleRecipeActivity : AppCompatActivity(),
     private fun sendNotification(list: List<Ingredient>) {
         val notificationId = notificationViewModel.newNotificationId.value!! + 1
         if(list.size == 1){
+            val resultIntent = Intent(this, LowIngredientActivity::class.java).apply{
+                putExtra("NotificationId",notificationId)
+            }
+            // Create the TaskStackBuilder
+            val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
+                // Add the intent, which inflates the back stack
+                addNextIntentWithParentStack(resultIntent)
+                // Get the PendingIntent containing the entire back stack
+                getPendingIntent(0,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+            }
             val builder = NotificationCompat.Builder (this,"lowIngredients")
                 .setSmallIcon(R.drawable.magic_pantry_app_logo)
                 .setContentTitle("You are low on ${list[0].name}")
                 .setContentText("Click here to view")
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setAutoCancel(true)
+                .setContentIntent(resultPendingIntent)
             with(NotificationManagerCompat.from(this)){
                 notify(notificationId.toInt(),builder.build())
             }
         }
-        else{
+        else if(list.size > 1){
+            val resultIntent = Intent(this, LowIngredientActivity::class.java).apply{
+                putExtra("NotificationId",notificationId)
+            }
+            // Create the TaskStackBuilder
+            val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
+                // Add the intent, which inflates the back stack
+                addNextIntentWithParentStack(resultIntent)
+                // Get the PendingIntent containing the entire back stack
+                getPendingIntent(0,
+                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
+            }
             val builder = NotificationCompat.Builder (this,"lowIngredients")
                 .setSmallIcon(R.drawable.magic_pantry_app_logo)
                 .setContentTitle("You are low on ${list.size} ingredients")
                 .setContentText("Click here to view")
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .setAutoCancel(true)
+                .setContentIntent(resultPendingIntent)
             with(NotificationManagerCompat.from(this)){
                 notify(notificationId.toInt(),builder.build())
             }
