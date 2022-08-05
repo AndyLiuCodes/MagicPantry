@@ -12,6 +12,7 @@ import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
 import android.view.View
+import android.view.ViewGroup
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
@@ -21,9 +22,7 @@ import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.AddRecipeArrayAdapter
 import com.ala158.magicpantry.data.Recipe
-import com.ala158.magicpantry.data.RecipeItem
 import com.ala158.magicpantry.data.RecipeItemAndIngredient
-import com.ala158.magicpantry.data.RecipeWithRecipeItems
 import com.ala158.magicpantry.ui.ingredientlistadd.IngredientListAddActivity
 import com.ala158.magicpantry.viewModel.RecipeItemViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModel
@@ -85,6 +84,8 @@ class AddRecipeActivity : AppCompatActivity() {
         description = findViewById(R.id.add_recipe_edit_recipe_description)
         ingredients = findViewById(R.id.add_recipe_ingredient_listView)
 
+        ingredients.isScrollContainer = false
+
         addIngredientToRecipeLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == Activity.RESULT_OK && it.data != null) {
                 if (it.data!!.hasExtra(ADDED_INGREDIENTS_KEY)) {
@@ -100,14 +101,14 @@ class AddRecipeActivity : AppCompatActivity() {
         val adapter = AddRecipeArrayAdapter(this, ingredientToBeAdded)
         ingredients.adapter = adapter
 
-        ingredients.setOnItemClickListener { parent: AdapterView<*>, _: View, _: Int, _: Long->
-            println("debug: $parent")
-        }
+        updateListViewSize(ingredientToBeAdded.size, ingredients)
 
         recipeViewModel.addedRecipeItemAndIngredient.observe(this) {
             ingredientToBeAdded.clear()
             ingredientToBeAdded.addAll(it)
             adapter.notifyDataSetChanged()
+
+            updateListViewSize(it.size, ingredients)
         }
 
         cameraBtn.setOnClickListener {
@@ -249,6 +250,14 @@ class AddRecipeActivity : AppCompatActivity() {
 
             bitmap = myBitmap
         }
+    }
+
+    //update size of listView
+    fun updateListViewSize(size : Int, listView : ListView) {
+        val cellSize = 170
+        val list: ViewGroup.LayoutParams = listView.layoutParams
+        list.height = cellSize * size
+        listView.layoutParams = list
     }
 
     //update database

@@ -150,7 +150,7 @@
 
                 <EditText
                     android:layout_width="match_parent"
-                    android:layout_height="100dp"
+                    android:layout_height="wrap_content"
                     android:minHeight="100dp"
                     android:textSize="15sp"
                     android:inputType="text|textMultiLine"
@@ -158,7 +158,6 @@
                     android:lineSpacingExtra="10dp"
                     android:gravity="top"
                     android:layout_marginBottom="5dp"
-                    android:scrollbars="vertical"
                     android:id="@+id/add_recipe_edit_recipe_description" />
 
                 <LinearLayout
@@ -195,14 +194,15 @@
                         app:iconTint="#000000"
                         android:focusable="false" />
                 </LinearLayout>
+
+                <ListView
+                    android:id="@+id/add_recipe_ingredient_listView"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:scrollbars="none"
+                    android:layout_marginBottom="80dp"/>
             </LinearLayout>
         </ScrollView>
-
-        <ListView
-            android:id="@+id/add_recipe_ingredient_listView"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="5dp"/>
     </LinearLayout>
 
     <LinearLayout

@@ -13,17 +13,20 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.ListView
-import android.widget.TextView
+import android.view.ViewGroup
+import android.widget.*
+import androidx.activity.result.ActivityResultLauncher
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
+import com.ala158.magicpantry.arrayAdapter.AddRecipeArrayAdapter
 import com.ala158.magicpantry.data.Recipe
+import com.ala158.magicpantry.data.RecipeItemAndIngredient
 import com.ala158.magicpantry.data.RecipeWithRecipeItems
+import com.ala158.magicpantry.ui.ingredientlistadd.IngredientListAddActivity
 import com.ala158.magicpantry.viewModel.RecipeViewModel
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -56,6 +59,9 @@ class EditRecipeActivity : AppCompatActivity() {
 
     private var newUri = ""
 
+    private var ingredientToBeAdded = ArrayList<RecipeItemAndIngredient>()
+    private lateinit var addIngredientToRecipeLauncher: ActivityResultLauncher<Intent>
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_recipe)
@@ -82,6 +88,25 @@ class EditRecipeActivity : AppCompatActivity() {
         description = findViewById(R.id.edit_recipe_edit_recipe_description)
         ingredients = findViewById(R.id.edit_recipe_edit_ingredient_listView)
 
+        ingredients.isScrollContainer = false
+
+        addIngredientToRecipeLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+            if (it.resultCode == Activity.RESULT_OK && it.data != null) {
+                if (it.data!!.hasExtra(AddRecipeActivity.ADDED_INGREDIENTS_KEY)) {
+                    val newlyAddedIngredients = it.data!!.getSerializableExtra(AddRecipeActivity.ADDED_INGREDIENTS_KEY)
+                    val existingAddedIngredients: ArrayList<RecipeItemAndIngredient> =
+                        recipeViewModel.addedRecipeItemAndIngredient.value!!
+                    existingAddedIngredients.addAll(newlyAddedIngredients as ArrayList<RecipeItemAndIngredient>)
+                    recipeViewModel.addedRecipeItemAndIngredient.value = existingAddedIngredients
+                }
+            }
+        }
+
+        val adapter = AddRecipeArrayAdapter(this, ingredientToBeAdded)
+        ingredients.adapter = adapter
+
+        updateListViewSize(ingredientToBeAdded.size, ingredients)
+
         recipeViewModel.allRecipes.observe(this) {
             val myList = it.toTypedArray()
 
@@ -106,6 +131,11 @@ class EditRecipeActivity : AppCompatActivity() {
                 cookTime.text = recipeArray[pos].recipe.timeToCook.toString()
                 servings.text = recipeArray[pos].recipe.servings.toString()
                 description.text = recipeArray[pos].recipe.description
+
+                adapter.replaceRecipeIngredients(recipeToEdit.recipeItems)
+                adapter.notifyDataSetChanged()
+
+                updateListViewSize(recipeToEdit.recipeItems.size, ingredients)
             }
         }
 
@@ -154,7 +184,7 @@ class EditRecipeActivity : AppCompatActivity() {
             edit.putString("edit_recipe_description", description.text.toString())
             edit.apply()
 
-            /*val intent = Intent(this, IngredientListAddActivity::class.java)
+            val intent = Intent(this, IngredientListAddActivity::class.java)
             val bundle = Bundle()
             bundle.putInt(Util.INGREDIENT_ADD_LIST, Util.INGREDIENT_ADD_RECIPE)
             val idToFilter = ArrayList<Int>()
@@ -166,7 +196,7 @@ class EditRecipeActivity : AppCompatActivity() {
             // Send the Ids t o filter to the IngredientListAddActivity
             bundle.putIntegerArrayList(AddRecipeActivity.IDS_TO_FILTER_KEY, idToFilter)
             intent.putExtras(bundle)
-            addIngredientToRecipeLauncher.launch(intent)*/
+            addIngredientToRecipeLauncher.launch(intent)
         }
 
         val cancelBtn = findViewById<Button>(R.id.edit_recipe_btn_cancel_recipe)
@@ -248,6 +278,12 @@ class EditRecipeActivity : AppCompatActivity() {
 
             bitmap = myBitmap
         }
+    }
+
+    //update size of listView
+    private fun updateListViewSize(size : Int, listView : ListView) {
+        val addRecipeActivity = AddRecipeActivity()
+        return addRecipeActivity.updateListViewSize(size, listView)
     }
 
     //update database
