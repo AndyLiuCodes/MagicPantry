@@ -13,6 +13,14 @@ class NotificationRepository(private val notificationDAO: NotificationDAO) {
     val allNotifications: Flow<List<NotificationWithIngredients>> =
         notificationDAO.getAllNotifications()
 
+    suspend fun getNotificationById(key: Long): Flow<NotificationWithIngredients> {
+        return notificationDAO.getNotificationById(key)
+    }
+
+    fun getNotificationByIdSync(key: Long): NotificationWithIngredients {
+        return notificationDAO.getNotificationByIdSync(key)
+    }
+
     suspend fun insertNotification(notification: Notification): Long {
         return notificationDAO.insertNotification(notification)
     }
