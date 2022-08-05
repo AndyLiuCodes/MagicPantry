@@ -14,6 +14,7 @@ import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.ReviewIngredientsActivityAdapter
 import com.ala158.magicpantry.data.Ingredient
+import com.ala158.magicpantry.ui.manualingredientinput.edit.ReviewIngredientsEditActivity
 
 class ReviewIngredientsActivity : AppCompatActivity() {
 
@@ -95,25 +96,55 @@ class ReviewIngredientsActivity : AppCompatActivity() {
         super.onResume()
         val edit = sharedPreferences.edit()
 
-        if (sharedPreferences.contains("name")) {
+        if (sharedPreferences.contains(ReviewIngredientsEditActivity.NAME_KEY)) {
             val ingredient = Ingredient()
-            ingredient.name = sharedPreferences.getString("name", "") as String
-            ingredient.amount = sharedPreferences.getString("amount", "")!!.toDouble()
-            ingredient.price = sharedPreferences.getString("price", "")!!.toDouble()
-            ingredient.unit = sharedPreferences.getString("unit", "") as String
+            val name = sharedPreferences.getString(ReviewIngredientsEditActivity.NAME_KEY, "")
+            val amountString = sharedPreferences.getString(ReviewIngredientsEditActivity.AMOUNT_KEY, "")
+            val priceString = sharedPreferences.getString(ReviewIngredientsEditActivity.PRICE_KEY, "")
+            val unit = sharedPreferences.getString(ReviewIngredientsEditActivity.UNIT_KEY, "unit")
+            val isNotify = sharedPreferences.getBoolean(ReviewIngredientsEditActivity.IS_NOTIFY_KEY, false)
+            val notifyThresholdString = sharedPreferences.getString(ReviewIngredientsEditActivity.NOTIFY_THRESHOLD_KEY, "0.0")
 
-            ingredientList[sharedPreferences.getInt("currPos", 0)] = ingredient
+            if (name != null || name != "") {
+                ingredient.name = name!!
+            }
+
+            if (amountString != null || amountString != "") {
+                ingredient.amount = amountString!!.toDouble()
+            }
+
+            if (priceString != null || priceString != "") {
+                ingredient.price = priceString!!.toDouble()
+            }
+
+            if (unit != null) {
+                ingredient.unit = unit
+            }
+
+            if (isNotify != null) {
+                ingredient.isNotify = isNotify
+            }
+
+            if (notifyThresholdString != null || notifyThresholdString != "") {
+                ingredient.notifyThreshold = notifyThresholdString!!.toDouble()
+            }
+
+            ingredientList[sharedPreferences.getInt(ReviewIngredientsEditActivity.CURRENT_POSITION_KEY, 0)] = ingredient
 
             ingredientListView.adapter = null
             reviewIngredientsArrayAdapter = ReviewIngredientsActivityAdapter(this, ingredientList)
             ingredientListView.adapter = reviewIngredientsArrayAdapter
             reviewIngredientsArrayAdapter.notifyDataSetChanged()
         }
-        edit.remove("name")
-        edit.remove("currPos")
-        edit.remove("amount")
-        edit.remove("price")
-        edit.remove("unit")
+
+        edit.remove(ReviewIngredientsEditActivity.NAME_KEY)
+        edit.remove(ReviewIngredientsEditActivity.CURRENT_POSITION_KEY)
+        edit.remove(ReviewIngredientsEditActivity.AMOUNT_KEY)
+        edit.remove(ReviewIngredientsEditActivity.PRICE_KEY)
+        edit.remove(ReviewIngredientsEditActivity.UNIT_KEY)
+        edit.remove(ReviewIngredientsEditActivity.IS_NOTIFY_KEY)
+        edit.remove(ReviewIngredientsEditActivity.NOTIFY_THRESHOLD_KEY)
+
         edit.apply()
     }
 }
