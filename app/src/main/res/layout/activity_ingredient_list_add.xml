@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -25,6 +24,7 @@
         android:id="@+id/list_view_all_ingredients"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:layout_weight="1"
         android:divider="@android:color/transparent"
         android:dividerHeight="10sp">
@@ -43,7 +43,6 @@
             android:id="@+id/finish_ingredient_list_add"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
             android:backgroundTint="@color/mp_blue"
             android:text="@string/review_finish_button" />
     </LinearLayout>

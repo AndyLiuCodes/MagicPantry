@@ -15,6 +15,7 @@ import android.text.method.ScrollingMovementMethod
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
@@ -51,6 +52,7 @@ class ReceiptScannerActivity : AppCompatActivity() {
     private var imageToScan: File? = null
 
     private lateinit var receiptScannerViewModel: ReceiptScannerViewModel
+    private var isCameraChosen = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -70,6 +72,7 @@ class ReceiptScannerActivity : AppCompatActivity() {
         receiptScannerViewModel = ViewModelProvider(this)[ReceiptScannerViewModel::class.java]
         receiptScannerViewModel.userImage.observe(this) {
             imageView!!.setImageBitmap(it)
+            bitmap = it
         }
 
         cameraBtn.setOnClickListener {
@@ -97,11 +100,21 @@ class ReceiptScannerActivity : AppCompatActivity() {
 
                         // open camera and add image to photo gallery if one is taken
                         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
+                        isCameraChosen = true
                         startActivityForResult(cameraIntent, requestCamera)
                     } else {
+                        // if user used camera first, then selected gallery, delete the picture taken by camera
+                        if (imageToScan != null && imageToScan!!.exists()) {
+                            // Delete only if the user selected the camera option
+                            if (isCameraChosen) {
+                                imageToScan!!.delete()
+                            }
+                        }
+
                         // open photo gallery to choose an image
                         val galleryIntent =
                             Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+                        isCameraChosen = false
                         startActivityForResult(galleryIntent, requestGallery)
                     }
                 }
@@ -118,10 +131,10 @@ class ReceiptScannerActivity : AppCompatActivity() {
 
     // recognizing text
     private fun recognize() {
-        val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
-        textView.text = ". . ."
-
         if (imageView != null && bitmap != null) {
+            val recognizer = TextRecognition.getClient(TextRecognizerOptions.DEFAULT_OPTIONS)
+            textView.text = "Processing . ."
+
             // process image
             val image = InputImage.fromBitmap(bitmap!!, 0)
             recognizer.process(image)
@@ -137,6 +150,10 @@ class ReceiptScannerActivity : AppCompatActivity() {
                     // ...
                     textView.text = "Failed to recognize text"
                 }
+        } else if (imageView == null || bitmap == null) {
+            Toast.makeText(
+                this, "You must first select/capture an image before scanning.", Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
@@ -333,6 +350,8 @@ class ReceiptScannerActivity : AppCompatActivity() {
         bundle.putStringArray("priceList", helperPrice.toTypedArray())
         val intent = Intent(this, ReviewIngredientsActivity::class.java)
         intent.putExtras(bundle)
+        // Close this activity and start the new one (review ingredients activity)
+        finish()
         startActivity(intent)
     }
 
@@ -421,7 +440,11 @@ class ReceiptScannerActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         // Delete image once we are done with it
-        if (imageToScan != null && imageToScan!!.exists())
-            imageToScan!!.delete()
+        if (imageToScan != null && imageToScan!!.exists()) {
+            // Delete only if the user selected the camera option
+            if (isCameraChosen) {
+                imageToScan!!.delete()
+            }
+        }
     }
 }
