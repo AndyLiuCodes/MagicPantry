@@ -1,31 +1,36 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp" >
+    xmlns:tools="http://schemas.android.com/tools"
+    android:background="@drawable/rounded_bg_white"
+    android:elevation="3dp"
+    android:padding="15dp"
+    android:paddingBottom="5dp"
+    tools:ignore="RtlSymmetry"
+    android:baselineAligned="false" >
 
     <TextView
         android:id="@+id/recipe_ingredient_list_item_amount"
-        android:layout_width="22dp"
-        android:layout_height="22dp"
+        android:layout_width="60dp"
+        android:layout_height="30dp"
+        android:paddingVertical="5dp"
         android:layout_alignParentStart="true"
-        android:layout_marginTop="5dp"
-        android:text="4"
+        android:layout_marginStart="5dp"
         android:textColor="@color/black"
-        android:background="@drawable/rounded_bg_grey"
+        android:background="@drawable/add_recipe_edit_text_style"
+        android:text="4"
         android:gravity="center"
-        android:textSize="14sp"
-        android:textStyle="bold"/>
+        android:textSize="14sp" />
 
     <TextView
         android:id="@+id/recipe_ingredient_list_item_unit"
-        android:layout_width="34dp"
+        android:layout_width="40dp"
         android:layout_height="30dp"
         android:layout_toEndOf="@+id/recipe_ingredient_list_item_amount"
         android:padding="1dp"
-        android:layout_marginStart="10dp"
+        android:layout_marginStart="2dp"
         android:text="units"
         android:textColor="@color/black"
         android:textSize="14sp"
@@ -50,12 +55,13 @@
         android:layout_height="18dp"
         android:layout_centerInParent="true"
         android:layout_alignParentEnd="true"
-        android:layout_marginEnd="20dp"
+        android:layout_marginEnd="10dp"
         android:insetLeft="0dp"
         android:insetTop="0dp"
         android:insetRight="0dp"
         android:insetBottom="0dp"
         app:icon="@drawable/ic_close"
         app:iconGravity="textStart"
+        app:iconSize="15dp"
         app:iconPadding="0dp" />
 </RelativeLayout>

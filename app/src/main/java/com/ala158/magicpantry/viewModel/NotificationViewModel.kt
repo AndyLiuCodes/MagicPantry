@@ -11,6 +11,7 @@ import com.ala158.magicpantry.repository.NotificationRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class NotificationViewModel(private val repository: NotificationRepository) : ViewModel() {
 
@@ -19,6 +20,22 @@ class NotificationViewModel(private val repository: NotificationRepository) : Vi
 
     val allNotifications: LiveData<List<NotificationWithIngredients>> =
         repository.allNotifications.asLiveData()
+
+    private var _currNotification: LiveData<NotificationWithIngredients> = MutableLiveData()
+    val currNotification: LiveData<NotificationWithIngredients> = _currNotification
+
+    fun getById(key: Long) {
+        CoroutineScope(Dispatchers.IO).launch {
+            val notification = repository.getNotificationById(key).asLiveData()
+            withContext(Dispatchers.Main) {
+                _currNotification = notification
+            }
+        }
+    }
+
+    fun getByIdSync(key: Long): NotificationWithIngredients {
+        return repository.getNotificationByIdSync(key)
+    }
 
     fun insert(
         notification: Notification,

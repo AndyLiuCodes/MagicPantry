@@ -293,8 +293,7 @@ class ReceiptScannerActivity : AppCompatActivity() {
                 && !resultBlocks[i].text.lowercase().contains("sav")
             ) {
 
-                if (resultBlocks[i - 1].text.contains(".") && (resultBlocks[i - 1].text.lowercase()
-                        .contains("save") || resultBlocks[i - 1].text.contains("/"))
+                if ((i > 0) && (resultBlocks[i - 1].text.contains(Regex("[^A-Za-z]")))
                 ) {
                     for (line in resultBlocks[i - 1].lines) {
                         helperProducts.add(line.text)

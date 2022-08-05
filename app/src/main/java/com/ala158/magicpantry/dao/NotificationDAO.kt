@@ -11,6 +11,14 @@ interface NotificationDAO {
     @Query("SELECT * FROM notification")
     fun getAllNotifications(): Flow<List<NotificationWithIngredients>>
 
+    @Transaction
+    @Query("SELECT * FROM notification WHERE notificationId = :key")
+    fun getNotificationById(key: Long): Flow<NotificationWithIngredients>
+
+    @Transaction
+    @Query("SELECT * FROM notification WHERE notificationId = :key")
+    fun getNotificationByIdSync(key: Long): NotificationWithIngredients
+
     @Insert
     suspend fun insertNotification(notification: Notification): Long
 

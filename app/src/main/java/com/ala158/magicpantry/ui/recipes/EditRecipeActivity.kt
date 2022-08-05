@@ -15,6 +15,7 @@ import android.view.Menu
 import android.view.MenuItem
 import android.widget.Button
 import android.widget.ImageView
+import android.widget.ListView
 import android.widget.TextView
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
@@ -44,6 +45,7 @@ class EditRecipeActivity : AppCompatActivity() {
     private lateinit var cookTime : TextView
     private lateinit var servings : TextView
     private lateinit var description : TextView
+    private lateinit var ingredients : ListView
 
     private lateinit var recipeViewModel : RecipeViewModel
 
@@ -62,6 +64,7 @@ class EditRecipeActivity : AppCompatActivity() {
 
         //set up shared pref
         sharedPrefFile = getSharedPreferences("MySharedPrefs", Context.MODE_PRIVATE)
+        val edit = sharedPrefFile.edit()
 
         //start up database
         recipeViewModel = Util.createViewModel(
@@ -77,6 +80,7 @@ class EditRecipeActivity : AppCompatActivity() {
         cookTime = findViewById(R.id.edit_recipe_edit_recipe_cook_time)
         servings = findViewById(R.id.edit_recipe_edit_recipe_servings)
         description = findViewById(R.id.edit_recipe_edit_recipe_description)
+        ingredients = findViewById(R.id.edit_recipe_edit_ingredient_listView)
 
         recipeViewModel.allRecipes.observe(this) {
             val myList = it.toTypedArray()
@@ -140,6 +144,29 @@ class EditRecipeActivity : AppCompatActivity() {
                 }
             val alert: AlertDialog = builder.create()
             alert.show()
+        }
+
+        val addIngredientBtn = findViewById<Button>(R.id.edit_recipe_btn_add_ingredient_to_recipe)
+        addIngredientBtn.setOnClickListener {
+            edit.putString("edit_recipe_title", title.text.toString())
+            edit.putString("edit_recipe_cookTime", cookTime.text.toString())
+            edit.putString("edit_recipe_servings", servings.text.toString())
+            edit.putString("edit_recipe_description", description.text.toString())
+            edit.apply()
+
+            /*val intent = Intent(this, IngredientListAddActivity::class.java)
+            val bundle = Bundle()
+            bundle.putInt(Util.INGREDIENT_ADD_LIST, Util.INGREDIENT_ADD_RECIPE)
+            val idToFilter = ArrayList<Int>()
+            val iterator = recipeViewModel.addedRecipeItemAndIngredient.value!!.listIterator()
+            // Get all the ids to filter from the IngredientListAddActivity
+            for (recipeItemAndIngredient in iterator) {
+                idToFilter.add(recipeItemAndIngredient.ingredient.ingredientId.toInt())
+            }
+            // Send the Ids t o filter to the IngredientListAddActivity
+            bundle.putIntegerArrayList(AddRecipeActivity.IDS_TO_FILTER_KEY, idToFilter)
+            intent.putExtras(bundle)
+            addIngredientToRecipeLauncher.launch(intent)*/
         }
 
         val cancelBtn = findViewById<Button>(R.id.edit_recipe_btn_cancel_recipe)
@@ -291,21 +318,21 @@ class EditRecipeActivity : AppCompatActivity() {
         super.onResume()
         val edit = sharedPrefFile.edit()
 
-        if (sharedPrefFile.contains("recipe_title")) {
-            title.text = sharedPrefFile.getString("recipe_title", "")
-            edit.remove("recipe_title").apply()
+        if (sharedPrefFile.contains("edit_recipe_title")) {
+            title.text = sharedPrefFile.getString("edit_recipe_title", "")
+            edit.remove("edit_recipe_title").apply()
         }
-        if (sharedPrefFile.contains("recipe_cookTime")) {
-            cookTime.text = sharedPrefFile.getString("recipe_cookTime", "")
-            edit.remove("recipe_cookTime").apply()
+        if (sharedPrefFile.contains("edit_recipe_cookTime")) {
+            cookTime.text = sharedPrefFile.getString("edit_recipe_cookTime", "")
+            edit.remove("edit_recipe_cookTime").apply()
         }
-        if (sharedPrefFile.contains("recipe_servings")) {
-            servings.text = sharedPrefFile.getString("recipe_servings", "")
-            edit.remove("recipe_servings").apply()
+        if (sharedPrefFile.contains("edit_recipe_servings")) {
+            servings.text = sharedPrefFile.getString("edit_recipe_servings", "")
+            edit.remove("edit_recipe_servings").apply()
         }
-        if (sharedPrefFile.contains("recipe_description")) {
-            description.text = sharedPrefFile.getString("recipe_description", "")
-            edit.remove("recipe_description").apply()
+        if (sharedPrefFile.contains("edit_recipe_description")) {
+            description.text = sharedPrefFile.getString("edit_recipe_description", "")
+            edit.remove("edit_recipe_description").apply()
         }
     }
 

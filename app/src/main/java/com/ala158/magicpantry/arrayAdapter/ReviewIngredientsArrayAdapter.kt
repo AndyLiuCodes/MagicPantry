@@ -32,7 +32,7 @@ class ReviewIngredientsArrayAdapter(
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view: View = View.inflate(context, R.layout.list_item_edit_ingredient, null)
         val nameAmountView = view.findViewById<TextView>(R.id.ingredientNameAmount)
-        val priceUnitView = view.findViewById<TextView>(R.id.ingredientPriceUnit)
+        val priceUnitView = view.findViewById<TextView>(R.id.ingredient_price_unit)
         val editButton = view.findViewById<Button>(R.id.ingredientEditButton)
 
         editButton.setOnClickListener {
