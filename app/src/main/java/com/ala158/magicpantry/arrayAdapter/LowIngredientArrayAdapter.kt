@@ -15,17 +15,19 @@ class LowIngredientArrayAdapter(
     private val context: Context,
     private var lowIngredientList: List<Ingredient>
 ) : BaseAdapter() {
+    // Only show ingredients that have a pantry amount < notify threshold amount
+    var validIngredients: List<Ingredient> = ArrayList()
 
     override fun getCount(): Int {
-        return lowIngredientList.size
+        return validIngredients.size
     }
 
     override fun getItem(position: Int): Any {
-        return lowIngredientList[position]
+        return validIngredients[position]
     }
 
     override fun getItemId(position: Int): Long {
-        return 0
+        return validIngredients[position].ingredientId
     }
 
     @SuppressLint("ViewHolder")
@@ -33,21 +35,27 @@ class LowIngredientArrayAdapter(
         val view = View.inflate(context, R.layout.list_item_low_ingredient_list, null)
 
         val itemName = view.findViewById<TextView>(R.id.low_ingredient_list_item_name)
-        val deleteBtn = view.findViewById<ImageButton>(R.id.low_ingredient_list_item_delete_button)
+        val addBtn = view.findViewById<ImageButton>(R.id.low_ingredient_list_item_add_button)
 
-        val selectedNotification = lowIngredientList[position]
+        val ingredient = validIngredients[position]
 
-        deleteBtn.setOnClickListener {
-            //TODO: delete item from list
+        addBtn.setOnClickListener {
+            //TODO: Add item to shopping list
             Toast.makeText(view.context, "Added", Toast.LENGTH_SHORT).show()
         }
 
-        itemName.text = selectedNotification.name
+        itemName.text = ingredient.name
 
         return view
     }
 
-    fun replace(newIngredient:List<Ingredient>){
-        lowIngredientList = newIngredient
+    fun replace(newIngredients: List<Ingredient>) {
+        lowIngredientList = newIngredients
+        updateValidIngredients()
+    }
+
+    private fun updateValidIngredients() {
+        validIngredients = lowIngredientList.filter { it.amount < it.notifyThreshold }
+        notifyDataSetChanged()
     }
 }

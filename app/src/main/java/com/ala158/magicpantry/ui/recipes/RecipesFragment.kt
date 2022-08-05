@@ -141,7 +141,7 @@ class RecipesFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
         addNotifications.setOnClickListener {
             Log.d("MOCK_DATA", "onCreateView: ADDING NOTIFICATIONS...")
             if (ingredients.isNotEmpty()) {
-                notificationViewModel.insert(MockData.notifications[0], ingredients.subList(6, 7))
+                notificationViewModel.insert(MockData.notifications[0], ingredients.subList(6, 8))
                 notificationViewModel.insert(MockData.notifications[1], listOf(ingredients[1]))
             }
         }

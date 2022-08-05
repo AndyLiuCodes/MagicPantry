@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ListView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.ala158.magicpantry.MockData
 import com.ala158.magicpantry.R
@@ -46,10 +47,19 @@ class NotificationsFragment : Fragment() {
         notificationsListView = view.findViewById(R.id.notifications_list_view)
         notificationsListView.adapter = notificationsListArrayAdapter
 
-        notificationsListView.setOnItemClickListener { _, _, pos, _ ->
-            val intent = Intent(requireContext(), LowIngredientActivity::class.java)
-            intent.putExtra("NotificationPosition", pos)
-            startActivity(intent)
+        notificationsListView.setOnItemClickListener { _, _, pos, id ->
+            if (id in notificationsListArrayAdapter.validNotifications) {
+                val intent = Intent(requireContext(), LowIngredientActivity::class.java)
+                intent.putExtra("NotificationPosition", pos)
+                startActivity(intent)
+            } else {
+                // Show toast saying items are all stocked up!
+                Toast.makeText(
+                    view.context,
+                    "All stocked up!",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
 
         notificationViewModel.allNotifications.observe(requireActivity()) {
