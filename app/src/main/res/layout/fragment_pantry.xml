@@ -58,7 +58,7 @@
                     android:id="@+id/header_pantry"
                     android:layout_width="match_parent"
                     android:layout_height="55dp"
-                    android:layout_marginTop="15dp"
+                    android:layout_marginTop="10dp"
                     android:background="@drawable/rounded_bg_blue"
                     android:paddingStart="15dp"
                     android:text="@string/all_ingredients_header"
@@ -72,7 +72,7 @@
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:orientation="horizontal"
-                    android:paddingTop="15dp">
+                    android:paddingTop="10dp">
 
                     <Space
                         android:layout_width="0dp"
@@ -96,6 +96,7 @@
                 android:id="@+id/listview_pantry_all_ingredients"
                 android:layout_width="match_parent"
                 android:layout_height="0dp"
+                android:layout_marginTop="10dp"
                 android:divider="@android:color/transparent"
                 android:dividerHeight="10sp"
                 android:layout_weight="1"

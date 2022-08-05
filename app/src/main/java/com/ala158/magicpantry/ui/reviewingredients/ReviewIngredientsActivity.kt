@@ -80,15 +80,13 @@ class ReviewIngredientsActivity : AppCompatActivity() {
         cancelButton.setOnClickListener {
             // TODO When receipt scanning API ready
             // requireActivity().supportFragmentManager.popBackStack()
-            onBackPressed()
+            finish()
         }
         addAllButton.setOnClickListener {
             reviewIngredientsViewModel.addToIngredientList(ingredientList)
             reviewIngredientsViewModel.insertAll()
             Toast.makeText(this, "Items added!", Toast.LENGTH_SHORT).show()
-
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+            finish()
         }
     }
 
