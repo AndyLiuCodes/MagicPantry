@@ -33,4 +33,10 @@ data class ShoppingListItem(
         this.itemAmount = amount
         this.isItemBought = isItemBought
     }
+
+    constructor(amount: Double, isItemBought: Boolean, relatedIngredientId: Long) : this() {
+        this.itemAmount = amount
+        this.isItemBought = isItemBought
+        this.relatedIngredientId = relatedIngredientId
+    }
 }
