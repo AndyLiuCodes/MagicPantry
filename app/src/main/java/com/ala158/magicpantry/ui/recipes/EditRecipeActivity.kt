@@ -11,12 +11,10 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.InputType
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.ListView
-import android.widget.TextView
+import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -89,6 +87,9 @@ class EditRecipeActivity : AppCompatActivity() {
         servings = findViewById(R.id.edit_recipe_edit_recipe_servings)
         description = findViewById(R.id.edit_recipe_edit_recipe_description)
         ingredients = findViewById(R.id.edit_recipe_edit_ingredient_listView)
+
+        cookTime.inputType = InputType.TYPE_CLASS_NUMBER
+        servings.inputType = InputType.TYPE_CLASS_NUMBER
 
         ingredients.isScrollContainer = false
 
@@ -208,8 +209,15 @@ class EditRecipeActivity : AppCompatActivity() {
 
         val doneBtn = findViewById<Button>(R.id.edit_recipe_btn_add_recipe)
         doneBtn.setOnClickListener {
-            updateDatabase()
-            onBackPressed()
+            // check if title entered
+            val msg: String = title.text.toString()
+            if(msg.trim().isEmpty()) {
+                Toast.makeText(applicationContext, "Please enter a title", Toast.LENGTH_SHORT).show()
+            }
+            else {
+                updateDatabase()
+                finish()
+            }
         }
     }
 
