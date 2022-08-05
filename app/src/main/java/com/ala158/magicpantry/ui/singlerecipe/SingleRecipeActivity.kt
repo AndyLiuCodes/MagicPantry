@@ -287,12 +287,14 @@ class SingleRecipeActivity : AppCompatActivity(),
             putExtra("NotificationId", l)
         }
         // Create the TaskStackBuilder
+        //https://stackoverflow.com/questions/7370324/notification-passes-old-intent-extras Used this to help with notifications erasing old notifications intents
+        val iUniqueId = (System.currentTimeMillis() and 0xfffffff).toInt()
         val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
             // Add the intent, which inflates the back stack
             addNextIntentWithParentStack(resultIntent)
             // Get the PendingIntent containing the entire back stack
             getPendingIntent(
-                0,
+                iUniqueId,
                 PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
             )
         }
