@@ -24,7 +24,7 @@
                 android:id="@+id/singleRecipeName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
+                android:layout_marginTop="10dp"
                 android:gravity="center_vertical"
                 android:text="RecipeName"
                 android:textSize="30sp" />
@@ -43,17 +43,13 @@
                 app:cornerRadius="8dp"
                 app:icon="@drawable/ic_baseline_edit_24"
                 app:iconGravity="textStart"
-                android:layout_centerInParent="true"
-                android:layout_alignParentEnd="true"
                 app:iconPadding="0dp"
-                android:gravity="center"
-                tools:ignore="SpeakableTextPresentCheck" />
+                android:gravity="center" />
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_weight="1"
+            android:layout_height="wrap_content"
             android:background="@drawable/rounded_bg_white"
             android:gravity="center"
             android:elevation="2dp"
@@ -61,8 +57,8 @@
 
             <ImageView
                 android:id="@+id/singleRecipeImage"
-                android:layout_width="139dp"
-                android:layout_height="match_parent"
+                android:layout_width="150dp"
+                android:layout_height="150dp"
                 android:gravity="center"
                 app:srcCompat="@drawable/magic_pantry_app_logo" />
 
@@ -72,7 +68,7 @@
                 android:orientation="vertical">
 
                 <LinearLayout
-                    android:layout_width="223dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
@@ -83,7 +79,7 @@
                         android:paddingTop="5dp"
                         android:paddingEnd="5dp"
                         android:paddingBottom="5dp"
-                        app:srcCompat="@drawable/ic_baseline_access_time_24"></ImageView>
+                        app:srcCompat="@drawable/ic_baseline_access_time_24"/>
 
                     <TextView
                         android:id="@+id/CookingTime"
@@ -91,7 +87,7 @@
                         android:layout_height="wrap_content"
                         android:paddingTop="5dp"
                         android:textColor = "@color/black"
-                        android:text="@string/cookingtime"></TextView>
+                        android:text="@string/cookingtime"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -106,7 +102,7 @@
                         android:paddingTop="5dp"
                         android:paddingEnd="5dp"
                         android:paddingBottom="5dp"
-                        app:srcCompat="@drawable/ic_baseline_restaurant_24"></ImageView>
+                        app:srcCompat="@drawable/ic_baseline_restaurant_24"/>
 
                     <TextView
                         android:id="@+id/NoOfServings"
@@ -114,12 +110,12 @@
                         android:layout_height="wrap_content"
                         android:paddingTop="5dp"
                         android:text="@string/noofservings"
-                        android:textColor = "@color/black"></TextView>
+                        android:textColor = "@color/black"/>
                 </LinearLayout>
 
                 <LinearLayout
                     android:layout_width="match_parent"
-                    android:layout_height="match_parent"
+                    android:layout_height="wrap_content"
                     android:orientation="horizontal">
 
                     <ImageView
@@ -144,7 +140,9 @@
                         android:textColor = "@color/black">
 
                     </TextView>
+
                 </LinearLayout>
+
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/cook_now_btn"
                     android:layout_width="wrap_content"
@@ -160,34 +158,29 @@
 
         </LinearLayout>
 
-
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:baselineAligned="false"
             android:orientation="vertical"
-            android:paddingTop="15dp"
-            android:paddingBottom="15dp">
+            android:layout_marginVertical="10dp">
 
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="15dp"
                 android:gravity="center_vertical"
                 android:padding="15dp"
                 android:text="Description"
                 android:textSize="18sp"
-                android:textStyle="bold"></TextView>
+                android:textStyle="bold"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="0dp"
-                android:layout_weight="1"
+                android:layout_height="wrap_content"
                 android:background="@drawable/rounded_bg_white"
                 android:elevation="10dp"
                 android:orientation="vertical"
-                android:paddingTop="15dp"
-                android:paddingBottom="15dp">
+                android:paddingVertical="10dp">
 
                 <TextView
                     android:id="@+id/recipe_description"
@@ -199,16 +192,18 @@
                     android:paddingEnd="20dp"
                     android:paddingBottom="5dp"
                     android:text="DescriptionText"
-                    android:textSize="12sp"></TextView>
+                    android:textSize="16sp"/>
+
             </LinearLayout>
+
         </LinearLayout>
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
             android:baselineAligned="false"
             android:orientation="horizontal"
-            android:padding="15dp">
+            android:padding="10dp">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -217,12 +212,12 @@
                 android:gravity="center_vertical"
                 android:text="Ingredient List"
                 android:textSize="18sp"
-                android:textStyle="bold"></TextView>
+                android:textStyle="bold" />
 
             <Space
                 android:layout_width="0dp"
                 android:layout_height="0dp"
-                android:layout_weight="20" />
+                android:layout_weight="18" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/add_ingredient_to_recipe_button"
@@ -231,28 +226,18 @@
                 android:layout_gravity="center_vertical"
                 android:backgroundTint="@color/mp_yellow"
                 app:cornerRadius="8dp"
-                app:icon="@drawable/ic_baseline_add_24"
+                app:icon="@drawable/ic_baseline_add_shopping_cart_24"
                 app:iconGravity="textStart"
-                android:layout_centerInParent="true"
-                android:layout_alignParentEnd="true"
                 app:iconPadding="0dp"
-                android:gravity="center"
-                tools:ignore="SpeakableTextPresentCheck" />
+                android:gravity="center" />
         </LinearLayout>
 
-        <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-
-            <ListView
-                android:id="@+id/listview_all_recipe_ingredients"
-                android:layout_width="wrap_content"
-                android:layout_height="479dp"
-                android:layout_weight="1"
-                android:divider="@android:color/transparent"
-                android:dividerHeight="17sp"></ListView>
-        </LinearLayout>
+        <ListView
+            android:id="@+id/listview_all_recipe_ingredients"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="17sp" />
     </LinearLayout>
 
 </androidx.core.widget.NestedScrollView>
