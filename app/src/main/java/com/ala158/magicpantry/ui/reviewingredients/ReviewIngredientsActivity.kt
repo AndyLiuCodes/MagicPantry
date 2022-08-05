@@ -80,7 +80,7 @@ class ReviewIngredientsActivity : AppCompatActivity() {
         cancelButton.setOnClickListener {
             // TODO When receipt scanning API ready
             // requireActivity().supportFragmentManager.popBackStack()
-            onBackPressed()
+            finish()
         }
         addAllButton.setOnClickListener {
             reviewIngredientsViewModel.addToIngredientList(ingredientList)

@@ -351,6 +351,7 @@ class ReceiptScannerActivity : AppCompatActivity() {
         val intent = Intent(this, ReviewIngredientsActivity::class.java)
         intent.putExtras(bundle)
         // Close this activity and start the new one (review ingredients activity)
+        // https://stackoverflow.com/questions/11308198/start-new-activity-and-finish-current-one-in-android
         finish()
         startActivity(intent)
     }
