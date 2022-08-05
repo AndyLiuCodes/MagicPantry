@@ -1,9 +1,13 @@
 package com.ala158.magicpantry
 
+import com.ala158.magicpantry.data.Ingredient
+import com.ala158.magicpantry.data.Notification
 import com.ala158.magicpantry.data.RecipeWithRecipeItems
 import com.ala158.magicpantry.viewModel.IngredientViewModel
+import com.ala158.magicpantry.viewModel.NotificationViewModel
 import com.ala158.magicpantry.viewModel.RecipeItemViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModel
+import java.util.*
 
 object UpdateDB {
     fun consumeIngredients(
@@ -88,4 +92,54 @@ object UpdateDB {
             parentRecipeViewModel.update(recipe.recipe)
         }
     }
+
+    fun createNotification(recipe: RecipeWithRecipeItems, notificationViewModel:NotificationViewModel): List<Ingredient>{
+        val notification = Notification()
+        notification.date = Calendar.getInstance()
+        val lowIngredients = mutableListOf<(Ingredient)>()
+        val recipeItems = recipe.recipeItems
+        for (item in recipeItems) {
+          if(item.ingredient.isNotify){
+              if(item.ingredient.amount <= item.ingredient.notifyThreshold){
+                  lowIngredients.add(item.ingredient)
+              }
+          }
+        }
+        if(lowIngredients.size > 0 ){
+            if(lowIngredients.size == 1){
+                notification.description = "Low On ${lowIngredients[0].name}"
+            }
+            else{
+                notification.description = "Low On ${lowIngredients.size}"
+            }
+            notificationViewModel.insert(notification,lowIngredients)
+        }
+        return lowIngredients
+    }
+
+    suspend fun createNotificationPantry(ingredientIds: List<Long>, ingredientViewModel: IngredientViewModel, notificationViewModel: NotificationViewModel): List<Ingredient> {
+        val notification = Notification()
+        notification.date = Calendar.getInstance()
+        val ingredientsWithRecipeItems = ingredientViewModel.findIngredientsWithRecipeItemsById(ingredientIds)
+        val lowIngredients = mutableListOf<(Ingredient)>()
+        for (ingredientWithRecipeItem in ingredientsWithRecipeItems) {
+            if(ingredientWithRecipeItem.ingredient.isNotify){
+                if(ingredientWithRecipeItem.ingredient.amount <= ingredientWithRecipeItem.ingredient.notifyThreshold){
+                    lowIngredients.add(ingredientWithRecipeItem.ingredient)
+                }
+            }
+        }
+        if(lowIngredients.size > 0 ){
+            if(lowIngredients.size == 1){
+                notification.description = "Low On ${lowIngredients[0].name}"
+            }
+            else{
+                notification.description = "Low On ${lowIngredients.size}"
+            }
+            notificationViewModel.insert(notification,lowIngredients)
+        }
+        return lowIngredients
+    }
+
+
 }

@@ -14,6 +14,9 @@ import kotlinx.coroutines.launch
 
 class NotificationViewModel(private val repository: NotificationRepository) : ViewModel() {
 
+    private val _newNotificationId = MutableLiveData(0L)
+    val newNotificationId: LiveData<Long> = _newNotificationId
+
     val allNotifications: LiveData<List<NotificationWithIngredients>> =
         repository.allNotifications.asLiveData()
 
@@ -23,6 +26,7 @@ class NotificationViewModel(private val repository: NotificationRepository) : Vi
     ) {
         CoroutineScope(Dispatchers.IO).launch {
             val id = repository.insertNotification(notification)
+            _newNotificationId.postValue(id)
             for (ingredient in ingredients) {
                 insertCrossRef(id, ingredient.ingredientId)
             }

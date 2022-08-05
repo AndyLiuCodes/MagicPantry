@@ -1,5 +1,9 @@
 package com.ala158.magicpantry.ui.manualingredientinput.edit
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.content.Context
+import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
@@ -8,11 +12,15 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.UpdateDB
 import com.ala158.magicpantry.Util
+import com.ala158.magicpantry.data.Ingredient
 import com.ala158.magicpantry.ui.pantry.PantryFragment
 import com.ala158.magicpantry.viewModel.IngredientViewModel
+import com.ala158.magicpantry.viewModel.NotificationViewModel
 import com.ala158.magicpantry.viewModel.RecipeItemViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModel
 import com.google.android.material.textfield.TextInputEditText
@@ -47,6 +55,9 @@ class PantryEditIngredientActivity : AppCompatActivity() {
 
     private var oldAmount = 0.0
 
+    private lateinit var notificationViewModel: NotificationViewModel
+    private lateinit var notificationManager: NotificationManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_pantry_edit_ingredient)
@@ -55,6 +66,7 @@ class PantryEditIngredientActivity : AppCompatActivity() {
         initViews()
         initDatabaseAndViewModel()
         initTextWatchers()
+        createNotificationChannel()
 
         pantryEditIngredientViewModel.ingredientEntry.observe(this) {
             // Depending on what the ingredient's unit are, we limit what they can change the unit to
@@ -133,6 +145,9 @@ class PantryEditIngredientActivity : AppCompatActivity() {
                             recipeItemViewModel,
                             recipeViewModel
                         )
+                        val threshold = pantryEditIngredientViewModel.ingredientEntry.value!!.getNotifyThreshold()
+                        val list = UpdateDB.createNotificationPantry(ingredientIds,ingredientViewModel,notificationViewModel)
+                        sendNotification(list)
                     }
                 }
                 Toast.makeText(this, "Saved ingredient!", Toast.LENGTH_SHORT).show()
@@ -236,6 +251,11 @@ class PantryEditIngredientActivity : AppCompatActivity() {
             this,
             RecipeViewModel::class.java,
             Util.DataType.RECIPE
+        )
+        notificationViewModel = Util.createViewModel(
+            this,
+            NotificationViewModel::class.java,
+            Util.DataType.NOTIFICATION
         )
     }
 
@@ -388,6 +408,48 @@ class PantryEditIngredientActivity : AppCompatActivity() {
         }
 
         return true
+    }
+
+    private fun sendNotification(list: List<Ingredient>) {
+        val notificationId = notificationViewModel.newNotificationId.value!! + 1
+        if(list.size == 1){
+            val builder = NotificationCompat.Builder (this,"lowIngredients")
+                .setSmallIcon(R.drawable.magic_pantry_app_logo)
+                .setContentTitle("You are low on ${list[0].name}")
+                .setContentText("Click here to view")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true)
+            with(NotificationManagerCompat.from(this)){
+                notify(notificationId.toInt(),builder.build())
+            }
+        }
+        else if(list.size > 1){
+            val builder = NotificationCompat.Builder (this,"lowIngredients")
+                .setSmallIcon(R.drawable.magic_pantry_app_logo)
+                .setContentTitle("You are low on ${list.size} ingredients")
+                .setContentText("Click here to view")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true)
+            with(NotificationManagerCompat.from(this)){
+                notify(notificationId.toInt(),builder.build())
+            }
+        }
+
+
+    }
+
+    private fun createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = "LowIngredients"
+            val importance = NotificationManager.IMPORTANCE_HIGH
+            val channel = NotificationChannel("lowIngredients", name, importance)
+            // Register the channel with the system
+            notificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
     }
 
     companion object {

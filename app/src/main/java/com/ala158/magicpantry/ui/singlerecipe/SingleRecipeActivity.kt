@@ -1,23 +1,27 @@
 package com.ala158.magicpantry.ui.singlerecipe
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.net.toUri
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.UpdateDB
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.RecipeIngredientArrayAdapter
+import com.ala158.magicpantry.data.Ingredient
 import com.ala158.magicpantry.data.RecipeWithRecipeItems
 import com.ala158.magicpantry.ui.recipes.EditRecipeActivity
-import com.ala158.magicpantry.viewModel.IngredientViewModel
-import com.ala158.magicpantry.viewModel.RecipeItemViewModel
-import com.ala158.magicpantry.viewModel.RecipeViewModel
+import com.ala158.magicpantry.viewModel.*
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -43,6 +47,9 @@ class SingleRecipeActivity : AppCompatActivity() {
     private lateinit var broadcastReceiver: BroadcastReceiver
     private lateinit var recipeWithRecipeItems: RecipeWithRecipeItems
 
+    private lateinit var notificationViewModel: NotificationViewModel
+    private lateinit var notificationManager: NotificationManager
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_single_recipe)
@@ -62,6 +69,14 @@ class SingleRecipeActivity : AppCompatActivity() {
             IngredientViewModel::class.java,
             Util.DataType.INGREDIENT
         )
+
+        notificationViewModel = Util.createViewModel(
+            this,
+            NotificationViewModel::class.java,
+            Util.DataType.NOTIFICATION
+        )
+        createNotificationChannel()
+
         recipeName = findViewById(R.id.singleRecipeName)
         recipeImage = findViewById(R.id.singleRecipeImage)
         recipeDescription = findViewById(R.id.recipe_description)
@@ -153,7 +168,10 @@ class SingleRecipeActivity : AppCompatActivity() {
                         recipeItemViewModel,
                         recipeViewModel
                     )
+                    val list = UpdateDB.createNotification(recipeWithRecipeItems,notificationViewModel)
+                    sendNotification(list)
                 }
+
                 Toast.makeText(this, "Recipe Cooked!", Toast.LENGTH_LONG).show()
                 finish()
             }
@@ -170,8 +188,52 @@ class SingleRecipeActivity : AppCompatActivity() {
         registerReceiver(broadcastReceiver, intentFilter)
     }
 
+    private fun sendNotification(list: List<Ingredient>) {
+        val notificationId = notificationViewModel.newNotificationId.value!! + 1
+        if(list.size == 1){
+            val builder = NotificationCompat.Builder (this,"lowIngredients")
+                .setSmallIcon(R.drawable.magic_pantry_app_logo)
+                .setContentTitle("You are low on ${list[0].name}")
+                .setContentText("Click here to view")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true)
+            with(NotificationManagerCompat.from(this)){
+                notify(notificationId.toInt(),builder.build())
+            }
+        }
+        else{
+            val builder = NotificationCompat.Builder (this,"lowIngredients")
+                .setSmallIcon(R.drawable.magic_pantry_app_logo)
+                .setContentTitle("You are low on ${list.size} ingredients")
+                .setContentText("Click here to view")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true)
+            with(NotificationManagerCompat.from(this)){
+                notify(notificationId.toInt(),builder.build())
+            }
+        }
+
+
+    }
+
     override fun onDestroy() {
         super.onDestroy()
         unregisterReceiver(broadcastReceiver)
     }
+
+    private fun createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = "LowIngredients"
+            val importance = NotificationManager.IMPORTANCE_HIGH
+            val channel = NotificationChannel("lowIngredients", name, importance)
+            // Register the channel with the system
+            notificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+
 }
