@@ -12,6 +12,8 @@ import androidx.core.os.bundleOf
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.data.Ingredient
 import com.ala158.magicpantry.ui.manualingredientinput.edit.ReviewIngredientsEditActivity
+import com.ala158.magicpantry.ui.reviewingredients.ReviewIngredientsActivity
+import java.text.DecimalFormat
 
 class ReviewIngredientsActivityAdapter(
     private val context: Context,
@@ -32,29 +34,40 @@ class ReviewIngredientsActivityAdapter(
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
         val view: View = View.inflate(context, R.layout.list_item_edit_ingredient, null)
-
-        val nameAmountView = view.findViewById<TextView>(R.id.ingredientNameAmount)
-        val priceUnitView = view.findViewById<TextView>(R.id.ingredientPriceUnit)
-        val editButton = view.findViewById<Button>(R.id.ingredientEditButton)
+        val nameView = view.findViewById<TextView>(R.id.ingredient_name)
+        val amountView = view.findViewById<TextView>(R.id.ingredient_amount)
+        val priceUnitView = view.findViewById<TextView>(R.id.ingredient_price_unit)
+        val editButton = view.findViewById<Button>(R.id.ingredient_edit_button)
+        val numberFormatter = DecimalFormat("#.##")
 
         val ingredient = ingredients[position]
 
         editButton.setOnClickListener {
             Log.d("REVIEW EDIT", "getView: edit button $position")
-            val bundle = bundleOf("position" to position)
+            val bundle = bundleOf(ReviewIngredientsEditActivity.BUNDLE_POSITION_KEY to position)
 
             val intent = Intent(context, ReviewIngredientsEditActivity::class.java)
-            intent.putExtra("pos", bundle)
-            intent.putExtra("name", ingredient.name)
-            intent.putExtra("amount", ingredient.amount)
-            intent.putExtra("price", ingredient.price)
-            intent.putExtra("unit", ingredient.unit)
+            intent.putExtra(ReviewIngredientsEditActivity.BUNDLE_POS_KEY, bundle)
+            intent.putExtra(ReviewIngredientsEditActivity.NAME_KEY, ingredient.name)
+            intent.putExtra(ReviewIngredientsEditActivity.AMOUNT_KEY, ingredient.amount)
+            intent.putExtra(ReviewIngredientsEditActivity.PRICE_KEY, ingredient.price)
+            intent.putExtra(ReviewIngredientsEditActivity.UNIT_KEY, ingredient.unit)
 
             context.startActivity(intent)
         }
-        nameAmountView.text = "${ingredient.amount}x ${ingredient.name}"
-        val price = String.format("$%.2f", ingredient.price)
-        priceUnitView.text = "$price/${ingredient.unit}"
+
+        var unit = "x"
+        if (ingredient.unit != "unit") {
+            unit = ingredient.unit
+        }
+
+        val amountString = numberFormatter.format(ingredient.amount)
+        amountView.text = "$amountString $unit"
+
+        nameView.text = ingredient.name
+
+        val priceString = numberFormatter.format(ingredient.price)
+        priceUnitView.text = "$$priceString/${ingredient.unit}"
 
         Log.d("myVal", "${ingredient.amount}x ${ingredient.name}")
         return view
