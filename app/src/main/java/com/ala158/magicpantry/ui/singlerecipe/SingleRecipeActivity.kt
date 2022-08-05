@@ -1,22 +1,32 @@
 package com.ala158.magicpantry.ui.singlerecipe
 
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.TaskStackBuilder
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import androidx.core.net.toUri
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.UpdateDB
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.RecipeIngredientArrayAdapter
+import com.ala158.magicpantry.data.Ingredient
+import com.ala158.magicpantry.data.Notification
 import com.ala158.magicpantry.data.RecipeWithRecipeItems
-import com.ala158.magicpantry.data.ShoppingListItem
 import com.ala158.magicpantry.dialogs.AddMissingIngredientsToShoppingListDialog
+import com.ala158.magicpantry.ui.notifications.LowIngredientActivity
 import com.ala158.magicpantry.ui.recipes.EditRecipeActivity
+import com.ala158.magicpantry.viewModel.*
 import com.ala158.magicpantry.viewModel.IngredientViewModel
 import com.ala158.magicpantry.viewModel.RecipeItemViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModel
@@ -24,6 +34,8 @@ import com.ala158.magicpantry.viewModel.ShoppingListItemViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.*
+import kotlin.collections.ArrayList
 
 class SingleRecipeActivity : AppCompatActivity(),
     AddMissingIngredientsToShoppingListDialog.AddMissingIngredientDialogListener {
@@ -48,6 +60,10 @@ class SingleRecipeActivity : AppCompatActivity(),
     private lateinit var broadcastReceiver: BroadcastReceiver
     private lateinit var recipeWithRecipeItems: RecipeWithRecipeItems
     private var isCookable = false
+
+    private lateinit var notificationViewModel: NotificationViewModel
+    private lateinit var notificationManager: NotificationManager
+    private var lowIngredients:MutableList<Ingredient> = java.util.ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,6 +90,14 @@ class SingleRecipeActivity : AppCompatActivity(),
             ShoppingListItemViewModel::class.java,
             Util.DataType.SHOPPING_LIST_ITEM
         )
+
+
+        notificationViewModel = Util.createViewModel(
+            this,
+            NotificationViewModel::class.java,
+            Util.DataType.NOTIFICATION
+        )
+        createNotificationChannel()
 
         recipeName = findViewById(R.id.singleRecipeName)
         recipeImage = findViewById(R.id.singleRecipeImage)
@@ -147,6 +171,11 @@ class SingleRecipeActivity : AppCompatActivity(),
             //recipeIngredientArrayAdapter.replaceAllIngredients(it)
             recipeIngredientArrayAdapter.notifyDataSetChanged()
         }
+        notificationViewModel.newNotificationId.observe(this){
+            if(it != 0L) {
+                sendNotification(it)
+            }
+        }
 
         editRecipeButton.setOnClickListener {
             val intent = Intent(this, EditRecipeActivity::class.java)
@@ -181,7 +210,9 @@ class SingleRecipeActivity : AppCompatActivity(),
                         recipeItemViewModel,
                         recipeViewModel
                     )
+                    insertNotification(recipeWithRecipeItems)
                 }
+
                 Toast.makeText(this, "Recipe Cooked!", Toast.LENGTH_LONG).show()
                 finish()
             }
@@ -196,6 +227,28 @@ class SingleRecipeActivity : AppCompatActivity(),
         val intentFilter = IntentFilter()
         intentFilter.addAction("FINISH")
         registerReceiver(broadcastReceiver, intentFilter)
+    }
+
+    private fun insertNotification(recipe: RecipeWithRecipeItems) {
+        val notification = Notification()
+        notification.date = Calendar.getInstance()
+        val recipeItems = recipe.recipeItems
+        for (item in recipeItems) {
+            if(item.ingredient.isNotify){
+                if(item.ingredient.amount <= item.ingredient.notifyThreshold){
+                    lowIngredients.add(item.ingredient)
+                }
+            }
+        }
+        if(lowIngredients.size > 0 ){
+            if(lowIngredients.size == 1){
+                notification.description = "Low On ${lowIngredients[0].name}"
+            }
+            else{
+                notification.description = "Low On ${lowIngredients.size}"
+            }
+            notificationViewModel.insert(notification,lowIngredients)
+        }
     }
 
     override fun onConfirmationClick(isConfirm: Boolean) {
@@ -214,4 +267,61 @@ class SingleRecipeActivity : AppCompatActivity(),
         super.onDestroy()
         unregisterReceiver(broadcastReceiver)
     }
+
+    private fun createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = "LowIngredients"
+            val importance = NotificationManager.IMPORTANCE_HIGH
+            val channel = NotificationChannel("lowIngredients", name, importance)
+            // Register the channel with the system
+            notificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    private fun sendNotification(l: Long) {
+        val resultIntent = Intent(this, LowIngredientActivity::class.java).apply {
+            putExtra("NotificationId", l)
+        }
+        // Create the TaskStackBuilder
+        //https://stackoverflow.com/questions/7370324/notification-passes-old-intent-extras Used this to help with notifications erasing old notifications intents
+        val iUniqueId = (System.currentTimeMillis() and 0xfffffff).toInt()
+        val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
+            // Add the intent, which inflates the back stack
+            addNextIntentWithParentStack(resultIntent)
+            // Get the PendingIntent containing the entire back stack
+            getPendingIntent(
+                iUniqueId,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+        }
+        var builder: NotificationCompat.Builder? = null
+        if (lowIngredients.size == 1) {
+            builder = NotificationCompat.Builder(this, "lowIngredients")
+                .setSmallIcon(R.drawable.magic_pantry_app_logo)
+                .setContentTitle("You are low on ${lowIngredients[0].name}")
+                .setContentText("Click here to view")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true)
+                .setContentIntent(resultPendingIntent)
+        } else if (lowIngredients.size > 1) {
+            builder = NotificationCompat.Builder(this, "lowIngredients")
+                .setSmallIcon(R.drawable.magic_pantry_app_logo)
+                .setContentTitle("You are low on ${lowIngredients.size} ingredients")
+                .setContentText("Click here to view")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true)
+                .setContentIntent(resultPendingIntent)
+        }
+        with(NotificationManagerCompat.from(this)) {
+            if (builder != null) {
+                notify(l.toInt(), builder.build())
+            }
+        }
+    }
+
+
 }

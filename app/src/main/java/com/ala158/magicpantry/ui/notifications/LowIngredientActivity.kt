@@ -8,7 +8,9 @@ import androidx.appcompat.app.AppCompatActivity
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.LowIngredientArrayAdapter
+import com.ala158.magicpantry.data.Ingredient
 import com.ala158.magicpantry.data.Notification
+import com.ala158.magicpantry.data.NotificationWithIngredients
 import com.ala158.magicpantry.viewModel.IngredientViewModel
 import com.ala158.magicpantry.viewModel.NotificationViewModel
 import com.ala158.magicpantry.viewModel.ShoppingListItemViewModel
@@ -21,16 +23,18 @@ class LowIngredientActivity : AppCompatActivity() {
     private lateinit var shoppingListItemViewModel: ShoppingListItemViewModel
 
     private lateinit var ingredientList : ListView
-    private var ingredients = arrayOf("bread", "milk")
+    private lateinit var lowIngredientListArrayAdapter: LowIngredientArrayAdapter
+    private lateinit var notifications:List<NotificationWithIngredients>
 
     private var pos = 0
+    private var id = 0L
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_low_ingredient)
 
         pos = intent.getIntExtra("NotificationPosition", -1)
-
+        id = intent.getLongExtra("NotificationId", -1L )
         val dateTime = findViewById<TextView>(R.id.low_ingredient_date)
 
         val dateFormat = SimpleDateFormat("MMM dd, yyyy  hh:mmaa")
@@ -42,16 +46,31 @@ class LowIngredientActivity : AppCompatActivity() {
             NotificationViewModel::class.java,
             Util.DataType.NOTIFICATION
         )
-
+        ingredientList = findViewById(R.id.notifications_list_view)
+        lowIngredientListArrayAdapter = LowIngredientArrayAdapter(this,ArrayList())
+        ingredientList.adapter = lowIngredientListArrayAdapter
         var notificationToUpdate: Notification? = null
         notificationViewModel.allNotifications.observe(this) {
             val myList = it.toTypedArray()
 
             //if not empty
             if (myList.isNotEmpty()) {
-                notificationToUpdate = myList[pos].notification
+                if(pos != -1) {
+                    notificationToUpdate = myList[pos].notification
+                    lowIngredientListArrayAdapter.replace(myList[pos].ingredients)
+                    lowIngredientListArrayAdapter.notifyDataSetChanged()
+                }
+                if(id != -1L){
+                    notificationViewModel.getById(id).observe(this){
+                        val notification = it.notification
+                        val ingredients =it.ingredients
+                        lowIngredientListArrayAdapter.replace(ingredients)
+                        lowIngredientListArrayAdapter.notifyDataSetChanged()
+                    }
+                }
             }
         }
+
         if (notificationToUpdate != null) {
             notificationViewModel.updateRead(
                 Notification(
@@ -74,10 +93,6 @@ class LowIngredientActivity : AppCompatActivity() {
             ShoppingListItemViewModel::class.java,
             Util.DataType.SHOPPING_LIST_ITEM
         )
-
-        ingredientList = findViewById(R.id.notifications_list_view)
-        val adapter = LowIngredientArrayAdapter(this, ingredients)
-        ingredientList.adapter = adapter
 
         val addAllBtn = findViewById<Button>(R.id.btn_add_ingredient_notifications)
         addAllBtn.setOnClickListener {

@@ -34,7 +34,6 @@ android {
         viewBinding true
     }
 }
-
 dependencies {
 
     implementation "androidx.room:room-ktx:2.4.2"

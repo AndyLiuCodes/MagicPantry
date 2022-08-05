@@ -1,6 +1,12 @@
 package com.ala158.magicpantry.ui.manualingredientinput.edit
 
-import androidx.appcompat.app.AppCompatActivity
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
+import android.app.TaskStackBuilder
+import android.content.Context
+import android.content.Intent
+import android.os.Build
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
@@ -8,17 +14,25 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.UpdateDB
 import com.ala158.magicpantry.Util
+import com.ala158.magicpantry.data.Ingredient
+import com.ala158.magicpantry.data.Notification
+import com.ala158.magicpantry.ui.notifications.LowIngredientActivity
 import com.ala158.magicpantry.ui.pantry.PantryFragment
 import com.ala158.magicpantry.viewModel.IngredientViewModel
+import com.ala158.magicpantry.viewModel.NotificationViewModel
 import com.ala158.magicpantry.viewModel.RecipeItemViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModel
 import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.*
 
 class PantryEditIngredientActivity : AppCompatActivity() {
     private lateinit var ingredientNameLabel: TextView
@@ -46,6 +60,11 @@ class PantryEditIngredientActivity : AppCompatActivity() {
     private var isPricePerUnitValid = true
 
     private var oldAmount = 0.0
+    private var oldThreshold = 0.0
+
+    private lateinit var notificationViewModel: NotificationViewModel
+    private lateinit var notificationManager: NotificationManager
+    private var lowIngredients:MutableList<Ingredient> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -55,6 +74,7 @@ class PantryEditIngredientActivity : AppCompatActivity() {
         initViews()
         initDatabaseAndViewModel()
         initTextWatchers()
+        createNotificationChannel()
 
         pantryEditIngredientViewModel.ingredientEntry.observe(this) {
             // Depending on what the ingredient's unit are, we limit what they can change the unit to
@@ -90,17 +110,25 @@ class PantryEditIngredientActivity : AppCompatActivity() {
                 thresholdSectionLayout.visibility = View.INVISIBLE
             }
         }
+        notificationViewModel.newNotificationId.observe(this) {
+            if(it != 0L) {
+                sendNotification(it)
+            }
+        }
 
         pantryEditIngredientViewModel.oldAmount.observe(this) {
             oldAmount = it
+        }
+
+        pantryEditIngredientViewModel.oldThreshold.observe(this){
+            oldThreshold = it
         }
 
         if (pantryEditIngredientViewModel.ingredientEntry.value == null) {
             pantryEditIngredientViewModel.getIngredientEntry(ingredientId)
         }
 
-        isNotifyCheckBoxView.setOnCheckedChangeListener() {
-                _, isChecked ->
+        isNotifyCheckBoxView.setOnCheckedChangeListener() { _, isChecked ->
 
             if (isChecked) {
                 thresholdSectionLayout.visibility = View.VISIBLE
@@ -124,6 +152,7 @@ class PantryEditIngredientActivity : AppCompatActivity() {
                     pantryEditIngredientViewModel.updateIngredientEntry(ingredientId)
                     val newAmount =
                         pantryEditIngredientViewModel.ingredientEntry.value!!.getAmount()
+                    val newThreshold = pantryEditIngredientViewModel.ingredientEntry.value!!.getNotifyThreshold()
                     if (oldAmount != newAmount) {
                         // Update all recipes that use this ingredient
                         val ingredientIds = arrayListOf(ingredientId)
@@ -133,6 +162,10 @@ class PantryEditIngredientActivity : AppCompatActivity() {
                             recipeItemViewModel,
                             recipeViewModel
                         )
+                        prepNotification()
+                    }
+                    if(oldThreshold != newThreshold){
+                        prepNotification()
                     }
                 }
                 Toast.makeText(this, "Saved ingredient!", Toast.LENGTH_SHORT).show()
@@ -236,6 +269,11 @@ class PantryEditIngredientActivity : AppCompatActivity() {
             this,
             RecipeViewModel::class.java,
             Util.DataType.RECIPE
+        )
+        notificationViewModel = Util.createViewModel(
+            this,
+            NotificationViewModel::class.java,
+            Util.DataType.NOTIFICATION
         )
     }
 
@@ -389,6 +427,84 @@ class PantryEditIngredientActivity : AppCompatActivity() {
 
         return true
     }
+
+    private suspend fun prepNotification() {
+        val notification = Notification()
+        notification.date = Calendar.getInstance()
+        val ingredientIds = arrayListOf(ingredientId)
+        val ingredientsWithRecipeItems = ingredientViewModel.findIngredientsWithRecipeItemsById(ingredientIds)
+        for (ingredientWithRecipeItem in ingredientsWithRecipeItems) {
+            if (ingredientWithRecipeItem.ingredient.isNotify) {
+                if (ingredientWithRecipeItem.ingredient.amount <= ingredientWithRecipeItem.ingredient.notifyThreshold) {
+                    lowIngredients.add(ingredientWithRecipeItem.ingredient)
+                }
+            }
+        }
+        if (lowIngredients.size > 0) {
+            if (lowIngredients.size == 1) {
+                notification.description = "Low On ${lowIngredients[0].name}"
+            } else {
+                notification.description = "Low On ${lowIngredients.size}"
+            }
+            notificationViewModel.insert(notification, lowIngredients)
+        }
+    }
+
+    private fun createNotificationChannel() {
+        // Create the NotificationChannel, but only on API 26+ because
+        // the NotificationChannel class is new and not in the support library
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+            val name = "LowIngredients"
+            val importance = NotificationManager.IMPORTANCE_HIGH
+            val channel = NotificationChannel("lowIngredients", name, importance)
+            // Register the channel with the system
+            notificationManager =
+                getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+            notificationManager.createNotificationChannel(channel)
+        }
+    }
+
+    private fun sendNotification(l: Long) {
+        val resultIntent = Intent(this, LowIngredientActivity::class.java).apply {
+            putExtra("NotificationId", l)
+        }
+        // Create the TaskStackBuilder
+        val iUniqueId = (System.currentTimeMillis() and 0xfffffff).toInt()
+        val resultPendingIntent: PendingIntent? = TaskStackBuilder.create(this).run {
+            // Add the intent, which inflates the back stack
+            addNextIntentWithParentStack(resultIntent)
+            // Get the PendingIntent containing the entire back stack
+            getPendingIntent(
+                iUniqueId,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+        }
+        var builder: NotificationCompat.Builder? = null
+        if (lowIngredients.size == 1) {
+            builder = NotificationCompat.Builder(this, "lowIngredients")
+                .setSmallIcon(R.drawable.magic_pantry_app_logo)
+                .setContentTitle("You are low on ${lowIngredients[0].name}")
+                .setContentText("Click here to view")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true)
+                .setContentIntent(resultPendingIntent)
+        } else if (lowIngredients.size > 1) {
+            builder = NotificationCompat.Builder(this, "lowIngredients")
+                .setSmallIcon(R.drawable.magic_pantry_app_logo)
+                .setContentTitle("You are low on ${lowIngredients.size} ingredients")
+                .setContentText("Click here to view")
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .setAutoCancel(true)
+                .setContentIntent(resultPendingIntent)
+        }
+        with(NotificationManagerCompat.from(this)) {
+            if (builder != null) {
+                notify(l.toInt(), builder.build())
+            }
+        }
+    }
+
+
 
     companion object {
         val IS_INGREDIENT_NAME_VALID_KEY = "IS_INGREDIENT_NAME_VALID_KEY"
