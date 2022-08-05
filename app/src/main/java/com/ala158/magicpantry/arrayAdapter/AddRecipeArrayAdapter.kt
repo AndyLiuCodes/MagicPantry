@@ -7,11 +7,7 @@ import android.widget.BaseAdapter
 import android.widget.Button
 import android.widget.TextView
 import com.ala158.magicpantry.R
-import com.ala158.magicpantry.data.RecipeItem
 import com.ala158.magicpantry.data.RecipeItemAndIngredient
-import com.ala158.magicpantry.data.RecipeWithRecipeItems
-import com.ala158.magicpantry.ui.pantry.PantryViewModel
-import com.ala158.magicpantry.viewModel.RecipeViewModel
 
 class AddRecipeArrayAdapter(
     private val context: Context,
@@ -50,5 +46,9 @@ class AddRecipeArrayAdapter(
         name.text = recipeItemAndIngredient.ingredient.name
 
         return view
+    }
+
+    fun replaceRecipeIngredients(newRecipes: List<RecipeItemAndIngredient>){
+        recipeItemAndIngredients = newRecipes as ArrayList<RecipeItemAndIngredient>
     }
 }

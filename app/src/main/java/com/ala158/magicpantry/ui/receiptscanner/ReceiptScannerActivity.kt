@@ -300,48 +300,47 @@ class ReceiptScannerActivity : AppCompatActivity() {
             drawRect(mutableBitmap, blockFrame!!)
         }
 
-        // if line in block has "." and does not have
-        //  "phone", "save" or "/"
-        //  then add block to price list and add block before to product list
+        // add lines from block with prices and products to respective lists
         for (i in 0 until resultBlocks.size) {
             if (resultBlocks[i].text.contains(".")
+                && resultBlocks[i].text.any { it.isDigit() }
                 && !resultBlocks[i].text.lowercase().contains("phone")
                 && !resultBlocks[i].text.contains("/")
                 && !resultBlocks[i].text.lowercase().contains("sav")
             ) {
-
-                if ((i > 0) && (resultBlocks[i - 1].text.contains(Regex("[^A-Za-z]")))
-                ) {
-                    for (line in resultBlocks[i - 1].lines) {
-                        helperProducts.add(line.text)
+                if (resultBlocks[i].lines[0].text.count { it == '.' } == 1) {
+                    if (i > 0 && resultBlocks[i - 1].text.count { it.isLetter() } > 1
+                    ) {
+                        for (line in resultBlocks[i - 1].lines) {
+                            helperProducts.add(line.text)
+                        }
                     }
-                }
-                for (line in resultBlocks[i].lines) {
-                    helperPrice.add(line.text)
+                    for (line in resultBlocks[i].lines) {
+                        helperPrice.add(line.text)
+                    }
                 }
             }
         }
 
-        // if product list size is not equal to price list size then
-        //  if product item is not all uppercase and does not have "gluten free item"
-        //  and does not have ("/" and anything other than letters) add to filtered product list
+        // filter through product block lines to get product name and
+        //  get amount of product bought if says
         for (i in 0 until helperProducts.size) {
-            if (helperProducts[i].contains("/") && helperProducts[i].any { it.isDigit() }) {
+            if (!(helperProducts[i].lowercase().contains("sav")) && helperProducts[i].contains("$") && helperProducts[i].any { it.isDigit() }) {
                 filteredProducts[filteredProducts.size - 1] =
                     filteredProducts[filteredProducts.size - 1] + ";;" + helperProducts[i]
             } else if ((helperProducts[i] != helperProducts[i].uppercase())
+                && !(helperProducts[i].lowercase().contains("gluten free ltem"))
                 && !(helperProducts[i].lowercase().contains("gluten free item"))
             ) {
                 filteredProducts.add(helperProducts[i])
             }
         }
+
         // add the two lists to make one
         for (item in 0 until filteredProducts.size) {
             filteredList.add(filteredProducts[item])
             filteredList.add(helperPrice[item])
         }
-//        textView.text = "${textView.text} \n Items: $filteredList"
-
         textView.movementMethod = ScrollingMovementMethod()
         imageView!!.setImageBitmap(mutableBitmap)
 
