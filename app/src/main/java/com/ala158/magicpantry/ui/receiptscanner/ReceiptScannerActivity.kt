@@ -89,7 +89,7 @@ class ReceiptScannerActivity : AppCompatActivity() {
 
                         // store image once it is taken. includes a file name and date/time taken
                         val values = ContentValues()
-                        values.put(MediaStore.Images.Media.TITLE, "MyPicture")
+                        values.put(MediaStore.Images.Media.TITLE, "Grocery Receipt")
                         values.put(
                             MediaStore.Images.Media.DESCRIPTION,
                             "Photo taken on " + System.currentTimeMillis()

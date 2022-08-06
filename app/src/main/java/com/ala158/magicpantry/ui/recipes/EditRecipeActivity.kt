@@ -13,10 +13,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.ListView
-import android.widget.TextView
+import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -37,6 +34,7 @@ import java.io.File
 class EditRecipeActivity : AppCompatActivity() {
     private lateinit var imageUri: Uri
     private var bitmap: Bitmap? = null
+    private var recipeName = "Recipe"
 
     private val requestCamera = 1100
     private val requestGallery = 2200
@@ -141,9 +139,9 @@ class EditRecipeActivity : AppCompatActivity() {
                 recipeViewModel.originalRecipeData = recipeArray[pos]
                 id = recipeViewModel.originalRecipeData!!.recipe.recipeId
 
-                newUri = recipeArray[pos].recipe.imageUri
                 // perform logic on first start of activity to help handle orientation change replacing data
                 //set textViews and imageView
+                newUri = recipeArray[pos].recipe.imageUri
                 if (newUri == "") {
                     imageView!!.setImageResource(R.drawable.magic_pantry_app_logo)
                 }
@@ -188,7 +186,11 @@ class EditRecipeActivity : AppCompatActivity() {
 
                         // store image once it is taken. includes a file name and date/time taken
                         val values = ContentValues()
-                        values.put(MediaStore.Images.Media.TITLE, "MyPicture")
+
+                        if (title.text.toString().trim().isNotEmpty()) {
+                            recipeName = title.text.toString()
+                        }
+                        values.put(MediaStore.Images.Media.TITLE, recipeName)
                         values.put(
                             MediaStore.Images.Media.DESCRIPTION,
                             "Photo taken on " + System.currentTimeMillis()
@@ -242,9 +244,15 @@ class EditRecipeActivity : AppCompatActivity() {
 
         val doneBtn = findViewById<Button>(R.id.edit_recipe_btn_add_recipe)
         doneBtn.setOnClickListener {
-            updateDatabase()
-            edit.remove("edit_recipe_image").apply()
-            finish()
+            val msg: String = title.text.toString()
+            if(msg.trim().isEmpty()) {
+                Toast.makeText(applicationContext, "Please enter a title", Toast.LENGTH_SHORT).show()
+            }
+            else {
+                updateDatabase()
+                edit.remove("edit_recipe_image").apply()
+                finish()
+            }
         }
     }
 

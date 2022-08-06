@@ -34,8 +34,10 @@ import java.io.File
 
 class AddRecipeActivity : AppCompatActivity() {
     private lateinit var recipeItemViewModel: RecipeItemViewModel
+
     private lateinit var imageUri : Uri
     private var bitmap : Bitmap? = null
+    private var recipeName = "Recipe"
 
     private val requestCamera = 1000
     private val requestGallery = 2000
@@ -145,7 +147,11 @@ class AddRecipeActivity : AppCompatActivity() {
 
                         // store image once it is taken. includes a file name and date/time taken
                         val values = ContentValues()
-                        values.put(MediaStore.Images.Media.TITLE, "MyPicture")
+
+                        if (title.text.toString().trim().isNotEmpty()) {
+                            recipeName = title.text.toString()
+                        }
+                        values.put(MediaStore.Images.Media.TITLE, recipeName)
                         values.put(
                             MediaStore.Images.Media.DESCRIPTION,
                             "Photo taken on " + System.currentTimeMillis()
