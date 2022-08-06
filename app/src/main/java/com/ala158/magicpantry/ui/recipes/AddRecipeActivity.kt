@@ -95,7 +95,8 @@ class AddRecipeActivity : AppCompatActivity(), AddRecipeArrayAdapter.OnRecipeEdi
         cookTime.inputType = InputType.TYPE_CLASS_NUMBER
         servings.inputType = InputType.TYPE_CLASS_NUMBER
 
-        ingredients.isScrollContainer = false
+        // https://stackoverflow.com/questions/35634023/how-can-i-have-a-listview-inside-a-nestedscrollview
+        ingredients.isNestedScrollingEnabled = true
 
         addIngredientToRecipeLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == Activity.RESULT_OK && it.data != null) {
