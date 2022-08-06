@@ -155,7 +155,13 @@ class SingleRecipeActivity : AppCompatActivity(),
         }
 
         addIngredientsButton.setOnClickListener {
-            if (isCookable) {
+            if (recipeWithRecipeItems.recipeItems.isEmpty()) {
+                Toast.makeText(
+                    this,
+                    "There are no ingredients in the recipe to add to shopping list",
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else if (isCookable) {
                 Toast.makeText(
                     this,
                     "Recipe is cookable. There are no missing ingredients to add to shopping list",

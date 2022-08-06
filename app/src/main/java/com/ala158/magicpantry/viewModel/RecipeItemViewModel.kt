@@ -33,6 +33,10 @@ class RecipeItemViewModel(private val repository: RecipeItemRepository) : ViewMo
         repository.deleteRecipeItem(recipeItem)
     }
 
+    fun deleteById(id: Long) {
+        repository.deleteRecipeItemById(id)
+    }
+
     fun update(recipeItem: RecipeItem) {
         repository.updateRecipeItem(recipeItem)
     }
