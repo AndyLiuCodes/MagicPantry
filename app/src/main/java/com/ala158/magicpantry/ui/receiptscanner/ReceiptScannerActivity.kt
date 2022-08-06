@@ -13,6 +13,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.text.method.ScrollingMovementMethod
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -378,6 +379,7 @@ class ReceiptScannerActivity : AppCompatActivity() {
 
         // if camera selected, check request code
         if (requestCode == requestCamera && resultCode == Activity.RESULT_OK) {
+            deleteImageFromGallery(filePath)
 
             // get image uri, convert it to bitmap and rotate if necessary, then
             // set imageBitmap to display it
@@ -410,6 +412,7 @@ class ReceiptScannerActivity : AppCompatActivity() {
 
         // if gallery selected, check request code
         else if (requestCode == requestGallery && resultCode == Activity.RESULT_OK && data != null) {
+            deleteImageFromGallery(filePath)
 
             // get image uri and set imageBitmap to display it
             val myData = data.data
@@ -444,17 +447,27 @@ class ReceiptScannerActivity : AppCompatActivity() {
         }
     }
 
+    // Delete image once we are done with it
+    fun deleteImageFromGallery(fPath : String) {
+        val deleteFile = File(fPath)
+        if (deleteFile.exists()) {
+            if (deleteFile.delete()) {
+                println("file Deleted :$fPath")
+            } else {
+                println("file not Deleted :$fPath")
+            }
+        }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+
+        deleteImageFromGallery(filePath)
+    }
+
     override fun onDestroy() {
         super.onDestroy()
 
-        // Delete image once we are done with it
-        val deleteFile = File(filePath)
-        if (deleteFile.exists()) {
-            if (deleteFile.delete()) {
-                println("file Deleted :$filePath")
-            } else {
-                println("file not Deleted :$filePath")
-            }
-        }
+        deleteImageFromGallery(filePath)
     }
 }

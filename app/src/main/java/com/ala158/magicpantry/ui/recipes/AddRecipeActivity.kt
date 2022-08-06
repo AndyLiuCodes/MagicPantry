@@ -10,10 +10,9 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Parcel
 import android.os.Environment
+import android.os.Parcel
 import android.provider.MediaStore
-import android.text.InputType
 import android.view.ViewGroup
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
@@ -28,13 +27,13 @@ import com.ala158.magicpantry.data.RecipeItem
 import com.ala158.magicpantry.data.RecipeItemAndIngredient
 import com.ala158.magicpantry.dialogs.ChangeRecipeIngredientAmountDialog
 import com.ala158.magicpantry.ui.ingredientlistadd.IngredientListAddActivity
+import com.ala158.magicpantry.ui.receiptscanner.ReceiptScannerActivity
 import com.ala158.magicpantry.viewModel.RecipeItemViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.ByteArrayOutputStream
 import java.io.File
 
 class AddRecipeActivity : AppCompatActivity(), AddRecipeArrayAdapter.OnRecipeEditAmountChangeClickListener {
@@ -206,15 +205,9 @@ class AddRecipeActivity : AppCompatActivity(), AddRecipeArrayAdapter.OnRecipeEdi
         val cancelBtn = findViewById<Button>(R.id.add_recipe_btn_cancel_recipe)
         cancelBtn.setOnClickListener {
             edit.remove("recipe_image").apply()
+
             // Delete image once we are done with it
-            val deleteFile = File(filePath)
-            if (deleteFile.exists()) {
-                if (deleteFile.delete()) {
-                    println("file Deleted :$filePath")
-                } else {
-                    println("file not Deleted :$filePath")
-                }
-            }
+            ReceiptScannerActivity().deleteImageFromGallery(filePath)
             finish()
         }
 
@@ -272,6 +265,7 @@ class AddRecipeActivity : AppCompatActivity(), AddRecipeArrayAdapter.OnRecipeEdi
 
         // if camera selected, check request code
         if (requestCode == requestCamera && resultCode == Activity.RESULT_OK) {
+            ReceiptScannerActivity().deleteImageFromGallery(filePath)
 
             // get image uri, convert it to bitmap and rotate if necessary, then
             // set imageBitmap to display it
@@ -304,6 +298,7 @@ class AddRecipeActivity : AppCompatActivity(), AddRecipeArrayAdapter.OnRecipeEdi
 
         // if gallery selected, check request code
         else if (requestCode == requestGallery && resultCode == Activity.RESULT_OK && data != null) {
+            ReceiptScannerActivity().deleteImageFromGallery(filePath)
 
             // get image uri and set imageBitmap to display it
             val myData = data.data
@@ -379,14 +374,6 @@ class AddRecipeActivity : AppCompatActivity(), AddRecipeArrayAdapter.OnRecipeEdi
         recipeViewModel.insert(recipe, recipeItemViewModel)
     }
 
-    /*private fun getImageUri(inContext: Context, inImage: Bitmap): Uri? {
-        val bytes = ByteArrayOutputStream()
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
-        val path =
-            MediaStore.Images.Media.insertImage(inContext.contentResolver, inImage, recipeName, null)
-        return Uri.parse(path)
-    }*/
-
     override fun onResume() {
         super.onResume()
 
@@ -409,7 +396,6 @@ class AddRecipeActivity : AppCompatActivity(), AddRecipeArrayAdapter.OnRecipeEdi
             description.text = sharedPrefFile.getString("recipe_description", "")
             edit.remove("recipe_description").apply()
         }
-
     }
 
     override fun onBackPressed() {
@@ -418,14 +404,7 @@ class AddRecipeActivity : AppCompatActivity(), AddRecipeArrayAdapter.OnRecipeEdi
         edit.remove("recipe_image").apply()
 
         // Delete image once we are done with it
-        val deleteFile = File(filePath)
-        if (deleteFile.exists()) {
-            if (deleteFile.delete()) {
-                println("file Deleted :$filePath")
-            } else {
-                println("file not Deleted :$filePath")
-            }
-        }
+        ReceiptScannerActivity().deleteImageFromGallery(filePath)
     }
 
     companion object {

@@ -30,6 +30,7 @@ import com.ala158.magicpantry.data.RecipeItemAndIngredient
 import com.ala158.magicpantry.data.RecipeWithRecipeItems
 import com.ala158.magicpantry.dialogs.ChangeRecipeIngredientAmountDialog
 import com.ala158.magicpantry.ui.ingredientlistadd.IngredientListAddActivity
+import com.ala158.magicpantry.ui.receiptscanner.ReceiptScannerActivity
 import com.ala158.magicpantry.viewModel.RecipeItemViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -258,14 +259,7 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
             edit.remove("edit_recipe_image").apply()
 
             // Delete image once we are done with it
-            val deleteFile = File(filePath)
-            if (deleteFile.exists()) {
-                if (deleteFile.delete()) {
-                    println("file Deleted :$filePath")
-                } else {
-                    println("file not Deleted :$filePath")
-                }
-            }
+            ReceiptScannerActivity().deleteImageFromGallery(filePath)
             finish()
         }
 
@@ -327,6 +321,7 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
 
         // if camera selected, check request code
         if (requestCode == requestCamera && resultCode == Activity.RESULT_OK) {
+            ReceiptScannerActivity().deleteImageFromGallery(filePath)
 
             // get image uri, convert it to bitmap and rotate if necessary, then
             // set imageBitmap to display it
@@ -356,9 +351,9 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
             imageUri = Uri.parse(imagePath)
             filePath = imageUri.path!!
         }
-
         // if gallery selected, check request code
         else if (requestCode == requestGallery && resultCode == Activity.RESULT_OK && data != null) {
+            ReceiptScannerActivity().deleteImageFromGallery(filePath)
 
             // get image uri and set imageBitmap to display it
             val myData = data.data
@@ -470,7 +465,13 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
             edit.remove("edit_recipe_title").apply()
         }
         if (sharedPrefFile.contains("edit_recipe_image")) {
-            imageView!!.setImageURI(Uri.parse(sharedPrefFile.getString("edit_recipe_image", "")))
+            val savedUri = sharedPrefFile.getString("edit_recipe_image", "")
+            if (savedUri == "") {
+                imageView!!.setImageResource(R.drawable.magic_pantry_app_logo)
+            }
+            else {
+                imageView!!.setImageURI(Uri.parse(sharedPrefFile.getString("edit_recipe_image", "")))
+            }
         }
         if (sharedPrefFile.contains("edit_recipe_cookTime")) {
             cookTime.text = sharedPrefFile.getString("edit_recipe_cookTime", "")
@@ -492,14 +493,7 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
         edit.remove("edit_recipe_image").apply()
 
         // Delete image once we are done with it
-        val deleteFile = File(filePath)
-        if (deleteFile.exists()) {
-            if (deleteFile.delete()) {
-                println("file Deleted :$filePath")
-            } else {
-                println("file not Deleted :$filePath")
-            }
-        }
+        ReceiptScannerActivity().deleteImageFromGallery(filePath)
     }
 
     companion object {
