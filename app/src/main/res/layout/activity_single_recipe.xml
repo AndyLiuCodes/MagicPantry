@@ -22,22 +22,20 @@
 
             <TextView
                 android:id="@+id/singleRecipeName"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width = "fill_parent"
+                android:layout_height = "wrap_content"
+                android:layout_weight = "1"
                 android:layout_marginTop="10dp"
                 android:gravity="center_vertical"
                 android:text="RecipeName"
                 android:textSize="30sp" />
 
-            <Space
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="18" />
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/edit_recipe_button"
-                android:layout_width="48dp"
-                android:layout_height="48dp"
+                android:layout_width = "48dp"
+                android:layout_weight = "0"
+                android:layout_height = "wrap_content"
                 android:layout_gravity="center_vertical"
                 android:backgroundTint="@color/mp_yellow"
                 app:cornerRadius="8dp"
