@@ -59,7 +59,6 @@ class EditRecipeActivity : AppCompatActivity() {
     private var recipeArray = arrayOf<RecipeWithRecipeItems>()
     private var pos = 0
     private var id = 0L
-    private lateinit var recipeToEdit : RecipeWithRecipeItems
 
     private var newUri = ""
 
@@ -387,7 +386,7 @@ class EditRecipeActivity : AppCompatActivity() {
         recipeViewModel.allRecipes.removeObservers(this)
 
         //delete item from viewModel
-        recipeViewModel.delete(recipeToEdit.recipe)
+        recipeViewModel.delete(recipeViewModel.originalRecipeData!!.recipe)
     }
 
     override fun onResume() {
