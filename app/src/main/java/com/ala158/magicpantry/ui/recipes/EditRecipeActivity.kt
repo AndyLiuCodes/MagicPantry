@@ -13,10 +13,7 @@ import android.os.Bundle
 import android.provider.MediaStore
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.ListView
-import android.widget.TextView
+import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -25,16 +22,23 @@ import androidx.core.net.toUri
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.AddRecipeArrayAdapter
+import com.ala158.magicpantry.arrayAdapter.EditRecipeArrayAdapter
 import com.ala158.magicpantry.data.Recipe
+import com.ala158.magicpantry.data.RecipeItem
 import com.ala158.magicpantry.data.RecipeItemAndIngredient
 import com.ala158.magicpantry.data.RecipeWithRecipeItems
+import com.ala158.magicpantry.dialogs.ChangeRecipeIngredientAmountDialog
 import com.ala158.magicpantry.ui.ingredientlistadd.IngredientListAddActivity
 import com.ala158.magicpantry.viewModel.RecipeItemViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.io.ByteArrayOutputStream
 import java.io.File
 
-class EditRecipeActivity : AppCompatActivity() {
+class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeEditAmountChangeClickListener {
     private lateinit var imageUri: Uri
     private var bitmap: Bitmap? = null
 
@@ -55,6 +59,7 @@ class EditRecipeActivity : AppCompatActivity() {
 
     private lateinit var recipeViewModel : RecipeViewModel
     private lateinit var recipeItemViewModel: RecipeItemViewModel
+    private lateinit var adapter: EditRecipeArrayAdapter
 
     private var recipeArray = arrayOf<RecipeWithRecipeItems>()
     private var pos = 0
@@ -102,7 +107,8 @@ class EditRecipeActivity : AppCompatActivity() {
         description = findViewById(R.id.edit_recipe_edit_recipe_description)
         ingredients = findViewById(R.id.edit_recipe_edit_ingredient_listView)
 
-        ingredients.isScrollContainer = false
+        // https://stackoverflow.com/questions/35634023/how-can-i-have-a-listview-inside-a-nestedscrollview
+        ingredients.isNestedScrollingEnabled = true
 
         addIngredientToRecipeLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == Activity.RESULT_OK && it.data != null) {
@@ -116,17 +122,14 @@ class EditRecipeActivity : AppCompatActivity() {
             }
         }
 
-        val adapter = AddRecipeArrayAdapter(this, ingredientToBeAdded, recipeItemViewModel)
+        adapter = EditRecipeArrayAdapter(this, ingredientToBeAdded, this)
         ingredients.adapter = adapter
-
-        updateListViewSize(ingredientToBeAdded.size, ingredients)
 
         // Update ingredient list when user adds new ingredients
         recipeViewModel.addedRecipeItemAndIngredient.observe(this) {
             adapter.replaceRecipeIngredients(it)
             adapter.notifyDataSetChanged()
 
-            updateListViewSize(it.size, ingredients)
         }
 
         recipeViewModel.allRecipes.observe(this) {
@@ -164,8 +167,6 @@ class EditRecipeActivity : AppCompatActivity() {
                     recipeViewModel.addedRecipeItemAndIngredient.value!!.addAll(recipeViewModel.originalRecipeData!!.recipeItems)
                     adapter.replaceRecipeIngredients(recipeViewModel.addedRecipeItemAndIngredient.value!!)
                     adapter.notifyDataSetChanged()
-
-                    updateListViewSize(recipeViewModel.originalRecipeData!!.recipeItems.size, ingredients)
 
                     isFirstStart = false
                 }
@@ -240,6 +241,7 @@ class EditRecipeActivity : AppCompatActivity() {
         val doneBtn = findViewById<Button>(R.id.edit_recipe_btn_add_recipe)
         doneBtn.setOnClickListener {
             updateDatabase()
+            Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT)
             finish()
         }
     }
@@ -247,6 +249,22 @@ class EditRecipeActivity : AppCompatActivity() {
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         outState.putBoolean(IS_FIRST_START_KEY, isFirstStart)
+    }
+
+    override fun onRecipeEditAmountChangeClick(recipeItem: RecipeItem) {
+        // Open dialog to record amount
+        val onRecipeIngredientAmountChangeDialog = ChangeRecipeIngredientAmountDialog(
+            object : ChangeRecipeIngredientAmountDialog.ChangeRecipeIngredientAmountDialogListener {
+                override fun onChangeRecipeIngredientAmountConfirm(amount: Double) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        recipeViewModel.updateRecipeItemAmount(recipeItem, amount)
+                        withContext(Dispatchers.Main) {
+                            adapter.notifyDataSetChanged()
+                        }
+                    }
+                }
+        })
+        onRecipeIngredientAmountChangeDialog.show(supportFragmentManager, "Change recipe ingredient amount")
     }
 
     // when camera or gallery chosen, update photo
@@ -316,12 +334,6 @@ class EditRecipeActivity : AppCompatActivity() {
 
             bitmap = myBitmap
         }
-    }
-
-    //update size of listView
-    private fun updateListViewSize(size : Int, listView : ListView) {
-        val addRecipeActivity = AddRecipeActivity()
-        return addRecipeActivity.updateListViewSize(size, listView)
     }
 
     //update database
