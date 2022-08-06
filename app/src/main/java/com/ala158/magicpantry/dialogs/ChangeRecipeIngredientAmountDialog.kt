@@ -4,17 +4,17 @@ import android.app.AlertDialog
 import android.app.Dialog
 import android.content.DialogInterface
 import android.os.Bundle
+import android.os.Parcelable
 import android.view.View
 import androidx.fragment.app.DialogFragment
 import com.ala158.magicpantry.R
 import com.google.android.material.textfield.TextInputEditText
 
-class ChangeRecipeIngredientAmountDialog(private val changeRecipeIngredientAmountDialogListener: ChangeRecipeIngredientAmountDialogListener) :
-    DialogFragment(),
-    DialogInterface.OnClickListener {
+class ChangeRecipeIngredientAmountDialog : DialogFragment(), DialogInterface.OnClickListener {
     private lateinit var dialogView: View
+    private var changeRecipeIngredientAmountDialogListener: ChangeRecipeIngredientAmountDialogListener? = null
 
-    interface ChangeRecipeIngredientAmountDialogListener {
+    interface ChangeRecipeIngredientAmountDialogListener : Parcelable {
         fun onChangeRecipeIngredientAmountConfirm(amount: Double)
     }
 
@@ -23,6 +23,14 @@ class ChangeRecipeIngredientAmountDialog(private val changeRecipeIngredientAmoun
             R.layout.dialog_change_recipe_item_amount,
             null
         )
+
+        val arg = arguments
+
+        if (arg != null) {
+            changeRecipeIngredientAmountDialogListener = arg.getParcelable(
+                DIALOG_CHANGE_RECIPE_INGREDIENT_AMOUNT_LISTENER_KEY
+            )
+        }
 
         val dialogBuilder = AlertDialog.Builder(requireActivity())
         dialogBuilder.setView(dialogView)
@@ -44,11 +52,17 @@ class ChangeRecipeIngredientAmountDialog(private val changeRecipeIngredientAmoun
                 dismiss()
             } else {
                 val amount = amountView.text.toString().toDouble()
-                changeRecipeIngredientAmountDialogListener.onChangeRecipeIngredientAmountConfirm(amount)
+                if (changeRecipeIngredientAmountDialogListener != null) {
+                    changeRecipeIngredientAmountDialogListener!!.onChangeRecipeIngredientAmountConfirm(amount)
+                }
             }
 
         } else {
             dismiss()
         }
+    }
+
+    companion object {
+        val DIALOG_CHANGE_RECIPE_INGREDIENT_AMOUNT_LISTENER_KEY = "DIALOG_CHANGE_RECIPE_INGREDIENT_AMOUNT_LISTENER_KEY"
     }
 }

@@ -145,6 +145,7 @@ class SingleRecipeActivity : AppCompatActivity(),
                     cookNowButton.visibility = View.INVISIBLE
                 }
                 recipeIngredientArrayAdapter.replaceRecipeIngredients(recipeWithRecipeItems.recipeItems)
+                makeListViewShowThreeItems(ingredientListView)
                 recipeIngredientArrayAdapter.notifyDataSetChanged()
             }
         }
@@ -163,6 +164,7 @@ class SingleRecipeActivity : AppCompatActivity(),
                         "Missing ${recipeWithIngredients.recipe.numMissingIngredients} ingredients"
                 }
                 recipeIngredientArrayAdapter.replaceRecipeIngredients(it[id2].recipeItems)
+                makeListViewShowThreeItems(ingredientListView)
                 recipeIngredientArrayAdapter.notifyDataSetChanged()
             }
         }
@@ -329,5 +331,20 @@ class SingleRecipeActivity : AppCompatActivity(),
         }
     }
 
+    // https://stackoverflow.com/questions/12212890/disable-scrolling-of-a-listview-contained-within-a-scrollview
+    private fun makeListViewShowThreeItems(listView: ListView) {
+        val cellSize = 200
+        val listViewAdapter = listView.adapter ?: return
 
+        var listViewHeight = cellSize * listViewAdapter.count
+
+        if (listViewAdapter.count > 3) {
+            listViewHeight = cellSize * 3
+        }
+
+        val listViewParams = listView.layoutParams
+        listViewParams.height = listViewHeight
+        listView.layoutParams = listViewParams
+        listView.requestLayout()
+    }
 }

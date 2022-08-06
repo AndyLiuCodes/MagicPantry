@@ -6,16 +6,19 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import com.ala158.magicpantry.R
+import com.ala158.magicpantry.data.RecipeItem
 import com.ala158.magicpantry.data.RecipeItemAndIngredient
-import com.ala158.magicpantry.viewModel.RecipeItemViewModel
 
 class AddRecipeArrayAdapter(
     private val context: Context,
     private var recipeItemAndIngredients: ArrayList<RecipeItemAndIngredient>,
-    private val recipeItemViewModel: RecipeItemViewModel
+    internal val onRecipeEditAmountChangeClickListener: OnRecipeEditAmountChangeClickListener
 ) : BaseAdapter() {
+
+    interface OnRecipeEditAmountChangeClickListener {
+        fun onRecipeEditAmountChangeClick(recipeItem: RecipeItem)
+    }
 
     override fun getCount(): Int {
         return recipeItemAndIngredients.size
@@ -38,17 +41,27 @@ class AddRecipeArrayAdapter(
 
         val recipeItemAndIngredient = recipeItemAndIngredients[position]
 
-        amount.text = recipeItemAndIngredient.recipeItem.recipeAmount.toString()
-        unit.text = recipeItemAndIngredient.recipeItem.recipeUnit
-        name.text = recipeItemAndIngredient.ingredient.name
-
         val deleteBtn = view.findViewById<Button>(R.id.recipe_ingredient_list_item_delete_button)
+
+        amount.setOnClickListener {
+            onRecipeEditAmountChangeClickListener
+                .onRecipeEditAmountChangeClick(recipeItemAndIngredient.recipeItem)
+        }
 
         deleteBtn.setOnClickListener {
             recipeItemAndIngredients.removeAt(position)
             notifyDataSetChanged()
             Toast.makeText(context, "Ingredient deleted", Toast.LENGTH_SHORT).show()
         }
+
+        amount.text = recipeItemAndIngredient.recipeItem.recipeAmount.toBigDecimal().toPlainString()
+
+        var unitString = "x"
+        if (recipeItemAndIngredient.recipeItem.recipeUnit != "unit") {
+            unitString = recipeItemAndIngredient.recipeItem.recipeUnit
+        }
+        unit.text = unitString
+        name.text = recipeItemAndIngredient.ingredient.name
 
         return view
     }

@@ -10,6 +10,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Parcel
 import android.os.Environment
 import android.provider.MediaStore
 import android.text.InputType
@@ -25,13 +26,18 @@ import com.ala158.magicpantry.arrayAdapter.AddRecipeArrayAdapter
 import com.ala158.magicpantry.data.Recipe
 import com.ala158.magicpantry.data.RecipeItem
 import com.ala158.magicpantry.data.RecipeItemAndIngredient
+import com.ala158.magicpantry.dialogs.ChangeRecipeIngredientAmountDialog
 import com.ala158.magicpantry.ui.ingredientlistadd.IngredientListAddActivity
 import com.ala158.magicpantry.viewModel.RecipeItemViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
+import java.io.ByteArrayOutputStream
 import java.io.File
 
-
-class AddRecipeActivity : AppCompatActivity() {
+class AddRecipeActivity : AppCompatActivity(), AddRecipeArrayAdapter.OnRecipeEditAmountChangeClickListener {
     private lateinit var recipeItemViewModel: RecipeItemViewModel
 
     private lateinit var imageUri : Uri
@@ -58,10 +64,10 @@ class AddRecipeActivity : AppCompatActivity() {
     private lateinit var ingredients : ListView
 
     private lateinit var recipeViewModel : RecipeViewModel
-    private var recipeArray = arrayOf<RecipeItem>()
 
     private var ingredientToBeAdded = ArrayList<RecipeItemAndIngredient>()
     private lateinit var addIngredientToRecipeLauncher: ActivityResultLauncher<Intent>
+    private lateinit var adapter: AddRecipeArrayAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -93,10 +99,8 @@ class AddRecipeActivity : AppCompatActivity() {
         description = findViewById(R.id.add_recipe_edit_recipe_description)
         ingredients = findViewById(R.id.add_recipe_ingredient_listView)
 
-        cookTime.inputType = InputType.TYPE_CLASS_NUMBER
-        servings.inputType = InputType.TYPE_CLASS_NUMBER
-
-        ingredients.isScrollContainer = false
+        // https://stackoverflow.com/questions/35634023/how-can-i-have-a-listview-inside-a-nestedscrollview
+        ingredients.isNestedScrollingEnabled = true
 
         addIngredientToRecipeLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
             if (it.resultCode == Activity.RESULT_OK && it.data != null) {
@@ -110,7 +114,7 @@ class AddRecipeActivity : AppCompatActivity() {
             }
         }
 
-        val adapter = AddRecipeArrayAdapter(this, ingredientToBeAdded, recipeItemViewModel)
+        adapter = AddRecipeArrayAdapter(this, ingredientToBeAdded, this)
         ingredients.adapter = adapter
 
         updateListViewSize(ingredientToBeAdded.size, ingredients)
@@ -121,18 +125,6 @@ class AddRecipeActivity : AppCompatActivity() {
             adapter.notifyDataSetChanged()
 
             updateListViewSize(it.size, ingredients)
-        }
-
-        recipeItemViewModel.allRecipeItems.observe(this) {
-            val myList = it.toTypedArray()
-
-            //if not empty
-            if (myList.isNotEmpty()) {
-                recipeArray = myList
-
-                adapter.replaceRecipeIngredients(recipeViewModel.addedRecipeItemAndIngredient.value!!)
-                adapter.notifyDataSetChanged()
-            }
         }
 
         cameraBtn.setOnClickListener {
@@ -239,6 +231,36 @@ class AddRecipeActivity : AppCompatActivity() {
                 finish()
             }
         }
+    }
+
+    override fun onRecipeEditAmountChangeClick(recipeItem: RecipeItem) {
+        // Open dialog to record amount
+        val onRecipeIngredientAmountChangeDialog = ChangeRecipeIngredientAmountDialog()
+        val dialogData = Bundle()
+        dialogData.putParcelable(
+            ChangeRecipeIngredientAmountDialog.DIALOG_CHANGE_RECIPE_INGREDIENT_AMOUNT_LISTENER_KEY,
+            object : ChangeRecipeIngredientAmountDialog.ChangeRecipeIngredientAmountDialogListener {
+                override fun onChangeRecipeIngredientAmountConfirm(amount: Double) {
+                    CoroutineScope(Dispatchers.IO).launch {
+                        recipeViewModel.updateRecipeItemAmount(recipeItem, amount)
+                        withContext(Dispatchers.Main) {
+                            // Refresh the live data to trigger the observer to update
+                            recipeViewModel.addedRecipeItemAndIngredient.value =
+                                recipeViewModel.addedRecipeItemAndIngredient.value
+                        }
+                    }
+                }
+
+                override fun describeContents(): Int {
+                    return 0
+                }
+
+                override fun writeToParcel(dest: Parcel?, flags: Int) {
+                    return
+                }
+            })
+        onRecipeIngredientAmountChangeDialog.arguments = dialogData
+        onRecipeIngredientAmountChangeDialog.show(supportFragmentManager, "Change recipe ingredient amount")
     }
 
     // when camera or gallery chosen, update photo
@@ -387,6 +409,7 @@ class AddRecipeActivity : AppCompatActivity() {
             description.text = sharedPrefFile.getString("recipe_description", "")
             edit.remove("recipe_description").apply()
         }
+
     }
 
     override fun onBackPressed() {

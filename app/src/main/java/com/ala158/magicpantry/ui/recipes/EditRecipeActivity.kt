@@ -10,6 +10,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Parcel
 import android.os.Environment
 import android.provider.MediaStore
 import android.view.Menu
@@ -270,14 +271,13 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
 
         val doneBtn = findViewById<Button>(R.id.edit_recipe_btn_add_recipe)
         doneBtn.setOnClickListener {
-            val msg: String = title.text.toString()
-            if(msg.trim().isEmpty()) {
-                Toast.makeText(applicationContext, "Please enter a title", Toast.LENGTH_SHORT).show()
-            }
-            else {
+            val recipeTitle = title.text.toString()
+            if(recipeTitle.trim().isEmpty()) {
+                Toast.makeText(this, "Please enter in a recipe title", Toast.LENGTH_SHORT).show()
+            } else {
                 updateDatabase()
                 edit.remove("edit_recipe_image").apply()
-                Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT)
+                Toast.makeText(this, "Recipe Saved!", Toast.LENGTH_SHORT).show()
                 finish()
             }
         }
@@ -290,17 +290,31 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
 
     override fun onRecipeEditAmountChangeClick(recipeItem: RecipeItem) {
         // Open dialog to record amount
-        val onRecipeIngredientAmountChangeDialog = ChangeRecipeIngredientAmountDialog(
+        val onRecipeIngredientAmountChangeDialog = ChangeRecipeIngredientAmountDialog()
+        val dialogData = Bundle()
+        dialogData.putParcelable(
+            ChangeRecipeIngredientAmountDialog.DIALOG_CHANGE_RECIPE_INGREDIENT_AMOUNT_LISTENER_KEY,
             object : ChangeRecipeIngredientAmountDialog.ChangeRecipeIngredientAmountDialogListener {
                 override fun onChangeRecipeIngredientAmountConfirm(amount: Double) {
                     CoroutineScope(Dispatchers.IO).launch {
                         recipeViewModel.updateRecipeItemAmount(recipeItem, amount)
                         withContext(Dispatchers.Main) {
-                            adapter.notifyDataSetChanged()
+                            // Refresh the live data to trigger the observer to update
+                            recipeViewModel.addedRecipeItemAndIngredient.value =
+                                recipeViewModel.addedRecipeItemAndIngredient.value
                         }
                     }
                 }
-        })
+
+                override fun describeContents(): Int {
+                    return 0
+                }
+
+                override fun writeToParcel(dest: Parcel?, flags: Int) {
+                    return
+                }
+            })
+        onRecipeIngredientAmountChangeDialog.arguments = dialogData
         onRecipeIngredientAmountChangeDialog.show(supportFragmentManager, "Change recipe ingredient amount")
     }
 

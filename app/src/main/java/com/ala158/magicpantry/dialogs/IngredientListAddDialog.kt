@@ -74,8 +74,6 @@ class IngredientListAddDialog : DialogFragment(), DialogInterface.OnClickListene
             }
 
             ingredientListAddDialogListener.onIngredientListAddDialogClick(newIngredientName, newIngredientUnit)
-            Toast.makeText(requireActivity(), "Ingredient added!", Toast.LENGTH_SHORT).show()
-
         } else {
             dismiss()
         }

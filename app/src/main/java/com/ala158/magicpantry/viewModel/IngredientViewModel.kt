@@ -29,6 +29,10 @@ class IngredientViewModel(private val repository: IngredientRepository) : ViewMo
         return repository.getIngredientsWithRecipeItemsById(keys)
     }
 
+    suspend fun getIngredientByNameAndUnit(name: String, unit: String) : Ingredient? {
+        return repository.getIngredientByNameAndUnit(name, unit)
+    }
+
     fun insert(ingredient: Ingredient) {
         repository.insertIngredient(ingredient)
     }
