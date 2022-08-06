@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.*
@@ -43,7 +44,7 @@ class EditRecipeActivity : AppCompatActivity() {
     private lateinit var sharedPrefFile : SharedPreferences
     private lateinit var edit : SharedPreferences.Editor
 
-    private var imageToScan: File? = null
+    private var recipeImage: File? = null
     private var imageView: ImageView? = null
 
     private lateinit var title : TextView
@@ -191,6 +192,7 @@ class EditRecipeActivity : AppCompatActivity() {
                             recipeName = title.text.toString()
                         }
                         values.put(MediaStore.Images.Media.TITLE, recipeName)
+                        values.put(MediaStore.Images.Media.DISPLAY_NAME, recipeName)
                         values.put(
                             MediaStore.Images.Media.DESCRIPTION,
                             "Photo taken on " + System.currentTimeMillis()
@@ -289,8 +291,8 @@ class EditRecipeActivity : AppCompatActivity() {
                 imagePath = cursor.getString(columnIndex)
             }
 
-            imageToScan = File(imagePath)
-            val myBitmap = Util.getBitmap(this, imageUri, imageToScan!!)
+            recipeImage = File(imagePath)
+            val myBitmap = Util.getBitmap(this, imageUri, recipeImage!!)
 
             imageView!!.setImageBitmap(myBitmap)
 
@@ -321,8 +323,8 @@ class EditRecipeActivity : AppCompatActivity() {
                 imagePath = cursor.getString(columnIndex)
             }
 
-            imageToScan = File(imagePath)
-            val myBitmap = Util.getBitmap(this, myData, imageToScan!!)
+            recipeImage = File(imagePath)
+            val myBitmap = Util.getBitmap(this, myData, recipeImage!!)
 
             imageView!!.setImageBitmap(myBitmap)
 
@@ -442,8 +444,19 @@ class EditRecipeActivity : AppCompatActivity() {
     override fun onDestroy() {
         super.onDestroy()
         // Delete image once we are done with it
-        if (imageToScan != null && imageToScan!!.exists())
-            imageToScan!!.delete()
+        if (recipeImage != null && recipeImage!!.exists()) {
+            Log.d("deleting", "deleted")
+            recipeImage!!.delete()
+        }
+    }
+
+    override fun onBackPressed() {
+        super.onBackPressed()
+        // Delete image once we are done with it
+        if (recipeImage != null && recipeImage!!.exists()) {
+            Log.d("deleting", "deleted")
+            recipeImage!!.delete()
+        }
     }
 
     companion object {

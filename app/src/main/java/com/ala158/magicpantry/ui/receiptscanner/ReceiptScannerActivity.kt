@@ -102,15 +102,8 @@ class ReceiptScannerActivity : AppCompatActivity() {
                         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
                         isCameraChosen = true
                         startActivityForResult(cameraIntent, requestCamera)
-                    } else {
-                        // if user used camera first, then selected gallery, delete the picture taken by camera
-                        if (imageToScan != null && imageToScan!!.exists()) {
-                            // Delete only if the user selected the camera option
-                            if (isCameraChosen) {
-                                imageToScan!!.delete()
-                            }
-                        }
-
+                    }
+                    else {
                         // open photo gallery to choose an image
                         val galleryIntent =
                             Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
@@ -140,14 +133,12 @@ class ReceiptScannerActivity : AppCompatActivity() {
             recognizer.process(image)
                 .addOnSuccessListener { visionText ->
                     // Task completed successfully
-                    // ...
                     textView.text = "Success"
                     success(visionText)
 //                  parseResults(visionText)
                 }
                 .addOnFailureListener {
                     // Task failed with an exception
-                    // ...
                     textView.text = "Failed to recognize text"
                 }
         } else if (imageView == null || bitmap == null) {
