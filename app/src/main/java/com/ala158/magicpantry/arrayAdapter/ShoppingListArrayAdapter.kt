@@ -47,7 +47,7 @@ class ShoppingListArrayAdapter(
 
         val shoppingListItem = shoppingListItemAndIngredient[position].shoppingListItem
         val ingredient = shoppingListItemAndIngredient[position].ingredient
-        amountTextView.text = shoppingListItem.itemAmount.toString()
+        amountTextView.text = shoppingListItem.itemAmount.toBigDecimal().toString()
         unitTextView.text = ingredient.unit
         nameTextView.text = ingredient.name
 

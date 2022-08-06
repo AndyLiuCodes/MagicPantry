@@ -11,8 +11,7 @@
         android:layout_height="match_parent"
         android:orientation="vertical"
         android:padding="15dp"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintBottom_toTopOf="@+id/edit_recipe_buttons">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
             android:id="@+id/header_edit_recipe"
@@ -29,7 +28,7 @@
             android:textStyle="bold"
             tools:ignore="RtlSymmetry" />
 
-        <ScrollView
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
@@ -200,48 +199,47 @@
                 <ListView
                     android:id="@+id/edit_recipe_edit_ingredient_listView"
                     android:layout_width="match_parent"
+                    android:layout_height="300dp" />
+
+                <LinearLayout
+                    android:id="@+id/edit_recipe_buttons"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:scrollbars="none"
-                    android:layout_marginBottom="80dp" />
+                    android:orientation="horizontal"
+                    android:padding="15dp">
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/edit_recipe_btn_cancel_recipe"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:text="Cancel"
+                        android:layout_weight="12"
+                        android:textSize="16sp"
+                        android:textColor="@color/black"
+                        app:cornerRadius="8dp"
+                        android:backgroundTint="@color/mp_grey" />
+
+                    <Space
+                        android:layout_width="0dp"
+                        android:layout_height="1dp"
+                        android:layout_weight="1" />
+
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/edit_recipe_btn_add_recipe"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="12"
+                        android:backgroundTint="@color/mp_blue"
+                        android:text="Finish"
+                        android:textSize="16sp"
+                        app:cornerRadius="8dp" />
+                </LinearLayout>
+
             </LinearLayout>
-        </ScrollView>
-    </LinearLayout>
 
-    <LinearLayout
-        android:id="@+id/edit_recipe_buttons"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:orientation="horizontal"
-        android:padding="15dp"
-        app:layout_constraintBottom_toBottomOf="parent">
 
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/edit_recipe_btn_cancel_recipe"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="Cancel"
-            android:layout_weight="12"
-            android:textSize="16sp"
-            android:textColor="@color/black"
-            app:cornerRadius="8dp"
-            android:backgroundTint="@color/mp_grey"
-            android:layout_gravity="center|bottom"/>
+        </androidx.core.widget.NestedScrollView>
 
-        <Space
-            android:layout_width="0dp"
-            android:layout_height="1dp"
-            android:layout_weight="1" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/edit_recipe_btn_add_recipe"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="12"
-            android:backgroundTint="@color/mp_blue"
-            android:text="Finish"
-            android:textSize="16sp"
-            app:cornerRadius="8dp"
-            android:layout_gravity="center|bottom" />
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

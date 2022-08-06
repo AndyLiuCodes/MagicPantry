@@ -49,6 +49,14 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
         }
     }
 
+    suspend fun updateRecipeItemAmount(recipeItem: RecipeItem, amount: Double) {
+        for (recipeItemAndIngredient in addedRecipeItemAndIngredient.value!!) {
+            if (recipeItemAndIngredient.recipeItem.recipeItemId == recipeItem.recipeItemId) {
+                recipeItemAndIngredient.recipeItem.recipeAmount = amount
+            }
+        }
+    }
+
     fun update(recipe: Recipe) {
         repository.updateRecipe(recipe)
     }

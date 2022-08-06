@@ -31,7 +31,12 @@ class RecipeIngredientArrayAdapter(private val context: Context, private var rec
         val ingredientName: TextView = view.findViewById<TextView>(R.id.recipe_ingredient_name)
         val alertSymbol: ImageView = view.findViewById<ImageView>(R.id.recipeIngredient_low_stock_icon)
         val ingredient = recipeIngredients[position]
-        ingredientAmount.text = "${ingredient.recipeItem.recipeAmount} ${ingredient.recipeItem.recipeUnit}"
+
+        var unitString = "x"
+        if (ingredient.recipeItem.recipeUnit != "unit") {
+            unitString = ingredient.recipeItem.recipeUnit
+        }
+        ingredientAmount.text = "${ingredient.recipeItem.recipeAmount.toBigDecimal()} $unitString"
         ingredientName.text = ingredient.ingredient.name
 
         val convertedUnitAmount = Util.unitConversion(
