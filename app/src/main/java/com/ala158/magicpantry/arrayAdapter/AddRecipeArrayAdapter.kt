@@ -10,7 +10,6 @@ import android.widget.Toast
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.data.RecipeItemAndIngredient
 import com.ala158.magicpantry.viewModel.RecipeItemViewModel
-import com.ala158.magicpantry.viewModel.RecipeViewModel
 
 class AddRecipeArrayAdapter(
     private val context: Context,
@@ -37,18 +36,20 @@ class AddRecipeArrayAdapter(
         val unit = view.findViewById<TextView>(R.id.recipe_ingredient_list_item_unit)
         val name = view.findViewById<TextView>(R.id.recipe_ingredient_list_item_name)
 
-        val deleteBtn = view.findViewById<Button>(R.id.recipe_ingredient_list_item_delete_button)
-
-        deleteBtn.setOnClickListener {
-            recipeItemViewModel.delete(recipeItemAndIngredients[position].recipeItem)
-            Toast.makeText(context, "Ingredient deleted", Toast.LENGTH_SHORT).show()
-        }
-
         val recipeItemAndIngredient = recipeItemAndIngredients[position]
 
         amount.text = recipeItemAndIngredient.recipeItem.recipeAmount.toString()
         unit.text = recipeItemAndIngredient.recipeItem.recipeUnit
         name.text = recipeItemAndIngredient.ingredient.name
+
+        val deleteBtn = view.findViewById<Button>(R.id.recipe_ingredient_list_item_delete_button)
+
+        deleteBtn.setOnClickListener {
+            recipeItemAndIngredients.removeAt(position)
+            recipeItemViewModel.delete(recipeItemAndIngredient.recipeItem)
+            notifyDataSetChanged()
+            Toast.makeText(context, "Ingredient deleted", Toast.LENGTH_SHORT).show()
+        }
 
         return view
     }

@@ -116,7 +116,7 @@ class EditRecipeActivity : AppCompatActivity() {
             }
         }
 
-        val adapter = AddRecipeArrayAdapter(this, ingredientToBeAdded)
+        val adapter = AddRecipeArrayAdapter(this, ingredientToBeAdded, recipeItemViewModel)
         ingredients.adapter = adapter
 
         updateListViewSize(ingredientToBeAdded.size, ingredients)
