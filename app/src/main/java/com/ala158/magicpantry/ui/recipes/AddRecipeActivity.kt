@@ -358,6 +358,7 @@ class AddRecipeActivity : AppCompatActivity(), AddRecipeArrayAdapter.OnRecipeEdi
             description.text = sharedPrefFile.getString("recipe_description", "")
             edit.remove("recipe_description").apply()
         }
+
     }
 
     override fun onDestroy() {

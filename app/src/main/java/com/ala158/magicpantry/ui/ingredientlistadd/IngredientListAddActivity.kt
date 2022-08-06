@@ -21,6 +21,10 @@ import com.ala158.magicpantry.viewModel.IngredientViewModel
 import com.ala158.magicpantry.viewModel.RecipeItemViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModel
 import com.ala158.magicpantry.viewModel.ShoppingListItemViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class IngredientListAddActivity : AppCompatActivity(), IngredientListAddDialog.IngredientListAddDialogListener {
     private lateinit var header: TextView
@@ -185,6 +189,24 @@ class IngredientListAddActivity : AppCompatActivity(), IngredientListAddDialog.I
             0.0,
             0.0
         )
-        ingredientViewModel.insert(newIngredient)
+
+        val failedToast = Toast.makeText(
+            this,
+            "Unable to add ingredient. Ingredient with the specified name and unit already exists.",
+            Toast.LENGTH_LONG
+        )
+        val successToast = Toast.makeText(this, "Ingredient added!", Toast.LENGTH_SHORT)
+
+        CoroutineScope(Dispatchers.IO).launch {
+            val existingIngredient = ingredientViewModel.getIngredientByNameAndUnit(newIngredientName, newIngredientUnit)
+            if (existingIngredient != null) {
+                withContext(Dispatchers.Main) {
+                    failedToast.show()
+                }
+            } else {
+                ingredientViewModel.insert(newIngredient)
+                successToast.show()
+            }
+        }
     }
 }
