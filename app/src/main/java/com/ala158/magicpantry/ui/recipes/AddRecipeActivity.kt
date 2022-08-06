@@ -22,7 +22,6 @@ import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.AddRecipeArrayAdapter
 import com.ala158.magicpantry.data.Recipe
-import com.ala158.magicpantry.data.RecipeItem
 import com.ala158.magicpantry.data.RecipeItemAndIngredient
 import com.ala158.magicpantry.ui.ingredientlistadd.IngredientListAddActivity
 import com.ala158.magicpantry.viewModel.RecipeItemViewModel
@@ -51,7 +50,6 @@ class AddRecipeActivity : AppCompatActivity() {
     private lateinit var ingredients : ListView
 
     private lateinit var recipeViewModel : RecipeViewModel
-    private var recipeArray = arrayOf<RecipeItem>()
 
     private var ingredientToBeAdded = ArrayList<RecipeItemAndIngredient>()
     private lateinit var addIngredientToRecipeLauncher: ActivityResultLauncher<Intent>
@@ -103,7 +101,7 @@ class AddRecipeActivity : AppCompatActivity() {
             }
         }
 
-        val adapter = AddRecipeArrayAdapter(this, ingredientToBeAdded, recipeItemViewModel)
+        val adapter = AddRecipeArrayAdapter(this, ingredientToBeAdded)
         ingredients.adapter = adapter
 
         updateListViewSize(ingredientToBeAdded.size, ingredients)
@@ -114,18 +112,6 @@ class AddRecipeActivity : AppCompatActivity() {
             adapter.notifyDataSetChanged()
 
             updateListViewSize(it.size, ingredients)
-        }
-
-        recipeItemViewModel.allRecipeItems.observe(this) {
-            val myList = it.toTypedArray()
-
-            //if not empty
-            if (myList.isNotEmpty()) {
-                recipeArray = myList
-
-                adapter.replaceRecipeIngredients(recipeViewModel.addedRecipeItemAndIngredient.value!!)
-                adapter.notifyDataSetChanged()
-            }
         }
 
         cameraBtn.setOnClickListener {
