@@ -43,13 +43,15 @@ class AddRecipeArrayAdapter(
 
         val deleteBtn = view.findViewById<Button>(R.id.recipe_ingredient_list_item_delete_button)
 
-        deleteBtn.setOnClickListener {
-            println("Delete $name")
-        }
-
         amount.setOnClickListener {
             onRecipeEditAmountChangeClickListener
                 .onRecipeEditAmountChangeClick(recipeItemAndIngredient.recipeItem)
+        }
+
+        deleteBtn.setOnClickListener {
+            recipeItemAndIngredients.removeAt(position)
+            notifyDataSetChanged()
+            Toast.makeText(context, "Ingredient deleted", Toast.LENGTH_SHORT).show()
         }
 
         amount.text = recipeItemAndIngredient.recipeItem.recipeAmount.toBigDecimal().toPlainString()

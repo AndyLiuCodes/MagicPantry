@@ -11,6 +11,7 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.Parcel
+import android.os.Environment
 import android.provider.MediaStore
 import android.view.Menu
 import android.view.MenuItem
@@ -22,7 +23,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.net.toUri
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
-import com.ala158.magicpantry.arrayAdapter.AddRecipeArrayAdapter
 import com.ala158.magicpantry.arrayAdapter.EditRecipeArrayAdapter
 import com.ala158.magicpantry.data.Recipe
 import com.ala158.magicpantry.data.RecipeItem
@@ -36,20 +36,24 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.io.ByteArrayOutputStream
 import java.io.File
 
 class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeEditAmountChangeClickListener {
     private lateinit var imageUri: Uri
     private var bitmap: Bitmap? = null
 
+    private val tag = "MagicPantry"
+    private var recipeName = "Recipe"
+    private var filePath = ""
+
     private val requestCamera = 1100
     private val requestGallery = 2200
     private lateinit var cameraBtn: Button
 
     private lateinit var sharedPrefFile : SharedPreferences
+    private lateinit var edit : SharedPreferences.Editor
 
-    private var imageToScan: File? = null
+    private var recipeImage: File? = null
     private var imageView: ImageView? = null
 
     private lateinit var title : TextView
@@ -84,7 +88,7 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
 
         //set up shared pref
         sharedPrefFile = getSharedPreferences("MySharedPrefs", Context.MODE_PRIVATE)
-        val edit = sharedPrefFile.edit()
+        edit = sharedPrefFile.edit()
 
         //start up database
         recipeViewModel = Util.createViewModel(
@@ -144,20 +148,21 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
                 recipeViewModel.originalRecipeData = recipeArray[pos]
                 id = recipeViewModel.originalRecipeData!!.recipe.recipeId
 
+                // perform logic on first start of activity to help handle orientation change replacing data
+                //set textViews and imageView
+                newUri = recipeArray[pos].recipe.imageUri
+                if (newUri == "") {
+                    imageView!!.setImageResource(R.drawable.magic_pantry_app_logo)
+                }
+                else {
+                    imageView!!.setImageURI(newUri.toUri())
+                }
+                edit.putString("edit_recipe_image", newUri).apply()
+
                 if (isFirstStart) {
                     // Get all the ids of the existing original ingredients
                     for (recipeIngredient in recipeViewModel.originalRecipeData!!.recipeItems) {
                         recipeViewModel.originalRecipeIngredientIdSet.add(recipeIngredient.ingredient.ingredientId)
-                    }
-
-                    newUri = recipeArray[pos].recipe.imageUri
-                    // perform logic on first start of activity to help handle orientation change replacing data
-                    //set textViews and imageView
-                    if (newUri == "") {
-                        imageView!!.setImageResource(R.drawable.magic_pantry_app_logo)
-                    }
-                    else {
-                        imageView!!.setImageURI(newUri.toUri())
                     }
 
                     title.text = recipeArray[pos].recipe.title
@@ -184,11 +189,25 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
                 .setItems(choices)
                 { _: DialogInterface, myId: Int ->
                     if (myId == 0) {
+                        // store image once it is taken. includes a file name and date/time taken
                         val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
+
+                        if (title.text.toString().trim().isNotEmpty()) {
+                            recipeName = title.text.toString()
+                        }
+
+                        val file =
+                            File(Environment.getExternalStorageDirectory().toString() + "/$tag/")
+                        if (!file.exists()) {
+                            file.mkdirs()
+                        }
 
                         // store image once it is taken. includes a file name and date/time taken
                         val values = ContentValues()
-                        values.put(MediaStore.Images.Media.TITLE, "MyPicture")
+                        values.put(MediaStore.Images.Media.TITLE, recipeName)
+                        values.put(MediaStore.Images.Media.DATA, recipeName)
+                        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+                        values.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/$tag/")
                         values.put(
                             MediaStore.Images.Media.DESCRIPTION,
                             "Photo taken on " + System.currentTimeMillis()
@@ -236,6 +255,17 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
 
         val cancelBtn = findViewById<Button>(R.id.edit_recipe_btn_cancel_recipe)
         cancelBtn.setOnClickListener {
+            edit.remove("edit_recipe_image").apply()
+
+            // Delete image once we are done with it
+            val deleteFile = File(filePath)
+            if (deleteFile.exists()) {
+                if (deleteFile.delete()) {
+                    println("file Deleted :$filePath")
+                } else {
+                    println("file not Deleted :$filePath")
+                }
+            }
             finish()
         }
 
@@ -243,9 +273,10 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
         doneBtn.setOnClickListener {
             val recipeTitle = title.text.toString()
             if(recipeTitle.trim().isEmpty()) {
-                Toast.makeText(applicationContext, "Please enter a title", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please enter in a recipe title", Toast.LENGTH_SHORT).show()
             } else {
                 updateDatabase()
+                edit.remove("edit_recipe_image").apply()
                 Toast.makeText(this, "Recipe Saved!", Toast.LENGTH_SHORT).show()
                 finish()
             }
@@ -315,12 +346,15 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
                 imagePath = cursor.getString(columnIndex)
             }
 
-            imageToScan = File(imagePath)
-            val myBitmap = Util.getBitmap(this, imageUri, imageToScan!!)
+            recipeImage = File(imagePath)
+            val myBitmap = Util.getBitmap(this, imageUri, recipeImage!!)
 
             imageView!!.setImageBitmap(myBitmap)
 
             bitmap = myBitmap
+
+            imageUri = Uri.parse(imagePath)
+            filePath = imageUri.path!!
         }
 
         // if gallery selected, check request code
@@ -347,19 +381,32 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
                 imagePath = cursor.getString(columnIndex)
             }
 
-            imageToScan = File(imagePath)
-            val myBitmap = Util.getBitmap(this, myData, imageToScan!!)
+            recipeImage = File(imagePath)
+            val myBitmap = Util.getBitmap(this, myData, recipeImage!!)
 
             imageView!!.setImageBitmap(myBitmap)
 
             bitmap = myBitmap
+
+            imageUri = Uri.parse(imagePath)
+            filePath = imageUri.path!!
         }
+        val recipeImageString = if (bitmap != null) {
+            imageUri.path.toString()
+        }
+        else {
+            ""
+        }
+        edit.putString("edit_recipe_image", recipeImageString).apply()
     }
 
     //update database
     private fun updateDatabase() {
-        if (bitmap != null) {
-            newUri = getImageUri(this, bitmap!!).toString()
+        newUri = if (sharedPrefFile.contains("edit_recipe_image")) {
+            sharedPrefFile.getString("edit_recipe_image", "").toString()
+        }
+        else {
+            ""
         }
         val newServings = if (servings.text.toString() == "") {
             0
@@ -375,15 +422,6 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
         }
         val updatedRecipe = Recipe(id, title.text.toString(), newUri, newServings, newCookTime, description.text.toString(), 0)
         recipeViewModel.updateRecipeWithRecipeItems(updatedRecipe, recipeItemViewModel)
-    }
-
-    //convert bitmap to uri
-    private fun getImageUri(inContext: Context, inImage: Bitmap): Uri? {
-        val bytes = ByteArrayOutputStream()
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
-        val path =
-            MediaStore.Images.Media.insertImage(inContext.contentResolver, inImage, "Title", null)
-        return Uri.parse(path)
     }
 
     //add delete button
@@ -418,16 +456,21 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
         recipeViewModel.allRecipes.removeObservers(this)
 
         //delete item from viewModel
+        for (i in 0 until recipeViewModel.originalRecipeData!!.recipeItems.size) {
+            recipeItemViewModel.delete(recipeViewModel.originalRecipeData!!.recipeItems[i].recipeItem)
+        }
         recipeViewModel.delete(recipeViewModel.originalRecipeData!!.recipe)
     }
 
     override fun onResume() {
         super.onResume()
-        val edit = sharedPrefFile.edit()
 
         if (sharedPrefFile.contains("edit_recipe_title")) {
             title.text = sharedPrefFile.getString("edit_recipe_title", "")
             edit.remove("edit_recipe_title").apply()
+        }
+        if (sharedPrefFile.contains("edit_recipe_image")) {
+            imageView!!.setImageURI(Uri.parse(sharedPrefFile.getString("edit_recipe_image", "")))
         }
         if (sharedPrefFile.contains("edit_recipe_cookTime")) {
             cookTime.text = sharedPrefFile.getString("edit_recipe_cookTime", "")
@@ -443,14 +486,23 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
+    override fun onBackPressed() {
+        super.onBackPressed()
+
+        edit.remove("edit_recipe_image").apply()
+
         // Delete image once we are done with it
-        if (imageToScan != null && imageToScan!!.exists())
-            imageToScan!!.delete()
+        val deleteFile = File(filePath)
+        if (deleteFile.exists()) {
+            if (deleteFile.delete()) {
+                println("file Deleted :$filePath")
+            } else {
+                println("file not Deleted :$filePath")
+            }
+        }
     }
 
     companion object {
-        val IS_FIRST_START_KEY = "IS_FIRST_START_KEY"
+        const val IS_FIRST_START_KEY = "IS_FIRST_START_KEY"
     }
 }
