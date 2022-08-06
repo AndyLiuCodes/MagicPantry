@@ -10,6 +10,7 @@ import android.graphics.*
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
 import android.text.method.ScrollingMovementMethod
 import android.widget.Button
@@ -34,6 +35,9 @@ import java.io.File
 class ReceiptScannerActivity : AppCompatActivity() {
     private lateinit var imageUri: Uri
     private var bitmap: Bitmap? = null
+
+    private val tag = "MagicPantry"
+    private var filePath = ""
 
     private val requestCamera = 1888
     private val requestGallery = 2222
@@ -87,9 +91,18 @@ class ReceiptScannerActivity : AppCompatActivity() {
                     if (myId == 0) {
                         val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
+                        val file =
+                            File(Environment.getExternalStorageDirectory().toString() + "/$tag/")
+                        if (!file.exists()) {
+                            file.mkdirs()
+                        }
+
                         // store image once it is taken. includes a file name and date/time taken
                         val values = ContentValues()
-                        values.put(MediaStore.Images.Media.TITLE, "Grocery Receipt")
+                        values.put(MediaStore.Images.Media.TITLE, "Receipt")
+                        values.put(MediaStore.Images.Media.DATA, "Receipt")
+                        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+                        values.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/$tag/")
                         values.put(
                             MediaStore.Images.Media.DESCRIPTION,
                             "Photo taken on " + System.currentTimeMillis()
@@ -391,7 +404,8 @@ class ReceiptScannerActivity : AppCompatActivity() {
 
             bitmap = myBitmap
 
-            receiptScannerViewModel.userImage.value = bitmap
+            imageUri = Uri.parse(imagePath)
+            filePath = imageUri.path!!
         }
 
         // if gallery selected, check request code
@@ -424,17 +438,22 @@ class ReceiptScannerActivity : AppCompatActivity() {
             imageView!!.setImageBitmap(myBitmap)
 
             bitmap = myBitmap
-            receiptScannerViewModel.userImage.value = bitmap
+
+            imageUri = Uri.parse(imagePath)
+            filePath = imageUri.path!!
         }
     }
 
     override fun onDestroy() {
         super.onDestroy()
+
         // Delete image once we are done with it
-        if (imageToScan != null && imageToScan!!.exists()) {
-            // Delete only if the user selected the camera option
-            if (isCameraChosen) {
-                imageToScan!!.delete()
+        val deleteFile = File(filePath)
+        if (deleteFile.exists()) {
+            if (deleteFile.delete()) {
+                println("file Deleted :$filePath")
+            } else {
+                println("file not Deleted :$filePath")
             }
         }
     }

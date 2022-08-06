@@ -13,7 +13,6 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.text.InputType
-import android.util.Log
 import android.view.ViewGroup
 import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
@@ -154,7 +153,6 @@ class AddRecipeActivity : AppCompatActivity() {
 
                         val file =
                             File(Environment.getExternalStorageDirectory().toString() + "/$tag/")
-
                         if (!file.exists()) {
                             file.mkdirs()
                         }
@@ -172,6 +170,8 @@ class AddRecipeActivity : AppCompatActivity() {
                         imageUri = this.contentResolver.insert(
                             MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values
                         )!!
+
+                        filePath = imageUri.path!!
 
                         // open camera and add image to photo gallery if one is taken
                         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
@@ -389,24 +389,10 @@ class AddRecipeActivity : AppCompatActivity() {
         }
     }
 
-    override fun onSaveInstanceState(savedInstanceState: Bundle) {
-        super.onSaveInstanceState(savedInstanceState)
-        val image = savedInstanceState.getParcelable<Bitmap>("BitmapImage")
-        this.bitmap = image
-        imageView!!.setImageBitmap(this.bitmap)
-    }
-
-    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
-        savedInstanceState.putParcelable("BitmapImage", bitmap)
-        super.onRestoreInstanceState(savedInstanceState)
-    }
-
     override fun onBackPressed() {
         super.onBackPressed()
 
         edit.remove("recipe_image").apply()
-
-        Log.d("back", "deleted")
 
         // Delete image once we are done with it
         val deleteFile = File(filePath)

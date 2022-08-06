@@ -10,8 +10,8 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Environment
 import android.provider.MediaStore
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.*
@@ -29,13 +29,15 @@ import com.ala158.magicpantry.data.RecipeWithRecipeItems
 import com.ala158.magicpantry.ui.ingredientlistadd.IngredientListAddActivity
 import com.ala158.magicpantry.viewModel.RecipeItemViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModel
-import java.io.ByteArrayOutputStream
 import java.io.File
 
 class EditRecipeActivity : AppCompatActivity() {
     private lateinit var imageUri: Uri
     private var bitmap: Bitmap? = null
+
+    private val tag = "MagicPantry"
     private var recipeName = "Recipe"
+    private var filePath = ""
 
     private val requestCamera = 1100
     private val requestGallery = 2200
@@ -149,7 +151,7 @@ class EditRecipeActivity : AppCompatActivity() {
                 else {
                     imageView!!.setImageURI(newUri.toUri())
                 }
-                edit.putString("recipe_image", newUri).apply()
+                edit.putString("edit_recipe_image", newUri).apply()
 
                 if (isFirstStart) {
                     // Get all the ids of the existing original ingredients
@@ -183,16 +185,25 @@ class EditRecipeActivity : AppCompatActivity() {
                 .setItems(choices)
                 { _: DialogInterface, myId: Int ->
                     if (myId == 0) {
-                        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
-
                         // store image once it is taken. includes a file name and date/time taken
-                        val values = ContentValues()
+                        val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
                         if (title.text.toString().trim().isNotEmpty()) {
                             recipeName = title.text.toString()
                         }
+
+                        val file =
+                            File(Environment.getExternalStorageDirectory().toString() + "/$tag/")
+                        if (!file.exists()) {
+                            file.mkdirs()
+                        }
+
+                        // store image once it is taken. includes a file name and date/time taken
+                        val values = ContentValues()
                         values.put(MediaStore.Images.Media.TITLE, recipeName)
-                        values.put(MediaStore.Images.Media.DISPLAY_NAME, recipeName)
+                        values.put(MediaStore.Images.Media.DATA, recipeName)
+                        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+                        values.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/$tag/")
                         values.put(
                             MediaStore.Images.Media.DESCRIPTION,
                             "Photo taken on " + System.currentTimeMillis()
@@ -241,6 +252,16 @@ class EditRecipeActivity : AppCompatActivity() {
         val cancelBtn = findViewById<Button>(R.id.edit_recipe_btn_cancel_recipe)
         cancelBtn.setOnClickListener {
             edit.remove("edit_recipe_image").apply()
+
+            // Delete image once we are done with it
+            val deleteFile = File(filePath)
+            if (deleteFile.exists()) {
+                if (deleteFile.delete()) {
+                    println("file Deleted :$filePath")
+                } else {
+                    println("file not Deleted :$filePath")
+                }
+            }
             finish()
         }
 
@@ -297,6 +318,9 @@ class EditRecipeActivity : AppCompatActivity() {
             imageView!!.setImageBitmap(myBitmap)
 
             bitmap = myBitmap
+
+            imageUri = Uri.parse(imagePath)
+            filePath = imageUri.path!!
         }
 
         // if gallery selected, check request code
@@ -329,10 +353,12 @@ class EditRecipeActivity : AppCompatActivity() {
             imageView!!.setImageBitmap(myBitmap)
 
             bitmap = myBitmap
-        }
 
+            imageUri = Uri.parse(imagePath)
+            filePath = imageUri.path!!
+        }
         val recipeImageString = if (bitmap != null) {
-            getImageUri(this, bitmap!!).toString()
+            imageUri.path.toString()
         }
         else {
             ""
@@ -368,15 +394,6 @@ class EditRecipeActivity : AppCompatActivity() {
         }
         val updatedRecipe = Recipe(id, title.text.toString(), newUri, newServings, newCookTime, description.text.toString(), 0)
         recipeViewModel.updateRecipeWithRecipeItems(updatedRecipe, recipeItemViewModel)
-    }
-
-    //convert bitmap to uri
-    private fun getImageUri(inContext: Context, inImage: Bitmap): Uri? {
-        val bytes = ByteArrayOutputStream()
-        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes)
-        val path =
-            MediaStore.Images.Media.insertImage(inContext.contentResolver, inImage, "Title", null)
-        return Uri.parse(path)
     }
 
     //add delete button
@@ -441,21 +458,19 @@ class EditRecipeActivity : AppCompatActivity() {
         }
     }
 
-    override fun onDestroy() {
-        super.onDestroy()
-        // Delete image once we are done with it
-        if (recipeImage != null && recipeImage!!.exists()) {
-            Log.d("deleting", "deleted")
-            recipeImage!!.delete()
-        }
-    }
-
     override fun onBackPressed() {
         super.onBackPressed()
+
+        edit.remove("edit_recipe_image").apply()
+
         // Delete image once we are done with it
-        if (recipeImage != null && recipeImage!!.exists()) {
-            Log.d("deleting", "deleted")
-            recipeImage!!.delete()
+        val deleteFile = File(filePath)
+        if (deleteFile.exists()) {
+            if (deleteFile.delete()) {
+                println("file Deleted :$filePath")
+            } else {
+                println("file not Deleted :$filePath")
+            }
         }
     }
 
