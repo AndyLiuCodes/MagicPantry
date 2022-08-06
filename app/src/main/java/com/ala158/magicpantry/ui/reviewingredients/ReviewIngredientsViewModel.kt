@@ -12,8 +12,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 class ReviewIngredientsViewModel(private val repository: IngredientRepository) : ViewModel() {
-    private val _ingredientList = MutableLiveData<List<Ingredient>>()
-    val ingredientList: LiveData<List<Ingredient>> = _ingredientList
+    private val _ingredientList: MutableLiveData<List<Ingredient>> = MutableLiveData()
+    var ingredientList: MutableLiveData<List<Ingredient>> = _ingredientList
 
     val ingredient = MutableLiveData<IngredientEntry>()
 
