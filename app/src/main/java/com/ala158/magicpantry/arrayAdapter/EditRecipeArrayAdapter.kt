@@ -52,7 +52,7 @@ class EditRecipeArrayAdapter(
                 .onRecipeEditAmountChangeClick(recipeItemAndIngredient.recipeItem)
         }
 
-        amount.text = recipeItemAndIngredient.recipeItem.recipeAmount.toBigDecimal().toString()
+        amount.text = recipeItemAndIngredient.recipeItem.recipeAmount.toBigDecimal().toPlainString()
         var unitString = "x"
         if (recipeItemAndIngredient.recipeItem.recipeUnit != "unit") {
             unitString = recipeItemAndIngredient.recipeItem.recipeUnit

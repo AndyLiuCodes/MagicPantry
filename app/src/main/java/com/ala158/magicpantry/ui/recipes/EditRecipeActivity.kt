@@ -10,6 +10,7 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Parcel
 import android.provider.MediaStore
 import android.view.Menu
 import android.view.MenuItem
@@ -241,7 +242,7 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
         val doneBtn = findViewById<Button>(R.id.edit_recipe_btn_add_recipe)
         doneBtn.setOnClickListener {
             updateDatabase()
-            Toast.makeText(this, "Saved!", Toast.LENGTH_SHORT)
+            Toast.makeText(this, "Recipe Saved!", Toast.LENGTH_SHORT).show()
             finish()
         }
     }
@@ -253,7 +254,10 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
 
     override fun onRecipeEditAmountChangeClick(recipeItem: RecipeItem) {
         // Open dialog to record amount
-        val onRecipeIngredientAmountChangeDialog = ChangeRecipeIngredientAmountDialog(
+        val onRecipeIngredientAmountChangeDialog = ChangeRecipeIngredientAmountDialog()
+        val dialogData = Bundle()
+        dialogData.putParcelable(
+            ChangeRecipeIngredientAmountDialog.DIALOG_CHANGE_RECIPE_INGREDIENT_AMOUNT_LISTENER_KEY,
             object : ChangeRecipeIngredientAmountDialog.ChangeRecipeIngredientAmountDialogListener {
                 override fun onChangeRecipeIngredientAmountConfirm(amount: Double) {
                     CoroutineScope(Dispatchers.IO).launch {
@@ -263,7 +267,16 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
                         }
                     }
                 }
-        })
+
+                override fun describeContents(): Int {
+                    return 0
+                }
+
+                override fun writeToParcel(dest: Parcel?, flags: Int) {
+                    return
+                }
+            })
+        onRecipeIngredientAmountChangeDialog.arguments = dialogData
         onRecipeIngredientAmountChangeDialog.show(supportFragmentManager, "Change recipe ingredient amount")
     }
 
