@@ -6,12 +6,16 @@ import android.view.ViewGroup
 import android.widget.BaseAdapter
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.data.RecipeItemAndIngredient
+import com.ala158.magicpantry.viewModel.RecipeItemViewModel
+import com.ala158.magicpantry.viewModel.RecipeViewModel
 
 class AddRecipeArrayAdapter(
     private val context: Context,
-    private var recipeItemAndIngredients: ArrayList<RecipeItemAndIngredient>
+    private var recipeItemAndIngredients: ArrayList<RecipeItemAndIngredient>,
+    private val recipeItemViewModel: RecipeItemViewModel
 ) : BaseAdapter() {
 
     override fun getCount(): Int {
@@ -36,7 +40,8 @@ class AddRecipeArrayAdapter(
         val deleteBtn = view.findViewById<Button>(R.id.recipe_ingredient_list_item_delete_button)
 
         deleteBtn.setOnClickListener {
-            println("Delete $name")
+            recipeItemViewModel.delete(recipeItemAndIngredients[position].recipeItem)
+            Toast.makeText(context, "Ingredient deleted", Toast.LENGTH_SHORT).show()
         }
 
         val recipeItemAndIngredient = recipeItemAndIngredients[position]
