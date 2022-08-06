@@ -49,8 +49,7 @@
         android:layout_centerInParent="true"
         android:text="Bread"
         android:textColor="@color/black"
-        android:textSize="14sp"
-        android:textStyle="bold" />
+        android:textSize="14sp" />
 
     <com.google.android.material.button.MaterialButton
         android:id="@+id/recipe_ingredient_list_item_delete_button"

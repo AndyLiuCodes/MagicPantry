@@ -12,6 +12,7 @@ import com.ala158.magicpantry.data.ShoppingListItem
 import com.ala158.magicpantry.data.ShoppingListItemAndIngredient
 import com.ala158.magicpantry.repository.ShoppingListItemRepository
 import com.google.android.material.button.MaterialButton
+import java.text.DecimalFormat
 
 
 class ShoppingListArrayAdapter(
@@ -44,10 +45,11 @@ class ShoppingListArrayAdapter(
         val nameTextView = view.findViewById<TextView>(R.id.shopping_list_item_name)
         val deleteButton = view.findViewById<MaterialButton>(R.id.shopping_list_item_delete_button)
         val isBoughtCheckbox = view.findViewById<CheckBox>(R.id.shopping_list_item_is_bought)
-
+        val numberFormatter = DecimalFormat("#.##")
         val shoppingListItem = shoppingListItemAndIngredient[position].shoppingListItem
         val ingredient = shoppingListItemAndIngredient[position].ingredient
-        amountTextView.text = shoppingListItem.itemAmount.toBigDecimal().toString()
+
+        amountTextView.text = numberFormatter.format(shoppingListItem.itemAmount).toString()
         unitTextView.text = ingredient.unit
         nameTextView.text = ingredient.name
 

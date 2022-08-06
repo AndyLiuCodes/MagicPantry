@@ -35,8 +35,7 @@
         android:paddingRight="10dp"
         android:textAlignment="textStart"
         android:textColor="@color/black"
-        android:textSize="14sp"
-        android:textStyle="bold" />
+        android:textSize="14sp" />
 
     <ImageView
         android:id="@+id/recipeIngredient_low_stock_icon"

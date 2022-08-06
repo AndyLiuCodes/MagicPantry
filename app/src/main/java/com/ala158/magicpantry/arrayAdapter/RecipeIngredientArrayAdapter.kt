@@ -11,6 +11,7 @@ import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.data.Ingredient
 import com.ala158.magicpantry.data.RecipeItemAndIngredient
 import com.ala158.magicpantry.data.RecipeWithRecipeItems
+import java.text.DecimalFormat
 
 class RecipeIngredientArrayAdapter(private val context: Context, private var recipeIngredients:List<RecipeItemAndIngredient>): BaseAdapter() {
     override fun getCount(): Int {
@@ -30,13 +31,14 @@ class RecipeIngredientArrayAdapter(private val context: Context, private var rec
         val ingredientAmount: TextView = view.findViewById<TextView>(R.id.recipe_ingredient_amount)
         val ingredientName: TextView = view.findViewById<TextView>(R.id.recipe_ingredient_name)
         val alertSymbol: ImageView = view.findViewById<ImageView>(R.id.recipeIngredient_low_stock_icon)
+        val numberFormatter = DecimalFormat("#.##")
         val ingredient = recipeIngredients[position]
 
         var unitString = "x"
         if (ingredient.recipeItem.recipeUnit != "unit") {
             unitString = ingredient.recipeItem.recipeUnit
         }
-        ingredientAmount.text = "${ingredient.recipeItem.recipeAmount.toBigDecimal()} $unitString"
+        ingredientAmount.text = "${numberFormatter.format(ingredient.recipeItem.recipeAmount)} $unitString"
         ingredientName.text = ingredient.ingredient.name
 
         val convertedUnitAmount = Util.unitConversion(

@@ -26,7 +26,7 @@
         android:layout_width="80dp"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
-        android:textSize="12sp"
+        android:textSize="14sp"
         android:focusable="false"
         android:clickable="false"
         android:layout_toEndOf="@+id/pantry_low_stock_icon"
@@ -43,7 +43,7 @@
         android:layout_toStartOf="@+id/ingredient_price_unit"
         android:layout_toEndOf="@id/ingredient_amount"
         android:textColor="@color/black"
-        android:textSize="12sp"
+        android:textSize="14sp"
         android:layout_centerInParent="true" />
 
     <TextView
@@ -51,7 +51,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:textColor="@color/black"
-        android:textSize="12sp"
+        android:textSize="14sp"
         android:focusable="false"
         android:clickable="false"
         android:layout_toStartOf="@+id/ingredient_add_to_shopping_list_button"
