@@ -78,6 +78,7 @@
                     android:id="@+id/edit_recipe_recipe_title" />
 
                 <EditText
+                    android:maxLength="100"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:textSize="15sp"
@@ -128,6 +129,8 @@
                         android:textSize="15sp"
                         android:background="@drawable/add_recipe_edit_text_style"
                         android:layout_marginEnd="60dp"
+                        android:inputType="number"
+                        android:maxLength="10"
                         android:id="@+id/edit_recipe_edit_recipe_cook_time" />
 
                     <EditText
@@ -136,6 +139,8 @@
                         android:layout_weight="1"
                         android:background="@drawable/add_recipe_edit_text_style"
                         android:textSize="15sp"
+                        android:inputType="number"
+                        android:maxLength="10"
                         android:id="@+id/edit_recipe_edit_recipe_servings" />
                 </LinearLayout>
 

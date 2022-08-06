@@ -241,9 +241,14 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
 
         val doneBtn = findViewById<Button>(R.id.edit_recipe_btn_add_recipe)
         doneBtn.setOnClickListener {
-            updateDatabase()
-            Toast.makeText(this, "Recipe Saved!", Toast.LENGTH_SHORT).show()
-            finish()
+            val recipeTitle = title.text.toString()
+            if(recipeTitle.trim().isEmpty()) {
+                Toast.makeText(applicationContext, "Please enter a title", Toast.LENGTH_SHORT).show()
+            } else {
+                updateDatabase()
+                Toast.makeText(this, "Recipe Saved!", Toast.LENGTH_SHORT).show()
+                finish()
+            }
         }
     }
 
