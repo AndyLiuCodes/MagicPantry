@@ -268,7 +268,9 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
                     CoroutineScope(Dispatchers.IO).launch {
                         recipeViewModel.updateRecipeItemAmount(recipeItem, amount)
                         withContext(Dispatchers.Main) {
-                            adapter.notifyDataSetChanged()
+                            // Refresh the live data to trigger the observer to update
+                            recipeViewModel.addedRecipeItemAndIngredient.value =
+                                recipeViewModel.addedRecipeItemAndIngredient.value
                         }
                     }
                 }

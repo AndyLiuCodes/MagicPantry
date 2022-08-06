@@ -139,7 +139,7 @@
                         android:textSize="15sp"
                         android:background="@drawable/add_recipe_edit_text_style"
                         android:inputType="number"
-                        android:maxLength="10"
+                        android:maxLength="9"
                         android:id="@+id/add_recipe_edit_recipe_cook_time" />
 
                 </LinearLayout>
@@ -170,7 +170,7 @@
                         android:background="@drawable/add_recipe_edit_text_style"
                         android:textSize="15sp"
                         android:inputType="number"
-                        android:maxLength="10"
+                        android:maxLength="9"
                         android:id="@+id/add_recipe_edit_recipe_servings" />
 
                 </LinearLayout>
