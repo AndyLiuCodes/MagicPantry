@@ -11,11 +11,9 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
+import android.text.InputType
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.ImageView
-import android.widget.ListView
-import android.widget.TextView
+import android.widget.*
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -24,6 +22,7 @@ import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.AddRecipeArrayAdapter
 import com.ala158.magicpantry.data.Recipe
+import com.ala158.magicpantry.data.RecipeItem
 import com.ala158.magicpantry.data.RecipeItemAndIngredient
 import com.ala158.magicpantry.ui.ingredientlistadd.IngredientListAddActivity
 import com.ala158.magicpantry.viewModel.RecipeItemViewModel
@@ -52,6 +51,7 @@ class AddRecipeActivity : AppCompatActivity() {
     private lateinit var ingredients : ListView
 
     private lateinit var recipeViewModel : RecipeViewModel
+    private var recipeArray = arrayOf<RecipeItem>()
 
     private var ingredientToBeAdded = ArrayList<RecipeItemAndIngredient>()
     private lateinit var addIngredientToRecipeLauncher: ActivityResultLauncher<Intent>
@@ -86,6 +86,9 @@ class AddRecipeActivity : AppCompatActivity() {
         description = findViewById(R.id.add_recipe_edit_recipe_description)
         ingredients = findViewById(R.id.add_recipe_ingredient_listView)
 
+        cookTime.inputType = InputType.TYPE_CLASS_NUMBER
+        servings.inputType = InputType.TYPE_CLASS_NUMBER
+
         ingredients.isScrollContainer = false
 
         addIngredientToRecipeLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
@@ -100,7 +103,7 @@ class AddRecipeActivity : AppCompatActivity() {
             }
         }
 
-        val adapter = AddRecipeArrayAdapter(this, ingredientToBeAdded)
+        val adapter = AddRecipeArrayAdapter(this, ingredientToBeAdded, recipeItemViewModel)
         ingredients.adapter = adapter
 
         updateListViewSize(ingredientToBeAdded.size, ingredients)
@@ -111,6 +114,18 @@ class AddRecipeActivity : AppCompatActivity() {
             adapter.notifyDataSetChanged()
 
             updateListViewSize(it.size, ingredients)
+        }
+
+        recipeItemViewModel.allRecipeItems.observe(this) {
+            val myList = it.toTypedArray()
+
+            //if not empty
+            if (myList.isNotEmpty()) {
+                recipeArray = myList
+
+                adapter.replaceRecipeIngredients(recipeViewModel.addedRecipeItemAndIngredient.value!!)
+                adapter.notifyDataSetChanged()
+            }
         }
 
         cameraBtn.setOnClickListener {
@@ -180,8 +195,15 @@ class AddRecipeActivity : AppCompatActivity() {
 
         val addBtn = findViewById<Button>(R.id.add_recipe_btn_add_recipe)
         addBtn.setOnClickListener {
-            updateDatabase()
-            finish()
+            // check if title entered
+            val msg: String = title.text.toString()
+            if(msg.trim().isEmpty()) {
+                Toast.makeText(applicationContext, "Please enter a title", Toast.LENGTH_SHORT).show()
+            }
+            else {
+                updateDatabase()
+                finish()
+            }
         }
     }
 
