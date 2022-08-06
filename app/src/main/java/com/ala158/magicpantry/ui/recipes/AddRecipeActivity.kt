@@ -68,6 +68,8 @@ class AddRecipeActivity : AppCompatActivity(), AddRecipeArrayAdapter.OnRecipeEdi
     private lateinit var addIngredientToRecipeLauncher: ActivityResultLauncher<Intent>
     private lateinit var adapter: AddRecipeArrayAdapter
 
+    private var finishBtnClicked = false
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_add_recipe)
@@ -213,6 +215,8 @@ class AddRecipeActivity : AppCompatActivity(), AddRecipeArrayAdapter.OnRecipeEdi
 
         val addBtn = findViewById<Button>(R.id.add_recipe_btn_add_recipe)
         addBtn.setOnClickListener {
+            finishBtnClicked = true
+
             // check if title entered
             val msg: String = title.text.toString()
             if(msg.trim().isEmpty()) {
@@ -395,6 +399,17 @@ class AddRecipeActivity : AppCompatActivity(), AddRecipeArrayAdapter.OnRecipeEdi
         if (sharedPrefFile.contains("recipe_description")) {
             description.text = sharedPrefFile.getString("recipe_description", "")
             edit.remove("recipe_description").apply()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        edit.remove("edit_recipe_image").apply()
+
+        if (!finishBtnClicked) {
+            // Delete image once we are done with it
+            ReceiptScannerActivity().deleteImageFromGallery(filePath)
         }
     }
 

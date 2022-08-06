@@ -76,6 +76,7 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
     private var ingredientToBeAdded = ArrayList<RecipeItemAndIngredient>()
     private lateinit var addIngredientToRecipeLauncher: ActivityResultLauncher<Intent>
     private var isFirstStart = true
+    private var finishBtnClicked = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -256,7 +257,7 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
 
         val cancelBtn = findViewById<Button>(R.id.edit_recipe_btn_cancel_recipe)
         cancelBtn.setOnClickListener {
-            edit.remove("edit_recipe_image").apply()
+            edit.remove("recipe_image").apply()
 
             // Delete image once we are done with it
             ReceiptScannerActivity().deleteImageFromGallery(filePath)
@@ -265,6 +266,8 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
 
         val doneBtn = findViewById<Button>(R.id.edit_recipe_btn_add_recipe)
         doneBtn.setOnClickListener {
+            finishBtnClicked = true
+
             val recipeTitle = title.text.toString()
             if(recipeTitle.trim().isEmpty()) {
                 Toast.makeText(this, "Please enter in a recipe title", Toast.LENGTH_SHORT).show()
@@ -470,7 +473,7 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
                 imageView!!.setImageResource(R.drawable.magic_pantry_app_logo)
             }
             else {
-                imageView!!.setImageURI(Uri.parse(sharedPrefFile.getString("edit_recipe_image", "")))
+                imageView!!.setImageURI(Uri.parse(savedUri))
             }
         }
         if (sharedPrefFile.contains("edit_recipe_cookTime")) {
@@ -484,6 +487,17 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
         if (sharedPrefFile.contains("edit_recipe_description")) {
             description.text = sharedPrefFile.getString("edit_recipe_description", "")
             edit.remove("edit_recipe_description").apply()
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+
+        edit.remove("edit_recipe_image").apply()
+
+        if (!finishBtnClicked) {
+            // Delete image once we are done with it
+            ReceiptScannerActivity().deleteImageFromGallery(filePath)
         }
     }
 
