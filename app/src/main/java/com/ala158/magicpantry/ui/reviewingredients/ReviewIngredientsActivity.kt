@@ -73,7 +73,12 @@ class ReviewIngredientsActivity : AppCompatActivity() {
         ingredientListView = findViewById(R.id.reviewIngredientsList)
         reviewIngredientsArrayAdapter = ReviewIngredientsActivityAdapter(this, ingredientList)
         ingredientListView.adapter = reviewIngredientsArrayAdapter
-
+        reviewIngredientsViewModel.ingredientList.observe(this){
+            ingredientListView.adapter = null
+            reviewIngredientsArrayAdapter = ReviewIngredientsActivityAdapter(this, it)
+            ingredientListView.adapter = reviewIngredientsArrayAdapter
+            reviewIngredientsArrayAdapter.notifyDataSetChanged()
+        }
         cancelButton = findViewById(R.id.reviewCancelButton)
         addAllButton = findViewById(R.id.reviewAddAllButton)
 
@@ -83,7 +88,9 @@ class ReviewIngredientsActivity : AppCompatActivity() {
             finish()
         }
         addAllButton.setOnClickListener {
-            reviewIngredientsViewModel.addToIngredientList(ingredientList)
+            reviewIngredientsViewModel.ingredientList.value?.let { it1 ->
+                reviewIngredientsViewModel.addToIngredientList(it1)
+            }
             reviewIngredientsViewModel.insertAll()
             Toast.makeText(this, "Items added!", Toast.LENGTH_SHORT).show()
             finish()
@@ -128,11 +135,7 @@ class ReviewIngredientsActivity : AppCompatActivity() {
             }
 
             ingredientList[sharedPreferences.getInt(ReviewIngredientsEditActivity.CURRENT_POSITION_KEY, 0)] = ingredient
-
-            ingredientListView.adapter = null
-            reviewIngredientsArrayAdapter = ReviewIngredientsActivityAdapter(this, ingredientList)
-            ingredientListView.adapter = reviewIngredientsArrayAdapter
-            reviewIngredientsArrayAdapter.notifyDataSetChanged()
+            reviewIngredientsViewModel.ingredientList.value = ingredientList
         }
 
         edit.remove(ReviewIngredientsEditActivity.NAME_KEY)
