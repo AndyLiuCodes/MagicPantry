@@ -386,6 +386,9 @@ class EditRecipeActivity : AppCompatActivity() {
         recipeViewModel.allRecipes.removeObservers(this)
 
         //delete item from viewModel
+        for (i in 0 until recipeViewModel.originalRecipeData!!.recipeItems.size) {
+            recipeItemViewModel.delete(recipeViewModel.originalRecipeData!!.recipeItems[i].recipeItem)
+        }
         recipeViewModel.delete(recipeViewModel.originalRecipeData!!.recipe)
     }
 

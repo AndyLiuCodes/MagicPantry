@@ -46,7 +46,6 @@ class AddRecipeArrayAdapter(
 
         deleteBtn.setOnClickListener {
             recipeItemAndIngredients.removeAt(position)
-            recipeItemViewModel.delete(recipeItemAndIngredient.recipeItem)
             notifyDataSetChanged()
             Toast.makeText(context, "Ingredient deleted", Toast.LENGTH_SHORT).show()
         }
