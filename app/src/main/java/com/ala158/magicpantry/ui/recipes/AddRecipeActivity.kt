@@ -10,6 +10,8 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.os.Parcelable
+import android.os.PersistableBundle
 import android.provider.MediaStore
 import android.text.InputType
 import android.view.ViewGroup
@@ -40,6 +42,7 @@ class AddRecipeActivity : AppCompatActivity() {
     private lateinit var cameraBtn: Button
 
     private lateinit var sharedPrefFile : SharedPreferences
+    private lateinit var edit : SharedPreferences.Editor
 
     private var imageToScan: File? = null
     private var imageView: ImageView? = null
@@ -62,7 +65,7 @@ class AddRecipeActivity : AppCompatActivity() {
 
         //set up shared pref
         sharedPrefFile = getSharedPreferences("MySharedPrefs", Context.MODE_PRIVATE)
-        val edit = sharedPrefFile.edit()
+        edit = sharedPrefFile.edit()
 
         //start up database
         recipeViewModel = Util.createViewModel(
@@ -190,6 +193,7 @@ class AddRecipeActivity : AppCompatActivity() {
 
         val cancelBtn = findViewById<Button>(R.id.add_recipe_btn_cancel_recipe)
         cancelBtn.setOnClickListener {
+            edit.remove("recipe_image").apply()
             finish()
         }
 
@@ -202,6 +206,7 @@ class AddRecipeActivity : AppCompatActivity() {
             }
             else {
                 updateDatabase()
+                edit.remove("recipe_image").apply()
                 finish()
             }
         }
@@ -274,6 +279,14 @@ class AddRecipeActivity : AppCompatActivity() {
 
             bitmap = myBitmap
         }
+
+        val recipeImageString = if (bitmap != null) {
+            getImageUri(this, bitmap!!).toString()
+        }
+        else {
+            ""
+        }
+        edit.putString("recipe_image", recipeImageString).apply()
     }
 
     //update size of listView
@@ -301,8 +314,8 @@ class AddRecipeActivity : AppCompatActivity() {
             cookTime.text.toString().toInt()
         }
         recipe.title = title.text.toString()
-        recipe.imageUri = if (bitmap != null) {
-            getImageUri(this, bitmap!!).toString()
+        recipe.imageUri = if (sharedPrefFile.contains("recipe_image")) {
+            sharedPrefFile.getString("recipe_image", "").toString()
         }
         else {
             ""
@@ -320,11 +333,13 @@ class AddRecipeActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        val edit = sharedPrefFile.edit()
 
         if (sharedPrefFile.contains("recipe_title")) {
             title.text = sharedPrefFile.getString("recipe_title", "")
             edit.remove("recipe_title").apply()
+        }
+        if (sharedPrefFile.contains("recipe_image")) {
+            imageView!!.setImageURI(Uri.parse(sharedPrefFile.getString("recipe_image", "")))
         }
         if (sharedPrefFile.contains("recipe_cookTime")) {
             cookTime.text = sharedPrefFile.getString("recipe_cookTime", "")
@@ -338,6 +353,18 @@ class AddRecipeActivity : AppCompatActivity() {
             description.text = sharedPrefFile.getString("recipe_description", "")
             edit.remove("recipe_description").apply()
         }
+    }
+
+    override fun onSaveInstanceState(savedInstanceState: Bundle) {
+        super.onSaveInstanceState(savedInstanceState)
+        val image = savedInstanceState.getParcelable<Bitmap>("BitmapImage")
+        this.bitmap = image
+        imageView!!.setImageBitmap(this.bitmap)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        savedInstanceState.putParcelable("BitmapImage", bitmap)
+        super.onRestoreInstanceState(savedInstanceState)
     }
 
     override fun onDestroy() {

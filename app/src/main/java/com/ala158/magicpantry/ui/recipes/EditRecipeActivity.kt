@@ -43,6 +43,7 @@ class EditRecipeActivity : AppCompatActivity() {
     private lateinit var cameraBtn: Button
 
     private lateinit var sharedPrefFile : SharedPreferences
+    private lateinit var edit : SharedPreferences.Editor
 
     private var imageToScan: File? = null
     private var imageView: ImageView? = null
@@ -78,7 +79,7 @@ class EditRecipeActivity : AppCompatActivity() {
 
         //set up shared pref
         sharedPrefFile = getSharedPreferences("MySharedPrefs", Context.MODE_PRIVATE)
-        val edit = sharedPrefFile.edit()
+        edit = sharedPrefFile.edit()
 
         //start up database
         recipeViewModel = Util.createViewModel(
@@ -140,20 +141,21 @@ class EditRecipeActivity : AppCompatActivity() {
                 recipeViewModel.originalRecipeData = recipeArray[pos]
                 id = recipeViewModel.originalRecipeData!!.recipe.recipeId
 
+                newUri = recipeArray[pos].recipe.imageUri
+                // perform logic on first start of activity to help handle orientation change replacing data
+                //set textViews and imageView
+                if (newUri == "") {
+                    imageView!!.setImageResource(R.drawable.magic_pantry_app_logo)
+                }
+                else {
+                    imageView!!.setImageURI(newUri.toUri())
+                }
+                edit.putString("recipe_image", newUri).apply()
+
                 if (isFirstStart) {
                     // Get all the ids of the existing original ingredients
                     for (recipeIngredient in recipeViewModel.originalRecipeData!!.recipeItems) {
                         recipeViewModel.originalRecipeIngredientIdSet.add(recipeIngredient.ingredient.ingredientId)
-                    }
-
-                    newUri = recipeArray[pos].recipe.imageUri
-                    // perform logic on first start of activity to help handle orientation change replacing data
-                    //set textViews and imageView
-                    if (newUri == "") {
-                        imageView!!.setImageResource(R.drawable.magic_pantry_app_logo)
-                    }
-                    else {
-                        imageView!!.setImageURI(newUri.toUri())
                     }
 
                     title.text = recipeArray[pos].recipe.title
@@ -234,12 +236,14 @@ class EditRecipeActivity : AppCompatActivity() {
 
         val cancelBtn = findViewById<Button>(R.id.edit_recipe_btn_cancel_recipe)
         cancelBtn.setOnClickListener {
+            edit.remove("edit_recipe_image").apply()
             finish()
         }
 
         val doneBtn = findViewById<Button>(R.id.edit_recipe_btn_add_recipe)
         doneBtn.setOnClickListener {
             updateDatabase()
+            edit.remove("edit_recipe_image").apply()
             finish()
         }
     }
@@ -316,6 +320,14 @@ class EditRecipeActivity : AppCompatActivity() {
 
             bitmap = myBitmap
         }
+
+        val recipeImageString = if (bitmap != null) {
+            getImageUri(this, bitmap!!).toString()
+        }
+        else {
+            ""
+        }
+        edit.putString("edit_recipe_image", recipeImageString).apply()
     }
 
     //update size of listView
@@ -326,8 +338,11 @@ class EditRecipeActivity : AppCompatActivity() {
 
     //update database
     private fun updateDatabase() {
-        if (bitmap != null) {
-            newUri = getImageUri(this, bitmap!!).toString()
+        newUri = if (sharedPrefFile.contains("edit_recipe_image")) {
+            sharedPrefFile.getString("edit_recipe_image", "").toString()
+        }
+        else {
+            ""
         }
         val newServings = if (servings.text.toString() == "") {
             0
@@ -394,11 +409,13 @@ class EditRecipeActivity : AppCompatActivity() {
 
     override fun onResume() {
         super.onResume()
-        val edit = sharedPrefFile.edit()
 
         if (sharedPrefFile.contains("edit_recipe_title")) {
             title.text = sharedPrefFile.getString("edit_recipe_title", "")
             edit.remove("edit_recipe_title").apply()
+        }
+        if (sharedPrefFile.contains("edit_recipe_image")) {
+            imageView!!.setImageURI(Uri.parse(sharedPrefFile.getString("edit_recipe_image", "")))
         }
         if (sharedPrefFile.contains("edit_recipe_cookTime")) {
             cookTime.text = sharedPrefFile.getString("edit_recipe_cookTime", "")
