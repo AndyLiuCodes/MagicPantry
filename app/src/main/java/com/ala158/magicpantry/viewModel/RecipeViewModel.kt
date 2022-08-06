@@ -24,6 +24,11 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
     var addedRecipeItemAndIngredient = MutableLiveData<ArrayList<RecipeItemAndIngredient>>()
     var idToFilter = MutableLiveData<ArrayList<Int>>()
 
+    // Editing recipe variables
+    var originalRecipeData: RecipeWithRecipeItems? = null
+    var originalRecipeIngredientIdSet = mutableSetOf<Long>()
+    var originalRecipeDataDeletedIds = mutableSetOf<Long>()
+
     init {
         addedRecipeItemAndIngredient.value = ArrayList()
     }
@@ -46,6 +51,30 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
 
     fun update(recipe: Recipe) {
         repository.updateRecipe(recipe)
+    }
+
+    fun updateRecipeWithRecipeItems(recipe: Recipe, recipeItemViewModel: RecipeItemViewModel) {
+        CoroutineScope(Dispatchers.IO).launch {
+            // Update Recipe Info
+            update(recipe)
+
+            // Update Ingredient List in recipe
+            for (recipeItemAndIngredient in addedRecipeItemAndIngredient.value!!.listIterator()) {
+                // If item exists in original set then update it
+                if (originalRecipeIngredientIdSet.contains(recipeItemAndIngredient.ingredient.ingredientId)) {
+                    recipeItemViewModel.update(recipeItemAndIngredient.recipeItem)
+                } else {
+                    // if item does not exist in original set, then insert it
+                    recipeItemAndIngredient.recipeItem.relatedRecipeId = recipe.recipeId
+                    recipeItemViewModel.insert(recipeItemAndIngredient.recipeItem)
+                }
+            }
+
+            // For deleted items that are in the original set, then delete it from DB
+            for (deletedId in originalRecipeDataDeletedIds) {
+                recipeItemViewModel.deleteById(deletedId)
+            }
+        }
     }
 
     fun delete(recipe: Recipe) {

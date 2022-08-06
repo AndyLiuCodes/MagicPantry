@@ -21,6 +21,9 @@ interface RecipeItemDAO {
     @Delete
     suspend fun deleteRecipeItem(recipeItem: RecipeItem)
 
+    @Query("DELETE from recipe_item WHERE recipeItemId = :recipeItemIdKey")
+    suspend fun deleteRecipeItemById(recipeItemIdKey: Long)
+
     @Update
     suspend fun updateRecipeItem(recipeItem: RecipeItem)
 

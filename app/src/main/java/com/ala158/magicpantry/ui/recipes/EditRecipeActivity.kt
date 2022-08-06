@@ -11,10 +11,12 @@ import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.MediaStore
-import android.text.InputType
 import android.view.Menu
 import android.view.MenuItem
-import android.widget.*
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.ListView
+import android.widget.TextView
 import androidx.activity.result.ActivityResultLauncher
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
@@ -27,6 +29,7 @@ import com.ala158.magicpantry.data.Recipe
 import com.ala158.magicpantry.data.RecipeItemAndIngredient
 import com.ala158.magicpantry.data.RecipeWithRecipeItems
 import com.ala158.magicpantry.ui.ingredientlistadd.IngredientListAddActivity
+import com.ala158.magicpantry.viewModel.RecipeItemViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModel
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -51,20 +54,25 @@ class EditRecipeActivity : AppCompatActivity() {
     private lateinit var ingredients : ListView
 
     private lateinit var recipeViewModel : RecipeViewModel
+    private lateinit var recipeItemViewModel: RecipeItemViewModel
 
     private var recipeArray = arrayOf<RecipeWithRecipeItems>()
     private var pos = 0
     private var id = 0L
-    private lateinit var recipeToEdit : RecipeWithRecipeItems
 
     private var newUri = ""
 
     private var ingredientToBeAdded = ArrayList<RecipeItemAndIngredient>()
     private lateinit var addIngredientToRecipeLauncher: ActivityResultLauncher<Intent>
+    private var isFirstStart = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_edit_recipe)
+
+        if (savedInstanceState != null) {
+            isFirstStart = savedInstanceState.getBoolean(IS_FIRST_START_KEY)
+        }
 
         pos = intent.getIntExtra("RecipeChosen", -1)
 
@@ -79,6 +87,12 @@ class EditRecipeActivity : AppCompatActivity() {
             Util.DataType.RECIPE
         )
 
+        recipeItemViewModel = Util.createViewModel(
+            this,
+            RecipeItemViewModel::class.java,
+            Util.DataType.RECIPE_ITEM
+        )
+
         imageView = findViewById(R.id.edit_recipe_edit_recipe_img)
         cameraBtn = findViewById(R.id.edit_recipe_btn_edit_recipe_pic)
 
@@ -87,9 +101,6 @@ class EditRecipeActivity : AppCompatActivity() {
         servings = findViewById(R.id.edit_recipe_edit_recipe_servings)
         description = findViewById(R.id.edit_recipe_edit_recipe_description)
         ingredients = findViewById(R.id.edit_recipe_edit_ingredient_listView)
-
-        cookTime.inputType = InputType.TYPE_CLASS_NUMBER
-        servings.inputType = InputType.TYPE_CLASS_NUMBER
 
         ingredients.isScrollContainer = false
 
@@ -110,6 +121,14 @@ class EditRecipeActivity : AppCompatActivity() {
 
         updateListViewSize(ingredientToBeAdded.size, ingredients)
 
+        // Update ingredient list when user adds new ingredients
+        recipeViewModel.addedRecipeItemAndIngredient.observe(this) {
+            adapter.replaceRecipeIngredients(it)
+            adapter.notifyDataSetChanged()
+
+            updateListViewSize(it.size, ingredients)
+        }
+
         recipeViewModel.allRecipes.observe(this) {
             val myList = it.toTypedArray()
 
@@ -118,27 +137,38 @@ class EditRecipeActivity : AppCompatActivity() {
                 recipeArray = myList
 
                 //get id of recipe to edit or delete
-                recipeToEdit = recipeArray[pos]
-                id = recipeToEdit.recipe.recipeId
+                recipeViewModel.originalRecipeData = recipeArray[pos]
+                id = recipeViewModel.originalRecipeData!!.recipe.recipeId
 
-                newUri = recipeArray[pos].recipe.imageUri
+                if (isFirstStart) {
+                    // Get all the ids of the existing original ingredients
+                    for (recipeIngredient in recipeViewModel.originalRecipeData!!.recipeItems) {
+                        recipeViewModel.originalRecipeIngredientIdSet.add(recipeIngredient.ingredient.ingredientId)
+                    }
 
-                //set textViews and imageView
-                if (newUri == "") {
-                    imageView!!.setImageResource(R.drawable.magic_pantry_app_logo)
+                    newUri = recipeArray[pos].recipe.imageUri
+                    // perform logic on first start of activity to help handle orientation change replacing data
+                    //set textViews and imageView
+                    if (newUri == "") {
+                        imageView!!.setImageResource(R.drawable.magic_pantry_app_logo)
+                    }
+                    else {
+                        imageView!!.setImageURI(newUri.toUri())
+                    }
+
+                    title.text = recipeArray[pos].recipe.title
+                    cookTime.text = recipeArray[pos].recipe.timeToCook.toString()
+                    servings.text = recipeArray[pos].recipe.servings.toString()
+                    description.text = recipeArray[pos].recipe.description
+
+                    recipeViewModel.addedRecipeItemAndIngredient.value!!.addAll(recipeViewModel.originalRecipeData!!.recipeItems)
+                    adapter.replaceRecipeIngredients(recipeViewModel.addedRecipeItemAndIngredient.value!!)
+                    adapter.notifyDataSetChanged()
+
+                    updateListViewSize(recipeViewModel.originalRecipeData!!.recipeItems.size, ingredients)
+
+                    isFirstStart = false
                 }
-                else {
-                    imageView!!.setImageURI(newUri.toUri())
-                }
-                title.text = recipeArray[pos].recipe.title
-                cookTime.text = recipeArray[pos].recipe.timeToCook.toString()
-                servings.text = recipeArray[pos].recipe.servings.toString()
-                description.text = recipeArray[pos].recipe.description
-
-                adapter.replaceRecipeIngredients(recipeToEdit.recipeItems)
-                adapter.notifyDataSetChanged()
-
-                updateListViewSize(recipeToEdit.recipeItems.size, ingredients)
             }
         }
 
@@ -204,21 +234,19 @@ class EditRecipeActivity : AppCompatActivity() {
 
         val cancelBtn = findViewById<Button>(R.id.edit_recipe_btn_cancel_recipe)
         cancelBtn.setOnClickListener {
-            onBackPressed()
+            finish()
         }
 
         val doneBtn = findViewById<Button>(R.id.edit_recipe_btn_add_recipe)
         doneBtn.setOnClickListener {
-            // check if title entered
-            val msg: String = title.text.toString()
-            if(msg.trim().isEmpty()) {
-                Toast.makeText(applicationContext, "Please enter a title", Toast.LENGTH_SHORT).show()
-            }
-            else {
-                updateDatabase()
-                finish()
-            }
+            updateDatabase()
+            finish()
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(IS_FIRST_START_KEY, isFirstStart)
     }
 
     // when camera or gallery chosen, update photo
@@ -313,7 +341,8 @@ class EditRecipeActivity : AppCompatActivity() {
         else {
             cookTime.text.toString().toInt()
         }
-        recipeViewModel.update(Recipe(id, title.text.toString(), newUri, newServings, newCookTime, description.text.toString(), 0))
+        val updatedRecipe = Recipe(id, title.text.toString(), newUri, newServings, newCookTime, description.text.toString(), 0)
+        recipeViewModel.updateRecipeWithRecipeItems(updatedRecipe, recipeItemViewModel)
     }
 
     //convert bitmap to uri
@@ -357,7 +386,7 @@ class EditRecipeActivity : AppCompatActivity() {
         recipeViewModel.allRecipes.removeObservers(this)
 
         //delete item from viewModel
-        recipeViewModel.delete(recipeToEdit.recipe)
+        recipeViewModel.delete(recipeViewModel.originalRecipeData!!.recipe)
     }
 
     override fun onResume() {
@@ -387,5 +416,9 @@ class EditRecipeActivity : AppCompatActivity() {
         // Delete image once we are done with it
         if (imageToScan != null && imageToScan!!.exists())
             imageToScan!!.delete()
+    }
+
+    companion object {
+        val IS_FIRST_START_KEY = "IS_FIRST_START_KEY"
     }
 }

@@ -28,6 +28,12 @@ class RecipeItemRepository(private val recipeItemDAO: RecipeItemDAO) {
         }
     }
 
+    fun deleteRecipeItemById(id: Long) {
+        CoroutineScope(Dispatchers.IO).launch {
+            recipeItemDAO.deleteRecipeItemById(id)
+        }
+    }
+
     fun updateRecipeItem(recipeItem: RecipeItem) {
         CoroutineScope(Dispatchers.IO).launch {
             recipeItemDAO.updateRecipeItem(recipeItem)
