@@ -18,13 +18,6 @@ class RecipeItemViewModel(private val repository: RecipeItemRepository) : ViewMo
     private var _recipeItem: LiveData<RecipeItemAndRecipe> = MutableLiveData()
     val recipeItem: LiveData<RecipeItemAndRecipe> = _recipeItem
 
-    fun getRecipesByRecipeItemId(recipeItemId: Long) {
-        CoroutineScope(Dispatchers.IO).launch {
-            val recipeItem = repository.getRecipeItemWithRecipesById(recipeItemId).asLiveData()
-            _recipeItem = recipeItem
-        }
-    }
-
     fun insert(recipeItem: RecipeItem) {
         repository.insertRecipeItemIntoRecipe(recipeItem)
     }
