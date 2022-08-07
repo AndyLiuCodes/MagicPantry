@@ -14,6 +14,8 @@ class ChangeRecipeIngredientAmountDialog : DialogFragment(), DialogInterface.OnC
     private lateinit var dialogView: View
     private var changeRecipeIngredientAmountDialogListener: ChangeRecipeIngredientAmountDialogListener? = null
 
+    // Learned how to pass a listener into a dialog via
+    // https://stackoverflow.com/questions/26904955/passing-listeners-via-bundle-in-alertdialogfragment-is-it-possible
     interface ChangeRecipeIngredientAmountDialogListener : Parcelable {
         fun onChangeRecipeIngredientAmountConfirm(amount: Double)
     }
