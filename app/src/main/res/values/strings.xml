@@ -15,7 +15,7 @@
     <string name="checkbox_filter_low_stock_text">Filter Low Stock</string>
 
     <!-- Manual Ingredient Input Activity -->
-    <string name="manual_ingredient_name_label">Ingredient Name *</string>
+    <string name="manual_ingredient_name_label">Name *</string>
     <string name="manual_amount_label">Amount *</string>
     <string name="manual_unit_label">Unit</string>
     <string name="manual_price_label">Price per Unit</string>
