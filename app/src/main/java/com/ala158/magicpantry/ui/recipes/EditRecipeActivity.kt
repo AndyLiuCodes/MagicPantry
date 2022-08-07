@@ -30,6 +30,7 @@ import com.ala158.magicpantry.data.RecipeItemAndIngredient
 import com.ala158.magicpantry.data.RecipeWithRecipeItems
 import com.ala158.magicpantry.dialogs.ChangeRecipeIngredientAmountDialog
 import com.ala158.magicpantry.ui.ingredientlistadd.IngredientListAddActivity
+import com.ala158.magicpantry.ui.manualingredientinput.edit.ReviewIngredientsEditActivity
 import com.ala158.magicpantry.ui.receiptscanner.ReceiptScannerActivity
 import com.ala158.magicpantry.viewModel.IngredientViewModel
 import com.ala158.magicpantry.viewModel.RecipeItemViewModel
@@ -46,6 +47,9 @@ class EditRecipeActivity :
     EditRecipeArrayAdapter.OnRecipeItemDeleteClickListener {
     private lateinit var imageUri: Uri
     private var bitmap: Bitmap? = null
+
+    private var isRecipeNameValid = true
+    private lateinit var recipeNameLabel : TextView
 
     private val tag = "MagicPantry"
     private var recipeName = "Recipe"
@@ -124,6 +128,8 @@ class EditRecipeActivity :
         servings = findViewById(R.id.edit_recipe_edit_recipe_servings)
         description = findViewById(R.id.edit_recipe_edit_recipe_description)
         ingredients = findViewById(R.id.edit_recipe_edit_ingredient_listView)
+
+        recipeNameLabel = findViewById(R.id.edit_recipe_recipe_title)
 
         // https://stackoverflow.com/questions/35634023/how-can-i-have-a-listview-inside-a-nestedscrollview
         ingredients.isNestedScrollingEnabled = true
@@ -294,21 +300,20 @@ class EditRecipeActivity :
         doneBtn.setOnClickListener {
             finishBtnClicked = true
 
-            val recipeTitle = title.text.toString()
-            if (recipeTitle.trim().isEmpty()) {
-                Toast.makeText(this, "Please enter in a recipe title", Toast.LENGTH_SHORT).show()
-            } else {
+            var errorMsg = ""
+
+            if (title.text.toString().trim() == "") {
+                errorMsg += "• The ingredient name cannot be empty"
+                recipeNameLabel.setTextColor(resources.getColor(R.color.mp_red, null))
+                isRecipeNameValid = false
+            }
+            else {
                 updateDatabase()
                 edit.remove("edit_recipe_image").apply()
                 Toast.makeText(this, "Recipe Saved!", Toast.LENGTH_SHORT).show()
                 finish()
             }
         }
-    }
-
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putBoolean(IS_FIRST_START_KEY, isFirstStart)
     }
 
     override fun onRecipeEditAmountChangeClick(recipeItem: RecipeItem) {
@@ -520,6 +525,21 @@ class EditRecipeActivity :
             recipeItemViewModel.delete(recipeViewModel.originalRecipeData!!.recipeItems[i].recipeItem)
         }
         recipeViewModel.delete(recipeViewModel.originalRecipeData!!.recipe)
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(ReviewIngredientsEditActivity.IS_INGREDIENT_NAME_VALID_KEY, isRecipeNameValid)
+        outState.putBoolean(IS_FIRST_START_KEY, isFirstStart)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        if (savedInstanceState != null) {
+            isRecipeNameValid = savedInstanceState.getBoolean(ReviewIngredientsEditActivity.IS_INGREDIENT_NAME_VALID_KEY)
+            if (!isRecipeNameValid)
+                recipeNameLabel.setTextColor(resources.getColor(R.color.mp_red, null))
+        }
     }
 
     override fun onResume() {
