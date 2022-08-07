@@ -38,13 +38,13 @@ import java.util.*
 
 class PantryEditIngredientActivity : AppCompatActivity() {
     private lateinit var ingredientNameLabel: TextView
-    private lateinit var textInputEditIngredientName: TextInputEditText
+    private lateinit var textInputEditIngredientName: EditText
     private lateinit var amountLabel: TextView
-    private lateinit var textInputEditAmount: TextInputEditText
+    private lateinit var textInputEditAmount: EditText
     private lateinit var unitDropdown: Spinner
     private lateinit var priceLabel: TextView
-    private lateinit var textInputEditPrice: TextInputEditText
-    private lateinit var lowStockThresholdField: TextInputEditText
+    private lateinit var textInputEditPrice: EditText
+    private lateinit var lowStockThresholdField: EditText
     private lateinit var lowStockThresholdUnitTextView: TextView
     private lateinit var isNotifyCheckBoxView: CheckBox
     private lateinit var thresholdSectionLayout: LinearLayout
@@ -284,7 +284,7 @@ class PantryEditIngredientActivity : AppCompatActivity() {
         textInputEditIngredientName.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 pantryEditIngredientViewModel.ingredientEntry.value!!.setName(s.toString())
-                ingredientNameLabel.setTextColor(resources.getColor(R.color.mp_textview_grey, null))
+                ingredientNameLabel.setTextColor(resources.getColor(R.color.black, null))
                 isIngredientNameValid = true
                 return
             }
@@ -305,7 +305,7 @@ class PantryEditIngredientActivity : AppCompatActivity() {
                 if (amountString != "")
                     amount = amountString.toDouble()
                 pantryEditIngredientViewModel.ingredientEntry.value!!.setAmount(amount)
-                amountLabel.setTextColor(resources.getColor(R.color.mp_textview_grey, null))
+                amountLabel.setTextColor(resources.getColor(R.color.black, null))
                 isAmountValid = true
                 return
             }
@@ -344,7 +344,7 @@ class PantryEditIngredientActivity : AppCompatActivity() {
                 if (priceString != "" && priceString != ".")
                     price = priceString.toDouble()
                 pantryEditIngredientViewModel.ingredientEntry.value!!.setPrice(price)
-                priceLabel.setTextColor(resources.getColor(R.color.mp_textview_grey, null))
+                priceLabel.setTextColor(resources.getColor(R.color.black, null))
                 isPricePerUnitValid = true
                 return
             }

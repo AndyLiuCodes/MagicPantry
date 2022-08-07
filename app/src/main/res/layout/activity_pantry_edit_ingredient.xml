@@ -8,6 +8,21 @@
     android:orientation="vertical"
     tools:context=".ui.manualingredientinput.edit.PantryEditIngredientActivity">
 
+    <TextView
+        android:id="@+id/header_pantry_edit_ingredient"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/rounded_bg_blue"
+        android:paddingStart="15dp"
+        android:layout_marginBottom="10dp"
+        android:text="Edit Ingredient"
+        android:textColor="@color/white"
+        android:gravity="center_vertical"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        tools:ignore="RtlSymmetry" />
+
     <ScrollView
         android:id="@+id/pantry_edit_input"
         android:layout_width="match_parent"
@@ -25,27 +40,19 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/manual_ingredient_name_label"
-                android:textSize="22sp"
+                android:textSize="15sp"
+                android:textColor="@color/black"
                 android:textStyle="bold" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            <EditText
+                android:id="@+id/pantry_edit_name"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/mp_grey"
-                app:boxStrokeColor="@color/mp_grey"
-                app:boxStrokeWidth="0dp"
-                app:boxStrokeWidthFocused="4dp">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/pantry_edit_name"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="text"
-                    android:textSize="20sp"
-                    android:maxLength="50" />
-
-            </com.google.android.material.textfield.TextInputLayout>
+                android:textSize="15sp"
+                android:background="@drawable/add_recipe_edit_text_style"
+                android:layout_marginBottom="5dp"
+                android:maxLength="100"
+                android:inputType="text"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -65,28 +72,19 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/manual_amount_label"
-                        android:textSize="22sp"
+                        android:textSize="15sp"
+                        android:textColor="@color/black"
                         android:textStyle="bold" />
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                    <EditText
+                        android:id="@+id/pantry_edit_amount"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@color/mp_grey"
-                        app:boxStrokeColor="@color/mp_grey"
-                        app:boxStrokeWidth="0dp"
-                        app:boxStrokeWidthFocused="4dp">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/pantry_edit_amount"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="numberDecimal"
-                            android:textSize="20sp"
-                            android:maxLength="8" />
-
-                    </com.google.android.material.textfield.TextInputLayout>
-
+                        android:textSize="15sp"
+                        android:background="@drawable/add_recipe_edit_text_style"
+                        android:layout_marginBottom="5dp"
+                        android:maxLength="100"
+                        android:inputType="text"/>
                 </LinearLayout>
 
                 <LinearLayout
@@ -99,16 +97,17 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/manual_unit_label"
-                        android:textSize="22sp"
+                        android:textSize="15sp"
+                        android:textColor="@color/black"
                         android:textStyle="bold" />
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@color/mp_grey"
-                        app:boxStrokeColor="@color/mp_grey"
-                        app:boxStrokeWidth="0dp"
-                        app:boxStrokeWidthFocused="4dp">
+                        android:background="@drawable/add_recipe_edit_text_style"
+                        android:layout_marginBottom="5dp"
+                        android:maxLength="100"
+                        android:padding="0dp">
 
                         <Spinner
                             android:id="@+id/pantry_edit_unit_dropdown"
@@ -127,27 +126,19 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
                 android:text="@string/manual_price_label"
-                android:textSize="22sp"
+                android:textSize="15sp"
+                android:textColor="@color/black"
                 android:textStyle="bold" />
 
-            <com.google.android.material.textfield.TextInputLayout
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+            <EditText
+                android:id="@+id/pantry_edit_price"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/mp_grey"
-                app:boxStrokeColor="@color/mp_grey"
-                app:boxStrokeWidth="0dp"
-                app:boxStrokeWidthFocused="4dp">
-
-                <com.google.android.material.textfield.TextInputEditText
-                    android:id="@+id/pantry_edit_price"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:inputType="numberDecimal"
-                    android:textSize="20sp"
-                    android:maxLength="8" />
-
-            </com.google.android.material.textfield.TextInputLayout>
+                android:textSize="15sp"
+                android:background="@drawable/add_recipe_edit_text_style"
+                android:layout_marginBottom="5dp"
+                android:maxLength="100"
+                android:inputType="text"/>
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -160,8 +151,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="@string/manual_isnotify_label"
-                    android:textSize="22sp"
+                    android:textSize="15sp"
                     android:textStyle="bold"
+                    android:textColor="@color/black"
                     android:gravity="center_vertical"/>
 
                 <CheckBox
@@ -184,8 +176,9 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/manual_threshold_label"
-                    android:textSize="16sp"
+                    android:textSize="13.5sp"
                     android:textStyle="bold"
+                    android:textColor="@color/black"
                     android:layout_marginTop="5dp" />
 
                 <LinearLayout
@@ -193,26 +186,17 @@
                     android:layout_height="wrap_content"
                     android:orientation="horizontal" >
 
-                    <com.google.android.material.textfield.TextInputLayout
-                        android:id="@+id/pantry_edit_threshold_area"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+
+                    <EditText
+                        android:id="@+id/pantry_edit_threshold"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@color/mp_grey"
-                        app:boxStrokeColor="@color/mp_grey"
-                        app:boxStrokeWidth="0dp"
-                        app:boxStrokeWidthFocused="4dp"
-                        android:layout_weight="8">
-
-                        <com.google.android.material.textfield.TextInputEditText
-                            android:id="@+id/pantry_edit_threshold"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:inputType="numberDecimal"
-                            android:textSize="20sp"
-                            android:maxLength="8"/>
-
-                    </com.google.android.material.textfield.TextInputLayout>
+                        android:textSize="15sp"
+                        android:background="@drawable/add_recipe_edit_text_style"
+                        android:layout_marginBottom="5dp"
+                        android:maxLength="100"
+                        android:inputType="text"
+                        android:layout_weight="8"/>
 
                     <Space
                         android:layout_width="0dp"
@@ -224,10 +208,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="5"
-                        android:textSize="20sp"
+                        android:textSize="15sp"
                         android:textColor="@color/black"
                         android:gravity="center_vertical"
-                        android:layout_marginLeft="5dp" />
+                        android:layout_marginStart="10dp" />
 
                 </LinearLayout>
 
