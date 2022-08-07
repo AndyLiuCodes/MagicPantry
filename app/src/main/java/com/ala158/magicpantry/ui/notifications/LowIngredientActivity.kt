@@ -85,9 +85,23 @@ class LowIngredientActivity : AppCompatActivity(),
 
                 if (id != -1L) {
                     notificationViewModel.getById(id).observe(this) {
+                        currNotification = it
                         val ingredients = it.ingredients
                         lowIngredientAdapter.replace(ingredients)
                         lowIngredientAdapter.notifyDataSetChanged()
+
+                        if (lowIngredientAdapter.validIngredients.isEmpty()) {
+                            addAllBtn.visibility = View.GONE
+                            headerTextView.text = "All stocked up!"
+                        } else {
+                            addAllBtn.visibility = View.VISIBLE
+                            headerTextView.text = "Low stock on..."
+                        }
+
+                        if (!currNotification.notification.isRead) {
+                            currNotification.notification.isRead = true
+                            notificationViewModel.updateRead(currNotification.notification)
+                        }
                     }
                 }
             }
