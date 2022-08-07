@@ -78,8 +78,11 @@ class NotificationsListArrayAdapter(
         } else if (hours > 0) {
             numericValue = hours
             timeUnit = "hour"
-        } else {
+        } else if (minutes > 0) {
             numericValue = minutes
+            timeUnit = "minute"
+        } else {
+            numericValue = 1
             timeUnit = "minute"
         }
 

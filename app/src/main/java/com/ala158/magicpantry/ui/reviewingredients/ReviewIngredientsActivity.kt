@@ -25,7 +25,7 @@ class ReviewIngredientsActivity : AppCompatActivity() {
     private lateinit var addAllButton: Button
     private lateinit var reviewIngredientsArrayAdapter: ReviewIngredientsActivityAdapter
 
-    private lateinit var sharedPreferences : SharedPreferences
+    private lateinit var sharedPreferences: SharedPreferences
 
     private val ingredientList = arrayListOf<Ingredient>()
 
@@ -73,7 +73,7 @@ class ReviewIngredientsActivity : AppCompatActivity() {
         ingredientListView = findViewById(R.id.reviewIngredientsList)
         reviewIngredientsArrayAdapter = ReviewIngredientsActivityAdapter(this, ingredientList)
         ingredientListView.adapter = reviewIngredientsArrayAdapter
-        reviewIngredientsViewModel.ingredientList.observe(this){
+        reviewIngredientsViewModel.ingredientList.observe(this) {
             ingredientListView.adapter = null
             reviewIngredientsArrayAdapter = ReviewIngredientsActivityAdapter(this, it)
             ingredientListView.adapter = reviewIngredientsArrayAdapter
@@ -101,43 +101,67 @@ class ReviewIngredientsActivity : AppCompatActivity() {
         super.onResume()
         val edit = sharedPreferences.edit()
 
-        if (sharedPreferences.contains(ReviewIngredientsEditActivity.NAME_KEY)) {
+        if (sharedPreferences.contains(ReviewIngredientsEditActivity.CURRENT_POSITION_KEY)) {
             val ingredient = Ingredient()
-            val name = sharedPreferences.getString(ReviewIngredientsEditActivity.NAME_KEY, "")
-            val amountString = sharedPreferences.getString(ReviewIngredientsEditActivity.AMOUNT_KEY, "")
-            val priceString = sharedPreferences.getString(ReviewIngredientsEditActivity.PRICE_KEY, "")
-            val unit = sharedPreferences.getString(ReviewIngredientsEditActivity.UNIT_KEY, "unit")
-            val isNotify = sharedPreferences.getBoolean(ReviewIngredientsEditActivity.IS_NOTIFY_KEY, false)
-            val notifyThresholdString = sharedPreferences.getString(ReviewIngredientsEditActivity.NOTIFY_THRESHOLD_KEY, "0.0")
+            val position = sharedPreferences.getInt(
+                ReviewIngredientsEditActivity.CURRENT_POSITION_KEY, 0
+            )
+            val isDelete = sharedPreferences.getBoolean(
+                ReviewIngredientsEditActivity.DELETE_INGREDIENT_KEY,
+                false
+            )
+            if (isDelete) {
+                ingredientList.removeAt(position)
+                reviewIngredientsViewModel.ingredientList.value = ingredientList
+                Toast.makeText(this, "Deleted ingredient!", Toast.LENGTH_SHORT).show()
+            } else {
+                val name = sharedPreferences.getString(ReviewIngredientsEditActivity.NAME_KEY, "")
+                val amountString =
+                    sharedPreferences.getString(ReviewIngredientsEditActivity.AMOUNT_KEY, "")
+                val priceString =
+                    sharedPreferences.getString(ReviewIngredientsEditActivity.PRICE_KEY, "")
+                val unit =
+                    sharedPreferences.getString(ReviewIngredientsEditActivity.UNIT_KEY, "unit")
+                val isNotify =
+                    sharedPreferences.getBoolean(ReviewIngredientsEditActivity.IS_NOTIFY_KEY, false)
+                val notifyThresholdString = sharedPreferences.getString(
+                    ReviewIngredientsEditActivity.NOTIFY_THRESHOLD_KEY,
+                    "0.0"
+                )
 
-            if (name != null || name != "") {
-                ingredient.name = name!!
+                if (name != null || name != "") {
+                    ingredient.name = name!!
+                }
+
+                if (amountString != null || amountString != "") {
+                    ingredient.amount = amountString!!.toDouble()
+                }
+
+                if (priceString != null || priceString != "") {
+                    ingredient.price = priceString!!.toDouble()
+                }
+
+                if (unit != null) {
+                    ingredient.unit = unit
+                }
+
+                if (isNotify != null) {
+                    ingredient.isNotify = isNotify
+                }
+
+                if (notifyThresholdString != null || notifyThresholdString != "") {
+                    ingredient.notifyThreshold = notifyThresholdString!!.toDouble()
+                }
+
+                ingredientList[sharedPreferences.getInt(
+                    ReviewIngredientsEditActivity.CURRENT_POSITION_KEY,
+                    0
+                )] = ingredient
+                reviewIngredientsViewModel.ingredientList.value = ingredientList
             }
-
-            if (amountString != null || amountString != "") {
-                ingredient.amount = amountString!!.toDouble()
-            }
-
-            if (priceString != null || priceString != "") {
-                ingredient.price = priceString!!.toDouble()
-            }
-
-            if (unit != null) {
-                ingredient.unit = unit
-            }
-
-            if (isNotify != null) {
-                ingredient.isNotify = isNotify
-            }
-
-            if (notifyThresholdString != null || notifyThresholdString != "") {
-                ingredient.notifyThreshold = notifyThresholdString!!.toDouble()
-            }
-
-            ingredientList[sharedPreferences.getInt(ReviewIngredientsEditActivity.CURRENT_POSITION_KEY, 0)] = ingredient
-            reviewIngredientsViewModel.ingredientList.value = ingredientList
         }
 
+        edit.remove(ReviewIngredientsEditActivity.DELETE_INGREDIENT_KEY)
         edit.remove(ReviewIngredientsEditActivity.NAME_KEY)
         edit.remove(ReviewIngredientsEditActivity.CURRENT_POSITION_KEY)
         edit.remove(ReviewIngredientsEditActivity.AMOUNT_KEY)

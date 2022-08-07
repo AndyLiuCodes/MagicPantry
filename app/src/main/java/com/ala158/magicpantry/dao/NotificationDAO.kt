@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.Flow
 interface NotificationDAO {
 
     @Transaction
-    @Query("SELECT * FROM notification")
+    @Query("SELECT * FROM notification ORDER BY date desc")
     fun getAllNotifications(): Flow<List<NotificationWithIngredients>>
 
     @Transaction
