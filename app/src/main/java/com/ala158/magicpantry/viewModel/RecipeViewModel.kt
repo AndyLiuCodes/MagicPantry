@@ -53,6 +53,7 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
         for (recipeItemAndIngredient in addedRecipeItemAndIngredient.value!!) {
             if (recipeItemAndIngredient.recipeItem.relatedIngredientId == recipeItem.relatedIngredientId) {
                 recipeItemAndIngredient.recipeItem.recipeAmount = amount
+                break
             }
         }
     }
