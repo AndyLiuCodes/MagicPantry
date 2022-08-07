@@ -31,6 +31,7 @@
 
         <activity
             android:name=".ui.receiptscanner.ReceiptScannerActivity"
+            android:configChanges="orientation|screenSize"
             android:exported="false" />
 
         <meta-data
@@ -55,6 +56,7 @@
 
         <activity
             android:name=".ui.recipes.AddRecipeActivity"
+            android:configChanges="orientation|screenSize"
             android:exported="false" />
 
         <meta-data
@@ -71,6 +73,7 @@
 
         <activity
             android:name=".ui.recipes.EditRecipeActivity"
+            android:configChanges="orientation|screenSize"
             android:exported="false" />
 
         <meta-data

@@ -3,9 +3,7 @@ package com.ala158.magicpantry.ui.receiptscanner
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.ContentValues
-import android.content.DialogInterface
-import android.content.Intent
+import android.content.*
 import android.graphics.*
 import android.net.Uri
 import android.os.Build
@@ -43,6 +41,9 @@ class ReceiptScannerActivity : AppCompatActivity() {
     private val requestCamera = 1888
     private val requestGallery = 2222
 
+    private lateinit var sharedPrefFile : SharedPreferences
+    private lateinit var edit : SharedPreferences.Editor
+
     private var imageView: ImageView? = null
     private lateinit var textView: TextView
 
@@ -62,6 +63,10 @@ class ReceiptScannerActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_receipt_scanner)
+
+        //set up shared pref
+        sharedPrefFile = getSharedPreferences("MySharedPrefs", Context.MODE_PRIVATE)
+        edit = sharedPrefFile.edit()
 
         reviewIngredientsViewModel = Util.createViewModel(
             this,
@@ -445,6 +450,14 @@ class ReceiptScannerActivity : AppCompatActivity() {
             imageUri = Uri.parse(imagePath)
             filePath = imageUri.path!!
         }
+        val imageScanned = if (bitmap != null) {
+            imageUri.path.toString()
+        }
+        else {
+            ""
+        }
+        edit.putString("scan_image", imageScanned).apply()
+
     }
 
     // Delete image once we are done with it
@@ -459,15 +472,30 @@ class ReceiptScannerActivity : AppCompatActivity() {
         }
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        if (sharedPrefFile.contains("scan_image")) {
+            val savedUri = sharedPrefFile.getString("scan_image", "")
+            if (savedUri == "") {
+                imageView!!.setImageResource(R.drawable.magic_pantry_app_logo)
+            } else {
+                imageView!!.setImageURI(Uri.parse(savedUri))
+            }
+        }
+    }
+
     override fun onBackPressed() {
         super.onBackPressed()
 
+        edit.remove("scan_image").apply()
         deleteImageFromGallery(filePath)
     }
 
     override fun onDestroy() {
         super.onDestroy()
 
+        edit.remove("scan_image").apply()
         deleteImageFromGallery(filePath)
     }
 }
