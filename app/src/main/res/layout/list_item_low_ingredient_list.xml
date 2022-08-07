@@ -19,7 +19,7 @@
         android:gravity="center_vertical"/>
 
     <ImageButton
-        android:id="@+id/low_ingredient_list_item_delete_button"
+        android:id="@+id/low_ingredient_list_item_add_button"
         android:layout_width="18dp"
         android:layout_height="18dp"
         android:layout_alignParentEnd="true"

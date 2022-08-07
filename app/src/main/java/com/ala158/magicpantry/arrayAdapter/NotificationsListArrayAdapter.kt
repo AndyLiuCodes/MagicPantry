@@ -8,6 +8,7 @@ import android.widget.BaseAdapter
 import android.widget.ImageView
 import android.widget.TextView
 import com.ala158.magicpantry.R
+import com.ala158.magicpantry.data.Ingredient
 import com.ala158.magicpantry.data.NotificationWithIngredients
 import java.util.*
 

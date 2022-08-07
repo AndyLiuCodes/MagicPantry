@@ -14,8 +14,8 @@ object MockData {
         Ingredient("Tomato Sauce", 2.0, "L", 1.75),
         Ingredient("Ground Beef", 500.0, "g", 12.75),
         Ingredient("Flour", 10.0, "kg", 5.00),
-        Ingredient("Orange Juice", 500.0, "mL", 2.50),
-        Ingredient("Apple", 500.0, "g", 0.50),
+        Ingredient("Orange Juice", 500.0, "mL", 2.50, 1000.0),
+        Ingredient("Apple", 500.0, "g", 0.50, 550.0),
         Ingredient("Potatoes", 1.0, "kg", 2.00),
         Ingredient("Water", 1000.0, "mL", 0.25)
     )
