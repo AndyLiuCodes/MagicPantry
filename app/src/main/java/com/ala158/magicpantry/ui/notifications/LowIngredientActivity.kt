@@ -1,6 +1,7 @@
 package com.ala158.magicpantry.ui.notifications
 
 import android.os.Bundle
+import android.view.View
 import android.widget.Button
 import android.widget.ListView
 import android.widget.TextView
@@ -21,7 +22,7 @@ class LowIngredientActivity : AppCompatActivity(),
     private lateinit var notificationViewModel: NotificationViewModel
     private lateinit var shoppingListItemViewModel: ShoppingListItemViewModel
 
-    private lateinit var lowIngredientListArrayAdapter: LowIngredientArrayAdapter
+    private lateinit var lowIngredientAdapter: LowIngredientArrayAdapter
     private lateinit var headerTextView: TextView
     private lateinit var dateTimeTextView: TextView
     private lateinit var ingredientsListView: ListView
@@ -60,13 +61,22 @@ class LowIngredientActivity : AppCompatActivity(),
             Util.DataType.NOTIFICATION
         )
 
-        val lowIngredientAdapter = LowIngredientArrayAdapter(this, ArrayList())
+        lowIngredientAdapter =
+            LowIngredientArrayAdapter(this, ArrayList(), shoppingListItemViewModel)
         ingredientsListView.adapter = lowIngredientAdapter
 
         notificationViewModel.allNotifications.observe(this) { notifications ->
             if (notifications.isNotEmpty()) {
                 currNotification = notifications[pos]
                 lowIngredientAdapter.replace(currNotification.ingredients)
+
+                if (lowIngredientAdapter.validIngredients.isEmpty()) {
+                    addAllBtn.visibility = View.GONE
+                    headerTextView.text = "All stocked up!"
+                } else {
+                    addAllBtn.visibility = View.VISIBLE
+                    headerTextView.text = "Low stock on..."
+                }
 
                 if (!currNotification.notification.isRead) {
                     currNotification.notification.isRead = true
@@ -76,8 +86,8 @@ class LowIngredientActivity : AppCompatActivity(),
                 if (id != -1L) {
                     notificationViewModel.getById(id).observe(this) {
                         val ingredients = it.ingredients
-                        lowIngredientListArrayAdapter.replace(ingredients)
-                        lowIngredientListArrayAdapter.notifyDataSetChanged()
+                        lowIngredientAdapter.replace(ingredients)
+                        lowIngredientAdapter.notifyDataSetChanged()
                     }
                 }
             }
@@ -108,11 +118,11 @@ class LowIngredientActivity : AppCompatActivity(),
         // Add the missing ingredients from the notification to the shopping list
         if (isConfirm) {
             shoppingListItemViewModel.insertLowIngredientsFromNotifications(
-                lowIngredientListArrayAdapter.validIngredients
+                lowIngredientAdapter.validIngredients
             )
             Toast.makeText(
                 this,
-                "Added missing ingredients to shopping list!",
+                "Added low stock ingredients to shopping list!",
                 Toast.LENGTH_SHORT
             ).show()
         }

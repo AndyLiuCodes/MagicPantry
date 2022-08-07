@@ -7,13 +7,20 @@ import android.view.ViewGroup
 import android.widget.*
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.data.Ingredient
+import com.ala158.magicpantry.viewModel.ShoppingListItemViewModel
 
 class LowIngredientArrayAdapter(
     private val context: Context,
-    private var lowIngredientList: List<Ingredient>
+    private var lowIngredientList: List<Ingredient>,
+    private var shoppingListItemViewModel: ShoppingListItemViewModel
 ) : BaseAdapter() {
+
+    init {
+        updateValidIngredients()
+    }
+
     // Get ingredients that have a pantry amount < notify threshold amount
-    var validIngredientIds = mutableSetOf<Long>()
+    private var validIngredientIds = mutableSetOf<Long>()
     var validIngredients = mutableListOf<Ingredient>()
 
     override fun getCount(): Int {
@@ -41,8 +48,8 @@ class LowIngredientArrayAdapter(
         }
 
         addBtn.setOnClickListener {
-            //TODO: Add item to shopping list
-            Toast.makeText(view.context, "Added", Toast.LENGTH_SHORT).show()
+            shoppingListItemViewModel.insertLowIngredientsFromNotifications(arrayListOf(ingredient))
+            Toast.makeText(context, "Added ${ingredient.name}", Toast.LENGTH_SHORT).show()
         }
 
         itemName.text = ingredient.name
