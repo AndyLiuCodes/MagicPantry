@@ -97,23 +97,29 @@ class ReceiptScannerActivity : AppCompatActivity() {
                     if (myId == 0) {
                         val cameraIntent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
 
-                        val file =
-                            File(Environment.getExternalStorageDirectory().toString() + "/$tag/")
-                        if (!file.exists()) {
-                            file.mkdirs()
-                        }
-
                         // store image once it is taken. includes a file name and date/time taken
                         val values = ContentValues()
-                        values.put(MediaStore.Images.Media.TITLE, "Receipt")
-                        values.put(MediaStore.Images.Media.DATA, "Receipt")
-                        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-                        values.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/$tag/")
-                        values.put(
-                            MediaStore.Images.Media.DESCRIPTION,
-                            "Photo taken on " + System.currentTimeMillis()
-                        )
-                        imageUri = this.contentResolver.insert(
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            val file =
+                                File(Environment.getExternalStorageDirectory().toString() + "/$tag/")
+                            if (!file.exists()) {
+                                file.mkdirs()
+                            }
+                            values.put(MediaStore.Images.Media.TITLE, "Receipt.jpg")
+                            values.put(MediaStore.Images.Media.DATA, "Receipt")
+                            values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+                            values.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/$tag/")
+                            values.put(
+                                MediaStore.Images.Media.DESCRIPTION,
+                                "Photo taken on " + System.currentTimeMillis()
+                            )
+                        }
+                        else {
+                            values.put(MediaStore.Images.Media.TITLE, "Receipt")
+                            values.put(MediaStore.Images.Media.DESCRIPTION, "Photo taken on " + System.currentTimeMillis())
+                        }
+                        imageUri = contentResolver.insert(
                             MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values
                         )!!
 

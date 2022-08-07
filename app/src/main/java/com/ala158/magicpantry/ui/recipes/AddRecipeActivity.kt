@@ -144,22 +144,28 @@ class AddRecipeActivity : AppCompatActivity(), AddRecipeArrayAdapter.OnRecipeEdi
                             recipeName = title.text.toString()
                         }
 
-                        val file =
-                            File(Environment.getExternalStorageDirectory().toString() + "/$tag/")
-                        if (!file.exists()) {
-                            file.mkdirs()
-                        }
-
                         // store image once it is taken. includes a file name and date/time taken
                         val values = ContentValues()
-                        values.put(MediaStore.Images.Media.TITLE, recipeName)
-                        values.put(MediaStore.Images.Media.DATA, recipeName)
-                        values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
-                        values.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/$tag/")
-                        values.put(
-                            MediaStore.Images.Media.DESCRIPTION,
-                            "Photo taken on " + System.currentTimeMillis()
-                        )
+
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                            val file =
+                                File(Environment.getExternalStorageDirectory().toString() + "/$tag/")
+                            if (!file.exists()) {
+                                file.mkdirs()
+                            }
+                            values.put(MediaStore.Images.Media.TITLE, recipeName)
+                            values.put(MediaStore.Images.Media.DATA, recipeName)
+                            values.put(MediaStore.Images.Media.MIME_TYPE, "image/jpeg")
+                            values.put(MediaStore.Images.Media.RELATIVE_PATH, "Pictures/$tag/")
+                            values.put(
+                                MediaStore.Images.Media.DESCRIPTION,
+                                "Photo taken on " + System.currentTimeMillis()
+                            )
+                        }
+                        else {
+                            values.put(MediaStore.Images.Media.TITLE, recipeName)
+                            values.put(MediaStore.Images.Media.DESCRIPTION, "Photo taken on " + System.currentTimeMillis())
+                        }
                         imageUri = this.contentResolver.insert(
                             MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values
                         )!!
