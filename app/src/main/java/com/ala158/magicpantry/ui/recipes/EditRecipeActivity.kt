@@ -39,7 +39,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 
-class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeEditAmountChangeClickListener {
+class EditRecipeActivity :
+    AppCompatActivity(),
+    EditRecipeArrayAdapter.OnRecipeEditAmountChangeClickListener,
+    EditRecipeArrayAdapter.OnRecipeItemDeleteClickListener {
     private lateinit var imageUri: Uri
     private var bitmap: Bitmap? = null
 
@@ -121,15 +124,17 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
             if (it.resultCode == Activity.RESULT_OK && it.data != null) {
                 if (it.data!!.hasExtra(AddRecipeActivity.ADDED_INGREDIENTS_KEY)) {
                     val newlyAddedIngredients = it.data!!.getSerializableExtra(AddRecipeActivity.ADDED_INGREDIENTS_KEY)
+                    val convertedNewlyAddedIngredients = newlyAddedIngredients as ArrayList<RecipeItemAndIngredient>
+
                     val existingAddedIngredients: ArrayList<RecipeItemAndIngredient> =
                         recipeViewModel.addedRecipeItemAndIngredient.value!!
-                    existingAddedIngredients.addAll(newlyAddedIngredients as ArrayList<RecipeItemAndIngredient>)
+                    existingAddedIngredients.addAll(convertedNewlyAddedIngredients)
                     recipeViewModel.addedRecipeItemAndIngredient.value = existingAddedIngredients
                 }
             }
         }
 
-        adapter = EditRecipeArrayAdapter(this, ingredientToBeAdded, this)
+        adapter = EditRecipeArrayAdapter(this, ingredientToBeAdded, this, this)
         ingredients.adapter = adapter
 
         // Update ingredient list when user adds new ingredients
@@ -319,6 +324,29 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
             })
         onRecipeIngredientAmountChangeDialog.arguments = dialogData
         onRecipeIngredientAmountChangeDialog.show(supportFragmentManager, "Change recipe ingredient amount")
+    }
+
+    override fun onRecipeItemDeleteClick(deleteTarget: RecipeItemAndIngredient) {
+        var foundIdx = -1
+        for (idx in  0 until recipeViewModel.addedRecipeItemAndIngredient.value!!.size) {
+            val recipeItemAndIngredientEntry = recipeViewModel.addedRecipeItemAndIngredient.value!![idx]
+            if (recipeItemAndIngredientEntry.ingredient.ingredientId == deleteTarget.ingredient.ingredientId) {
+                foundIdx = idx
+                // If the delete target is in the original set of recipe items thats in the database, then we need
+                // to mark it for db delete
+                if (recipeViewModel.originalRecipeIngredientIdSet.contains(deleteTarget.ingredient.ingredientId)) {
+                    recipeViewModel.originalRecipeDataToBeDeletedRecipeItems[deleteTarget.ingredient.ingredientId] =
+                        deleteTarget.recipeItem
+                }
+                break
+            }
+        }
+
+        if (foundIdx != -1) {
+            recipeViewModel.addedRecipeItemAndIngredient.value!!.removeAt(foundIdx)
+            adapter.notifyDataSetChanged()
+            Toast.makeText(this, "Ingredient deleted", Toast.LENGTH_SHORT).show()
+        }
     }
 
     // when camera or gallery chosen, update photo

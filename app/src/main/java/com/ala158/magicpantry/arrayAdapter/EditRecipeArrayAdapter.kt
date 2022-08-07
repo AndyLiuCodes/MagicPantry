@@ -13,11 +13,16 @@ import com.ala158.magicpantry.data.RecipeItemAndIngredient
 class EditRecipeArrayAdapter(
     private val context: Context,
     private var recipeItemAndIngredients: ArrayList<RecipeItemAndIngredient>,
-    internal val onRecipeEditAmountChangeClickListener: OnRecipeEditAmountChangeClickListener
+    internal val onRecipeEditAmountChangeClickListener: OnRecipeEditAmountChangeClickListener,
+    internal val onRecipeItemDeleteClickListener: OnRecipeItemDeleteClickListener
 ) : BaseAdapter() {
 
     interface OnRecipeEditAmountChangeClickListener {
         fun onRecipeEditAmountChangeClick(recipeItem: RecipeItem)
+    }
+
+    interface OnRecipeItemDeleteClickListener {
+        fun onRecipeItemDeleteClick(deleteTarget: RecipeItemAndIngredient)
     }
 
     override fun getCount(): Int {
@@ -44,7 +49,7 @@ class EditRecipeArrayAdapter(
         val recipeItemAndIngredient = recipeItemAndIngredients[position]
 
         deleteBtn.setOnClickListener {
-            println("Delete $name")
+            onRecipeItemDeleteClickListener.onRecipeItemDeleteClick(recipeItemAndIngredient)
         }
 
         amount.setOnClickListener {

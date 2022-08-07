@@ -36,7 +36,10 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 
-class AddRecipeActivity : AppCompatActivity(), AddRecipeArrayAdapter.OnRecipeEditAmountChangeClickListener {
+class AddRecipeActivity :
+    AppCompatActivity(),
+    AddRecipeArrayAdapter.OnRecipeEditAmountChangeClickListener,
+    AddRecipeArrayAdapter.OnRecipeItemDeleteClickListener {
     private lateinit var recipeItemViewModel: RecipeItemViewModel
 
     private lateinit var imageUri : Uri
@@ -115,7 +118,7 @@ class AddRecipeActivity : AppCompatActivity(), AddRecipeArrayAdapter.OnRecipeEdi
             }
         }
 
-        adapter = AddRecipeArrayAdapter(this, ingredientToBeAdded, this)
+        adapter = AddRecipeArrayAdapter(this, ingredientToBeAdded, this, this)
         ingredients.adapter = adapter
 
         updateListViewSize(ingredientToBeAdded.size, ingredients)
@@ -226,11 +229,12 @@ class AddRecipeActivity : AppCompatActivity(), AddRecipeArrayAdapter.OnRecipeEdi
             // check if title entered
             val msg: String = title.text.toString()
             if(msg.trim().isEmpty()) {
-                Toast.makeText(applicationContext, "Please enter a title", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Please enter in a recipe title", Toast.LENGTH_SHORT).show()
             }
             else {
                 updateDatabase()
                 edit.remove("recipe_image").apply()
+                Toast.makeText(this, "Recipe Added!", Toast.LENGTH_SHORT).show()
                 finish()
             }
         }
@@ -264,6 +268,23 @@ class AddRecipeActivity : AppCompatActivity(), AddRecipeArrayAdapter.OnRecipeEdi
             })
         onRecipeIngredientAmountChangeDialog.arguments = dialogData
         onRecipeIngredientAmountChangeDialog.show(supportFragmentManager, "Change recipe ingredient amount")
+    }
+
+    override fun onRecipeItemDelete(deleteTarget: RecipeItemAndIngredient) {
+        var foundIdx = -1
+        for (idx in  0 until recipeViewModel.addedRecipeItemAndIngredient.value!!.size) {
+            val recipeItemAndIngredientEntry = recipeViewModel.addedRecipeItemAndIngredient.value!![idx]
+            if (recipeItemAndIngredientEntry.ingredient.ingredientId == deleteTarget.ingredient.ingredientId) {
+                foundIdx = idx
+                break
+            }
+        }
+
+        if (foundIdx != -1) {
+            recipeViewModel.addedRecipeItemAndIngredient.value!!.removeAt(foundIdx)
+            adapter.notifyDataSetChanged()
+            Toast.makeText(this, "Ingredient deleted", Toast.LENGTH_SHORT).show()
+        }
     }
 
     // when camera or gallery chosen, update photo
