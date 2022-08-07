@@ -1,5 +1,6 @@
 package com.ala158.magicpantry
 
+import android.util.Log
 import com.ala158.magicpantry.data.Ingredient
 import com.ala158.magicpantry.data.Notification
 import com.ala158.magicpantry.data.RecipeWithRecipeItems
@@ -51,29 +52,41 @@ object UpdateDB {
         updatedIngredientIds: List<Long>,
         parentIngredientViewModel: IngredientViewModel,
         parentRecipeItemViewModel: RecipeItemViewModel,
-
-        ): List<Long> {
+    ): List<Long> {
         val recipeIdsToUpdate = mutableSetOf<Long>()
         val ingredientsWithRecipeItems =
             parentIngredientViewModel.findIngredientsWithRecipeItemsById(updatedIngredientIds)
 
+        Log.d(
+            "INGREDIENT",
+            "updateRecipeItemsNotEnough: ingredients ${ingredientsWithRecipeItems.size}"
+        )
         for (ingredientWithRecipeItem in ingredientsWithRecipeItems) {
             // Update all recipe items if the amount is enough to cook with
+            Log.d(
+                "INGREDIENT",
+                "updateRecipeItemsNotEnough: number of recipeitems for an ingredient ${ingredientWithRecipeItem.recipeItems.size}"
+            )
             for (item in ingredientWithRecipeItem.recipeItems) {
                 val convertedRecipeAmount = Util.unitConversion(
                     item.recipeAmount,
                     ingredientWithRecipeItem.ingredient.unit,
                     item.recipeUnit
                 )
-                item.recipeIsEnough = convertedRecipeAmount <= ingredientWithRecipeItem.ingredient.amount
+                item.recipeIsEnough =
+                    convertedRecipeAmount <= ingredientWithRecipeItem.ingredient.amount
                 recipeIdsToUpdate.add(item.relatedRecipeId)
+                Log.d(
+                    "INGREDIENT",
+                    "updateRecipesMissingIngredients: ${item.recipeIsEnough} ${ingredientWithRecipeItem.ingredient.name}"
+                )
                 parentRecipeItemViewModel.updateSync(item)
             }
         }
         return recipeIdsToUpdate.toList()
     }
 
-    private suspend fun updateRecipesMissingIngredients(
+    suspend fun updateRecipesMissingIngredients(
         recipeIdsToUpdate: List<Long>,
         parentRecipeViewModel: RecipeViewModel
     ) {
@@ -84,6 +97,10 @@ object UpdateDB {
             var count = 0
             for (recipeItem in recipe.recipeItems) {
                 if (!recipeItem.recipeItem.recipeIsEnough) {
+                    Log.d(
+                        "INGREDIENT",
+                        "updateRecipesMissingIngredients: ${recipeItem.ingredient.name}"
+                    )
                     count += 1
                 }
             }

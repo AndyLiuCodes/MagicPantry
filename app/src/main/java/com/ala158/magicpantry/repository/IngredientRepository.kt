@@ -60,4 +60,8 @@ class IngredientRepository(private val ingredientDAO: IngredientDAO) {
             ingredientDAO.deleteIngredientById(id)
         }
     }
+
+    fun deleteIngredientByIdSync(id: Long) {
+        ingredientDAO.deleteIngredientByIdSync(id)
+    }
 }

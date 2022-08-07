@@ -41,6 +41,10 @@ class PantryEditIngredientViewModel(private val repository: IngredientRepository
         repository.deleteIngredientById(id)
     }
 
+    fun deleteIngredientEntrySync(id: Long) {
+        repository.deleteIngredientByIdSync(id)
+    }
+
     fun updateIngredientEntry(id: Long) {
         val dbIngredient = Ingredient(
             id,

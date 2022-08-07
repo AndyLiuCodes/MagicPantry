@@ -29,8 +29,20 @@ class RecipeItemViewModel(private val repository: RecipeItemRepository) : ViewMo
         repository.insertRecipeItemIntoRecipe(recipeItem)
     }
 
+    fun insertListSync(recipeItems: List<RecipeItem>) {
+        repository.insertRecipeItemListSync(recipeItems)
+    }
+
+    fun insertSync(recipeItem: RecipeItem) {
+        repository.insertRecipeItemIntoRecipeSync(recipeItem)
+    }
+
     fun delete(recipeItem: RecipeItem) {
         repository.deleteRecipeItem(recipeItem)
+    }
+
+    fun deleteListSync(recipeItems: List<RecipeItem>) {
+        repository.deleteRecipeItemListSync(recipeItems)
     }
 
     fun deleteById(id: Long) {
@@ -39,6 +51,10 @@ class RecipeItemViewModel(private val repository: RecipeItemRepository) : ViewMo
 
     fun update(recipeItem: RecipeItem) {
         repository.updateRecipeItem(recipeItem)
+    }
+
+    fun updateListSync(recipeItems: List<RecipeItem>) {
+        repository.updateRecipeItemListSync(recipeItems)
     }
 
     fun updateSync(recipeItem: RecipeItem) {

@@ -8,11 +8,11 @@ import kotlin.collections.ArrayList
 object MockData {
 
     val mockIngredients = arrayListOf(
-        Ingredient("Bread", 10.0, "unit", 0.50),
+        Ingredient("Bread", 5.0, "unit", 0.50),
         Ingredient("Milk", 2.0, "L", 1.00),
         Ingredient("Linguine", 5.0, "kg", 3.00),
-        Ingredient("Tomato Sauce", 2.0, "L", 1.75),
-        Ingredient("Ground Beef", 500.0, "g", 12.75),
+        Ingredient("Tomato Sauce", 150.0, "mL", 1.75),
+        Ingredient("Ground Beef", 150.0, "g", 12.75),
         Ingredient("Flour", 10.0, "kg", 5.00),
         Ingredient("Orange Juice", 500.0, "mL", 2.50, 1000.0),
         Ingredient("Apple", 500.0, "g", 0.50, 550.0),

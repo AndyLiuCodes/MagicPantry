@@ -28,6 +28,7 @@ import com.ala158.magicpantry.data.RecipeItemAndIngredient
 import com.ala158.magicpantry.dialogs.ChangeRecipeIngredientAmountDialog
 import com.ala158.magicpantry.ui.ingredientlistadd.IngredientListAddActivity
 import com.ala158.magicpantry.ui.receiptscanner.ReceiptScannerActivity
+import com.ala158.magicpantry.viewModel.IngredientViewModel
 import com.ala158.magicpantry.viewModel.RecipeItemViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -40,10 +41,12 @@ class AddRecipeActivity :
     AppCompatActivity(),
     AddRecipeArrayAdapter.OnRecipeEditAmountChangeClickListener,
     AddRecipeArrayAdapter.OnRecipeItemDeleteClickListener {
+    private lateinit var ingredientViewModel: IngredientViewModel
+    private lateinit var recipeViewModel: RecipeViewModel
     private lateinit var recipeItemViewModel: RecipeItemViewModel
 
-    private lateinit var imageUri : Uri
-    private var bitmap : Bitmap? = null
+    private lateinit var imageUri: Uri
+    private var bitmap: Bitmap? = null
 
     private val tag = "MagicPantry"
     private var recipeName = "Recipe"
@@ -53,19 +56,17 @@ class AddRecipeActivity :
     private val requestGallery = 2000
     private lateinit var cameraBtn: Button
 
-    private lateinit var sharedPrefFile : SharedPreferences
-    private lateinit var edit : SharedPreferences.Editor
+    private lateinit var sharedPrefFile: SharedPreferences
+    private lateinit var edit: SharedPreferences.Editor
 
     private var recipeImage: File? = null
     private var imageView: ImageView? = null
 
-    private lateinit var title : TextView
-    private lateinit var cookTime : TextView
-    private lateinit var servings : TextView
-    private lateinit var description : TextView
-    private lateinit var ingredients : ListView
-
-    private lateinit var recipeViewModel : RecipeViewModel
+    private lateinit var title: TextView
+    private lateinit var cookTime: TextView
+    private lateinit var servings: TextView
+    private lateinit var description: TextView
+    private lateinit var ingredients: ListView
 
     private var ingredientToBeAdded = ArrayList<RecipeItemAndIngredient>()
     private lateinit var addIngredientToRecipeLauncher: ActivityResultLauncher<Intent>
@@ -82,6 +83,13 @@ class AddRecipeActivity :
         edit = sharedPrefFile.edit()
 
         //start up database
+
+        ingredientViewModel = Util.createViewModel(
+            this,
+            IngredientViewModel::class.java,
+            Util.DataType.INGREDIENT
+        )
+
         recipeViewModel = Util.createViewModel(
             this,
             RecipeViewModel::class.java,
@@ -106,17 +114,20 @@ class AddRecipeActivity :
         // https://stackoverflow.com/questions/35634023/how-can-i-have-a-listview-inside-a-nestedscrollview
         ingredients.isNestedScrollingEnabled = true
 
-        addIngredientToRecipeLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it.resultCode == Activity.RESULT_OK && it.data != null) {
-                if (it.data!!.hasExtra(ADDED_INGREDIENTS_KEY)) {
-                    val newlyAddedIngredients = it.data!!.getSerializableExtra(ADDED_INGREDIENTS_KEY)
-                    val existingAddedIngredients: ArrayList<RecipeItemAndIngredient> =
-                        recipeViewModel.addedRecipeItemAndIngredient.value!!
-                    existingAddedIngredients.addAll(newlyAddedIngredients as ArrayList<RecipeItemAndIngredient>)
-                    recipeViewModel.addedRecipeItemAndIngredient.value = existingAddedIngredients
+        addIngredientToRecipeLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                if (it.resultCode == Activity.RESULT_OK && it.data != null) {
+                    if (it.data!!.hasExtra(ADDED_INGREDIENTS_KEY)) {
+                        val newlyAddedIngredients =
+                            it.data!!.getSerializableExtra(ADDED_INGREDIENTS_KEY)
+                        val existingAddedIngredients: ArrayList<RecipeItemAndIngredient> =
+                            recipeViewModel.addedRecipeItemAndIngredient.value!!
+                        existingAddedIngredients.addAll(newlyAddedIngredients as ArrayList<RecipeItemAndIngredient>)
+                        recipeViewModel.addedRecipeItemAndIngredient.value =
+                            existingAddedIngredients
+                    }
                 }
             }
-        }
 
         adapter = AddRecipeArrayAdapter(this, ingredientToBeAdded, this, this)
         ingredients.adapter = adapter
@@ -178,8 +189,7 @@ class AddRecipeActivity :
                         // open camera and add image to photo gallery if one is taken
                         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
                         startActivityForResult(cameraIntent, requestCamera)
-                    }
-                    else {
+                    } else {
                         // open photo gallery to choose an image
                         val galleryIntent =
                             Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
@@ -228,10 +238,10 @@ class AddRecipeActivity :
 
             // check if title entered
             val msg: String = title.text.toString()
-            if(msg.trim().isEmpty()) {
-                Toast.makeText(this, "Please enter in a recipe title", Toast.LENGTH_SHORT).show()
-            }
-            else {
+            if (msg.trim().isEmpty()) {
+                Toast.makeText(applicationContext, "Please enter a title", Toast.LENGTH_SHORT)
+                    .show()
+            } else {
                 updateDatabase()
                 edit.remove("recipe_image").apply()
                 Toast.makeText(this, "Recipe Added!", Toast.LENGTH_SHORT).show()
@@ -267,7 +277,10 @@ class AddRecipeActivity :
                 }
             })
         onRecipeIngredientAmountChangeDialog.arguments = dialogData
-        onRecipeIngredientAmountChangeDialog.show(supportFragmentManager, "Change recipe ingredient amount")
+        onRecipeIngredientAmountChangeDialog.show(
+            supportFragmentManager,
+            "Change recipe ingredient amount"
+        )
     }
 
     override fun onRecipeItemDelete(deleteTarget: RecipeItemAndIngredient) {
@@ -364,15 +377,14 @@ class AddRecipeActivity :
         }
         val recipeImageString = if (bitmap != null) {
             imageUri.path.toString()
-        }
-        else {
+        } else {
             ""
         }
         edit.putString("recipe_image", recipeImageString).apply()
     }
 
     //update size of listView
-    fun updateListViewSize(size : Int, listView : ListView) {
+    fun updateListViewSize(size: Int, listView: ListView) {
         val cellSize = 170
         val list: ViewGroup.LayoutParams = listView.layoutParams
         list.height = cellSize * size
@@ -385,24 +397,21 @@ class AddRecipeActivity :
         recipe.description = description.text.toString()
         recipe.servings = if (servings.text.toString() == "") {
             0
-        }
-        else {
+        } else {
             servings.text.toString().toInt()
         }
         recipe.timeToCook = if (cookTime.text.toString() == "") {
             0
-        }
-        else {
+        } else {
             cookTime.text.toString().toInt()
         }
         recipe.title = title.text.toString()
         recipe.imageUri = if (sharedPrefFile.contains("recipe_image")) {
             sharedPrefFile.getString("recipe_image", "").toString()
-        }
-        else {
+        } else {
             ""
         }
-        recipeViewModel.insert(recipe, recipeItemViewModel)
+        recipeViewModel.insert(recipe, recipeItemViewModel, recipeViewModel, ingredientViewModel)
     }
 
     override fun onResume() {
