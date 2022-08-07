@@ -18,6 +18,12 @@ interface RecipeItemDAO {
     @Insert
     suspend fun insertRecipeItem(recipeItem: RecipeItem): Long
 
+    @Insert
+    suspend fun insertAllRecipeItems(recipeItems: List<RecipeItem>)
+
+    @Insert
+    fun insertRecipeItemSync(recipeItem: RecipeItem): Long
+
     @Delete
     suspend fun deleteRecipeItem(recipeItem: RecipeItem)
 

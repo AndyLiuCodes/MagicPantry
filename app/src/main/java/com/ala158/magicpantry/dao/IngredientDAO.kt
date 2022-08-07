@@ -41,4 +41,7 @@ interface IngredientDAO {
 
     @Query("DELETE FROM ingredient WHERE ingredientId = :key")
     suspend fun deleteIngredientById(key: Long)
+
+    @Query("DELETE FROM ingredient WHERE ingredientId = :key")
+    fun deleteIngredientByIdSync(key: Long)
 }

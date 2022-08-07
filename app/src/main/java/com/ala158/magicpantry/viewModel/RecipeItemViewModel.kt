@@ -29,6 +29,14 @@ class RecipeItemViewModel(private val repository: RecipeItemRepository) : ViewMo
         repository.insertRecipeItemIntoRecipe(recipeItem)
     }
 
+    fun insertAll(recipeItems: List<RecipeItem>) {
+        repository.insertAllRecipeItemsIntoRecipe(recipeItems)
+    }
+
+    fun insertSync(recipeItem: RecipeItem) {
+        repository.insertRecipeItemIntoRecipeSync(recipeItem)
+    }
+
     fun delete(recipeItem: RecipeItem) {
         repository.deleteRecipeItem(recipeItem)
     }

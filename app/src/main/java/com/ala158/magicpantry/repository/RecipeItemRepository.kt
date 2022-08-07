@@ -22,6 +22,16 @@ class RecipeItemRepository(private val recipeItemDAO: RecipeItemDAO) {
         }
     }
 
+    fun insertAllRecipeItemsIntoRecipe(recipeItems: List<RecipeItem>) {
+        CoroutineScope(Dispatchers.IO).launch {
+            recipeItemDAO.insertAllRecipeItems(recipeItems)
+        }
+    }
+
+    fun insertRecipeItemIntoRecipeSync(recipeItem: RecipeItem) {
+        recipeItemDAO.insertRecipeItemSync(recipeItem)
+    }
+
     fun deleteRecipeItem(recipeItem: RecipeItem) {
         CoroutineScope(Dispatchers.IO).launch {
             recipeItemDAO.deleteRecipeItem(recipeItem)

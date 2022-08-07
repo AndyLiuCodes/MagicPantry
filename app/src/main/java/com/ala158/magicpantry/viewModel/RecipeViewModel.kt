@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
+import com.ala158.magicpantry.UpdateDB
 import com.ala158.magicpantry.data.*
 import com.ala158.magicpantry.repository.RecipeRepository
 import kotlinx.coroutines.CoroutineScope
@@ -38,19 +39,32 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
         return repository.getRecipesById(keys)
     }
 
-    fun insert(recipe: Recipe, recipeItemViewModel: RecipeItemViewModel) {
+    fun insert(
+        recipe: Recipe,
+        recipeItemViewModel: RecipeItemViewModel,
+        recipeViewModel: RecipeViewModel,
+        ingredientViewModel: IngredientViewModel
+    ) {
         CoroutineScope(Dispatchers.IO).launch {
             val id = repository.insertRecipe(recipe)
             _newRecipeId.postValue(id)
 
             for (recipeItemAndIngredientEntry in addedRecipeItemAndIngredient.value!!.listIterator()) {
                 recipeItemAndIngredientEntry.recipeItem.relatedRecipeId = id
-                recipeItemViewModel.insert(recipeItemAndIngredientEntry.recipeItem)
             }
+            val recipeItems = addedRecipeItemAndIngredient.value!!.map{ it.recipeItem}
+            recipeItemViewModel.insertAll(recipeItems)
+            val ids = addedRecipeItemAndIngredient.value!!.map { it.ingredient.ingredientId }
+            UpdateDB.postUpdatesAfterModifyIngredient(
+                ids,
+                ingredientViewModel,
+                recipeItemViewModel,
+                recipeViewModel
+            )
         }
     }
 
-    suspend fun updateRecipeItemAmount(recipeItem: RecipeItem, amount: Double) {
+    fun updateRecipeItemAmount(recipeItem: RecipeItem, amount: Double) {
         for (recipeItemAndIngredient in addedRecipeItemAndIngredient.value!!) {
             if (recipeItemAndIngredient.recipeItem.relatedIngredientId == recipeItem.relatedIngredientId) {
                 recipeItemAndIngredient.recipeItem.recipeAmount = amount
