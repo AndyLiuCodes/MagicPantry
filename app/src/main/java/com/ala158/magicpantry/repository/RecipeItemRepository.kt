@@ -22,9 +22,9 @@ class RecipeItemRepository(private val recipeItemDAO: RecipeItemDAO) {
         }
     }
 
-    fun insertAllRecipeItemsIntoRecipe(recipeItems: List<RecipeItem>) {
+    fun insertRecipeItemList(recipeItems: List<RecipeItem>) {
         CoroutineScope(Dispatchers.IO).launch {
-            recipeItemDAO.insertAllRecipeItems(recipeItems)
+            recipeItemDAO.insertRecipeItemList(recipeItems)
         }
     }
 
@@ -38,6 +38,12 @@ class RecipeItemRepository(private val recipeItemDAO: RecipeItemDAO) {
         }
     }
 
+    fun deleteRecipeItemList(recipeItems: List<RecipeItem>) {
+        CoroutineScope(Dispatchers.IO).launch {
+            recipeItemDAO.deleteRecipeItemList(recipeItems)
+        }
+    }
+
     fun deleteRecipeItemById(id: Long) {
         CoroutineScope(Dispatchers.IO).launch {
             recipeItemDAO.deleteRecipeItemById(id)
@@ -47,6 +53,12 @@ class RecipeItemRepository(private val recipeItemDAO: RecipeItemDAO) {
     fun updateRecipeItem(recipeItem: RecipeItem) {
         CoroutineScope(Dispatchers.IO).launch {
             recipeItemDAO.updateRecipeItem(recipeItem)
+        }
+    }
+
+    fun updateRecipeItemList(recipeItems: List<RecipeItem>) {
+        CoroutineScope(Dispatchers.IO).launch {
+            recipeItemDAO.updateRecipeItemList(recipeItems)
         }
     }
 

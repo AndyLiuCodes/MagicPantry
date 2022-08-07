@@ -29,8 +29,8 @@ class RecipeItemViewModel(private val repository: RecipeItemRepository) : ViewMo
         repository.insertRecipeItemIntoRecipe(recipeItem)
     }
 
-    fun insertAll(recipeItems: List<RecipeItem>) {
-        repository.insertAllRecipeItemsIntoRecipe(recipeItems)
+    fun insertList(recipeItems: List<RecipeItem>) {
+        repository.insertRecipeItemList(recipeItems)
     }
 
     fun insertSync(recipeItem: RecipeItem) {
@@ -41,12 +41,20 @@ class RecipeItemViewModel(private val repository: RecipeItemRepository) : ViewMo
         repository.deleteRecipeItem(recipeItem)
     }
 
+    fun deleteList(recipeItems: List<RecipeItem>) {
+        repository.deleteRecipeItemList(recipeItems)
+    }
+
     fun deleteById(id: Long) {
         repository.deleteRecipeItemById(id)
     }
 
     fun update(recipeItem: RecipeItem) {
         repository.updateRecipeItem(recipeItem)
+    }
+
+    fun updateList(recipeItems: List<RecipeItem>) {
+        repository.updateRecipeItemList(recipeItems)
     }
 
     fun updateSync(recipeItem: RecipeItem) {

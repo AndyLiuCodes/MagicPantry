@@ -19,7 +19,7 @@ interface RecipeItemDAO {
     suspend fun insertRecipeItem(recipeItem: RecipeItem): Long
 
     @Insert
-    suspend fun insertAllRecipeItems(recipeItems: List<RecipeItem>)
+    suspend fun insertRecipeItemList(recipeItems: List<RecipeItem>)
 
     @Insert
     fun insertRecipeItemSync(recipeItem: RecipeItem): Long
@@ -27,11 +27,17 @@ interface RecipeItemDAO {
     @Delete
     suspend fun deleteRecipeItem(recipeItem: RecipeItem)
 
+    @Delete
+    suspend fun deleteRecipeItemList(recipeItems: List<RecipeItem>)
+
     @Query("DELETE from recipe_item WHERE recipeItemId = :recipeItemIdKey")
     suspend fun deleteRecipeItemById(recipeItemIdKey: Long)
 
     @Update
     suspend fun updateRecipeItem(recipeItem: RecipeItem)
+
+    @Update
+    suspend fun updateRecipeItemList(recipeItems: List<RecipeItem>)
 
     @Update
     fun updateRecipeItemSync(recipeItem: RecipeItem)
