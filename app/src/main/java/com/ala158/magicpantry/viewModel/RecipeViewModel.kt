@@ -27,7 +27,8 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
     // Editing recipe variables
     var originalRecipeData: RecipeWithRecipeItems? = null
     var originalRecipeIngredientIdSet = mutableSetOf<Long>()
-    var originalRecipeDataDeletedIds = mutableSetOf<Long>()
+    // Stores <unique ingredient id, recipe item>
+    var originalRecipeDataToBeDeletedRecipeItems = mutableMapOf<Long, RecipeItem>()
 
     init {
         addedRecipeItemAndIngredient.value = ArrayList()
@@ -70,18 +71,20 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
             // Update Ingredient List in recipe
             for (recipeItemAndIngredient in addedRecipeItemAndIngredient.value!!.listIterator()) {
                 // If item exists in original set then update it
-                if (originalRecipeIngredientIdSet.contains(recipeItemAndIngredient.ingredient.ingredientId)) {
+                if (originalRecipeIngredientIdSet.contains(recipeItemAndIngredient.ingredient.ingredientId) &&
+                        !originalRecipeDataToBeDeletedRecipeItems.keys.contains(recipeItemAndIngredient.ingredient.ingredientId)) {
                     recipeItemViewModel.update(recipeItemAndIngredient.recipeItem)
                 } else {
-                    // if item does not exist in original set, then insert it
+                    // if item does not exist in original set, then insert it or if the original
+                    // was marked for deletion
                     recipeItemAndIngredient.recipeItem.relatedRecipeId = recipe.recipeId
                     recipeItemViewModel.insert(recipeItemAndIngredient.recipeItem)
                 }
             }
 
             // For deleted items that are in the original set, then delete it from DB
-            for (deletedId in originalRecipeDataDeletedIds) {
-                recipeItemViewModel.deleteById(deletedId)
+            for (toDeleteRecipeItem in originalRecipeDataToBeDeletedRecipeItems.values) {
+                recipeItemViewModel.deleteById(toDeleteRecipeItem.recipeItemId)
             }
         }
     }

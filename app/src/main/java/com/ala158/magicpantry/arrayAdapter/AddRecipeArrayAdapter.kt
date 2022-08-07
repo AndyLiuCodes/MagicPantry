@@ -23,7 +23,7 @@ class AddRecipeArrayAdapter(
     }
 
     interface OnRecipeItemDeleteClickListener {
-        fun onRecipeItemDelete(name: String, unit: String)
+        fun onRecipeItemDelete(deleteTarget: RecipeItemAndIngredient)
     }
 
     override fun getCount(): Int {
@@ -56,10 +56,7 @@ class AddRecipeArrayAdapter(
 
         deleteBtn.setOnClickListener {
             recipeItemAndIngredients.removeAt(position)
-            onRecipeItemDeleteClickListener.onRecipeItemDelete(
-                recipeItemAndIngredient.ingredient.name,
-                recipeItemAndIngredient.recipeItem.recipeUnit
-            )
+            onRecipeItemDeleteClickListener.onRecipeItemDelete(recipeItemAndIngredient)
         }
 
         amount.text = recipeItemAndIngredient.recipeItem.recipeAmount.toBigDecimal().toPlainString()

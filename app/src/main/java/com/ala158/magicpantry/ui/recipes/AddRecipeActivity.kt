@@ -267,12 +267,11 @@ class AddRecipeActivity :
         onRecipeIngredientAmountChangeDialog.show(supportFragmentManager, "Change recipe ingredient amount")
     }
 
-    override fun onRecipeItemDelete(name: String, unit: String) {
+    override fun onRecipeItemDelete(deleteTarget: RecipeItemAndIngredient) {
         var foundIdx = -1
         for (idx in  0 until recipeViewModel.addedRecipeItemAndIngredient.value!!.size) {
             val recipeItemAndIngredientEntry = recipeViewModel.addedRecipeItemAndIngredient.value!![idx]
-            if (recipeItemAndIngredientEntry.ingredient.name == name &&
-                recipeItemAndIngredientEntry.recipeItem.recipeUnit == unit) {
+            if (recipeItemAndIngredientEntry.ingredient.ingredientId == deleteTarget.ingredient.ingredientId) {
                 foundIdx = idx
                 break
             }
