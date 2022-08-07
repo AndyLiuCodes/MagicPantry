@@ -8,6 +8,21 @@
     android:orientation="vertical"
     tools:context=".ui.manualingredientinput.ManualIngredientInputActivity">
 
+    <TextView
+        android:id="@+id/header_review_ingredients_edit_activity"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/rounded_bg_blue"
+        android:paddingStart="15dp"
+        android:layout_marginBottom="10dp"
+        android:text="Edit Ingredient"
+        android:textColor="@color/white"
+        android:gravity="center_vertical"
+        android:textSize="22sp"
+        android:textStyle="bold"
+        tools:ignore="RtlSymmetry" />
+
     <ScrollView
         android:id="@+id/pantry_add_inputs"
         android:layout_width="match_parent"
@@ -25,25 +40,26 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/manual_ingredient_name_label"
-                android:textSize="22sp"
+                android:textSize="15sp"
+                android:textColor="@color/black"
                 android:textStyle="bold" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/manual_input_ingredient_area"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/mp_grey"
-                app:boxStrokeColor="@color/mp_grey"
                 app:boxStrokeWidth="0dp"
-                app:boxStrokeWidthFocused="4dp">
+                android:layout_marginVertical="5dp"
+                app:boxStrokeWidthFocused="0dp" >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/manual_input_ingredient_name"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/add_recipe_edit_text_style"
+                    android:padding="10dp"
                     android:inputType="text"
-                    android:textSize="20sp"
+                    android:textSize="15sp"
                     android:maxLength="50"/>
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -65,25 +81,26 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/manual_amount_label"
-                        android:textSize="22sp"
+                        android:textSize="15sp"
+                        android:textColor="@color/black"
                         android:textStyle="bold" />
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/manual_input_amount_area"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@color/mp_grey"
-                        app:boxStrokeColor="@color/mp_grey"
                         app:boxStrokeWidth="0dp"
-                        app:boxStrokeWidthFocused="4dp">
+                        android:layout_marginBottom="5dp"
+                        app:boxStrokeWidthFocused="0dp" >
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/manual_input_amount"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:background="@drawable/add_recipe_edit_text_style"
+                            android:padding="10dp"
                             android:inputType="numberDecimal"
-                            android:textSize="20sp"
+                            android:textSize="15sp"
                             android:maxLength="8"/>
 
                     </com.google.android.material.textfield.TextInputLayout>
@@ -100,16 +117,17 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="@string/manual_unit_label"
-                        android:textSize="22sp"
+                        android:textSize="15sp"
+                        android:textColor="@color/black"
                         android:textStyle="bold" />
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
-                        android:background="@color/mp_grey"
-                        app:boxStrokeColor="@color/mp_grey"
-                        app:boxStrokeWidth="0dp"
-                        app:boxStrokeWidthFocused="4dp">
+                        android:background="@drawable/add_recipe_edit_text_style"
+                        android:layout_marginBottom="5dp"
+                        android:maxLength="100"
+                        android:padding="0dp">
 
                         <Spinner
                             android:id="@+id/manual_input_unit"
@@ -127,25 +145,26 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="@string/manual_price_label"
-                android:textSize="22sp"
+                android:textSize="15sp"
+                android:textColor="@color/black"
                 android:textStyle="bold" />
 
             <com.google.android.material.textfield.TextInputLayout
                 android:id="@+id/manual_input_price_area"
-                style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@color/mp_grey"
-                app:boxStrokeColor="@color/mp_grey"
                 app:boxStrokeWidth="0dp"
-                app:boxStrokeWidthFocused="4dp">
+                android:layout_marginBottom="5dp"
+                app:boxStrokeWidthFocused="0dp" >
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/manual_input_price"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:background="@drawable/add_recipe_edit_text_style"
+                    android:padding="10dp"
                     android:inputType="numberDecimal"
-                    android:textSize="20sp"
+                    android:textSize="15sp"
                     android:maxLength="8"/>
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -161,7 +180,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="match_parent"
                     android:text="@string/manual_isnotify_label"
-                    android:textSize="22sp"
+                    android:textSize="15sp"
+                    android:textColor="@color/black"
                     android:textStyle="bold"
                     android:gravity="center_vertical"/>
 
@@ -185,7 +205,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:text="@string/manual_threshold_label"
-                    android:textSize="16sp"
+                    android:textSize="13.5sp"
+                    android:textColor="@color/black"
                     android:textStyle="bold"
                     android:layout_marginTop="5dp" />
 
@@ -196,21 +217,21 @@
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/manual_input_threshold_area"
-                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:background="@color/mp_grey"
-                        app:boxStrokeColor="@color/mp_grey"
                         app:boxStrokeWidth="0dp"
-                        app:boxStrokeWidthFocused="4dp"
-                        android:layout_weight="8">
+                        android:layout_marginVertical="5dp"
+                        app:boxStrokeWidthFocused="0dp"
+                        android:layout_weight="8" >
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/manual_input_threshold"
                             android:layout_width="match_parent"
                             android:layout_height="wrap_content"
+                            android:background="@drawable/add_recipe_edit_text_style"
+                            android:padding="10dp"
                             android:inputType="numberDecimal"
-                            android:textSize="20sp"
+                            android:textSize="15sp"
                             android:maxLength="8"/>
 
                     </com.google.android.material.textfield.TextInputLayout>
@@ -225,10 +246,10 @@
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
                         android:layout_weight="5"
-                        android:textSize="20sp"
+                        android:textSize="15sp"
                         android:textColor="@color/black"
                         android:gravity="center_vertical"
-                        android:layout_marginLeft="5dp" />
+                        android:layout_marginStart="5dp" />
 
                 </LinearLayout>
             </LinearLayout>

@@ -303,7 +303,8 @@ class EditRecipeActivity :
             var errorMsg = ""
 
             if (title.text.toString().trim() == "") {
-                errorMsg += "• The ingredient name cannot be empty"
+                errorMsg += "• The recipe name cannot be empty"
+                Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show()
                 recipeNameLabel.setTextColor(resources.getColor(R.color.mp_red, null))
                 isRecipeNameValid = false
             }
