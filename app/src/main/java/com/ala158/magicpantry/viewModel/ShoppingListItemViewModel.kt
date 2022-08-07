@@ -68,5 +68,22 @@ class ShoppingListItemViewModel(private val repository: ShoppingListItemReposito
             }
         }
     }
+
+    fun insertLowIngredientsFromNotifications(ingredients: List<Ingredient>) {
+        CoroutineScope(Dispatchers.IO).launch {
+            for (ingredient in ingredients) {
+                val existingShoppingListItem = getShoppingListItemByIngredientId(ingredient.ingredientId)
+                if (existingShoppingListItem == null) {
+                    // Need to add it to the shopping list
+                    val newShoppingListItem = ShoppingListItem(
+                        0.0,
+                        false,
+                        ingredient.ingredientId
+                    )
+                    insert(newShoppingListItem)
+                }
+            }
+        }
+    }
 }
 

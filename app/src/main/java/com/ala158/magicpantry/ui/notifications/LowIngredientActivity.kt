@@ -1,24 +1,23 @@
 package com.ala158.magicpantry.ui.notifications
 
 import android.os.Bundle
-import android.view.View
 import android.widget.Button
 import android.widget.ListView
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.LowIngredientArrayAdapter
-import com.ala158.magicpantry.data.Ingredient
-import com.ala158.magicpantry.data.Notification
 import com.ala158.magicpantry.data.NotificationWithIngredients
-import com.ala158.magicpantry.viewModel.IngredientViewModel
+import com.ala158.magicpantry.dialogs.AddMissingIngredientsToShoppingListDialog
 import com.ala158.magicpantry.viewModel.NotificationViewModel
 import com.ala158.magicpantry.viewModel.ShoppingListItemViewModel
 import java.text.SimpleDateFormat
 import java.util.*
 
-class LowIngredientActivity : AppCompatActivity() {
+class LowIngredientActivity : AppCompatActivity(),
+    AddMissingIngredientsToShoppingListDialog.AddMissingIngredientDialogListener {
     private lateinit var notificationViewModel: NotificationViewModel
     private lateinit var shoppingListItemViewModel: ShoppingListItemViewModel
 
@@ -37,7 +36,7 @@ class LowIngredientActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_low_ingredient)
 
-        id = intent.getLongExtra("NotificationId", -1L )
+        id = intent.getLongExtra("NotificationId", -1L)
         pos = intent.getIntExtra("NotificationPosition", 0)
 
         headerTextView = findViewById(R.id.header_notifications)
@@ -64,9 +63,9 @@ class LowIngredientActivity : AppCompatActivity() {
         val lowIngredientAdapter = LowIngredientArrayAdapter(this, ArrayList())
         ingredientsListView.adapter = lowIngredientAdapter
 
-        notificationViewModel.allNotifications.observe(this) {
-            if (it.isNotEmpty()) {
-                currNotification = it[pos]
+        notificationViewModel.allNotifications.observe(this) { notifications ->
+            if (notifications.isNotEmpty()) {
+                currNotification = notifications[pos]
                 lowIngredientAdapter.replace(currNotification.ingredients)
 
                 if (!currNotification.notification.isRead) {
@@ -74,22 +73,15 @@ class LowIngredientActivity : AppCompatActivity() {
                     notificationViewModel.updateRead(currNotification.notification)
                 }
 
-                if(id != -1L){
-                    notificationViewModel.getById(id).observe(this){
-                        val notification = it.notification
-                        val ingredients =it.ingredients
+                if (id != -1L) {
+                    notificationViewModel.getById(id).observe(this) {
+                        val ingredients = it.ingredients
                         lowIngredientListArrayAdapter.replace(ingredients)
                         lowIngredientListArrayAdapter.notifyDataSetChanged()
                     }
                 }
             }
         }
-
-        ingredientViewModel = Util.createViewModel(
-            this,
-            IngredientViewModel::class.java,
-            Util.DataType.INGREDIENT
-        )
 
         shoppingListItemViewModel = Util.createViewModel(
             this,
@@ -99,11 +91,30 @@ class LowIngredientActivity : AppCompatActivity() {
 
         val addAllBtn = findViewById<Button>(R.id.btn_add_ingredient_notifications)
         addAllBtn.setOnClickListener {
-            saveToShoppingList()
+            saveAllToShoppingList()
         }
     }
 
-    private fun saveToShoppingList() {
-        // TODO: Add all valid items to the shopping list
+    private fun saveAllToShoppingList() {
+        // Open dialog for confirmation to add all missing ingredients to shopping list
+        val addMissingIngredientsToShoppingListDialog = AddMissingIngredientsToShoppingListDialog()
+        addMissingIngredientsToShoppingListDialog.show(
+            supportFragmentManager,
+            "Add Missing Ingredients"
+        )
+    }
+
+    override fun onConfirmationClick(isConfirm: Boolean) {
+        // Add the missing ingredients from the notification to the shopping list
+        if (isConfirm) {
+            shoppingListItemViewModel.insertLowIngredientsFromNotifications(
+                lowIngredientListArrayAdapter.validIngredients
+            )
+            Toast.makeText(
+                this,
+                "Added missing ingredients to shopping list!",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 }

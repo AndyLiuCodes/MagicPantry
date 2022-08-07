@@ -63,7 +63,7 @@ class SingleRecipeActivity : AppCompatActivity(),
 
     private lateinit var notificationViewModel: NotificationViewModel
     private lateinit var notificationManager: NotificationManager
-    private var lowIngredients:MutableList<Ingredient> = java.util.ArrayList()
+    private var lowIngredients: MutableList<Ingredient> = java.util.ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -132,7 +132,7 @@ class SingleRecipeActivity : AppCompatActivity(),
                 recipeDescription.text = recipeWithRecipeItems.recipe.description
                 cookingTimeView.text = "${recipeWithRecipeItems.recipe.timeToCook} mins"
                 numOfServingsView.text = "${recipeWithRecipeItems.recipe.servings} servings"
-                if(recipeWithRecipeItems.recipe.numMissingIngredients == 0){
+                if (recipeWithRecipeItems.recipe.numMissingIngredients == 0) {
                     isCookable = true
                     isAbleToCookImageView.setImageResource(R.drawable.ic_baseline_check_box_24)
                     isAbleToCookTextView.text = "Ready to cook!"
@@ -155,7 +155,7 @@ class SingleRecipeActivity : AppCompatActivity(),
                 recipeName.text = recipeWithIngredients.recipe.title
                 cookingTimeView.text = "${recipeWithIngredients.recipe.timeToCook} mins"
                 numOfServingsView.text = "${recipeWithIngredients.recipe.servings} servings"
-                if(recipeWithIngredients.recipe.numMissingIngredients == 0){
+                if (recipeWithIngredients.recipe.numMissingIngredients == 0) {
                     isAbleToCookImageView.setImageResource(R.drawable.ic_baseline_check_box_24)
                     isAbleToCookTextView.text = "Ready to cook!"
                 } else {
@@ -173,8 +173,8 @@ class SingleRecipeActivity : AppCompatActivity(),
             //recipeIngredientArrayAdapter.replaceAllIngredients(it)
             recipeIngredientArrayAdapter.notifyDataSetChanged()
         }
-        notificationViewModel.newNotificationId.observe(this){
-            if(it != 0L) {
+        notificationViewModel.newNotificationId.observe(this) {
+            if (it != 0L) {
                 sendNotification(it)
             }
         }
@@ -200,8 +200,12 @@ class SingleRecipeActivity : AppCompatActivity(),
                 ).show()
             } else {
                 // Open dialog for confirmation to add all missing ingredients to shopping list
-                val addMissingIngredientsToShoppingListDialog = AddMissingIngredientsToShoppingListDialog()
-                addMissingIngredientsToShoppingListDialog.show(supportFragmentManager, "Add Missing Ingredients")
+                val addMissingIngredientsToShoppingListDialog =
+                    AddMissingIngredientsToShoppingListDialog()
+                addMissingIngredientsToShoppingListDialog.show(
+                    supportFragmentManager,
+                    "Add Missing Ingredients"
+                )
             }
         }
 
@@ -242,20 +246,19 @@ class SingleRecipeActivity : AppCompatActivity(),
         notification.date = Calendar.getInstance()
         val recipeItems = recipe.recipeItems
         for (item in recipeItems) {
-            if(item.ingredient.isNotify){
-                if(item.ingredient.amount <= item.ingredient.notifyThreshold){
+            if (item.ingredient.isNotify) {
+                if (item.ingredient.amount <= item.ingredient.notifyThreshold) {
                     lowIngredients.add(item.ingredient)
                 }
             }
         }
-        if(lowIngredients.size > 0 ){
-            if(lowIngredients.size == 1){
+        if (lowIngredients.size > 0) {
+            if (lowIngredients.size == 1) {
                 notification.description = "Low On ${lowIngredients[0].name}"
+            } else {
+                notification.description = "Low On ${lowIngredients.size} ingredients"
             }
-            else{
-                notification.description = "Low On ${lowIngredients.size}"
-            }
-            notificationViewModel.insert(notification,lowIngredients)
+            notificationViewModel.insert(notification, lowIngredients)
         }
     }
 

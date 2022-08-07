@@ -11,15 +11,11 @@ import com.ala158.magicpantry.R
 import com.ala158.magicpantry.data.Ingredient
 import com.ala158.magicpantry.data.NotificationWithIngredients
 import java.util.*
-import kotlin.collections.ArrayList
 
 class NotificationsListArrayAdapter(
     private val context: Context,
     private var notificationList: List<NotificationWithIngredients>
 ) : BaseAdapter() {
-
-    // Only show ingredients that have a pantry amount < notify threshold amount
-    var validNotifications = mutableSetOf<Long>()
 
     override fun getCount(): Int {
         return notificationList.size
@@ -57,15 +53,6 @@ class NotificationsListArrayAdapter(
 
     fun replace(newNotifications: List<NotificationWithIngredients>) {
         notificationList = newNotifications
-        // Check if the notification is valid by checking each ingredient amount < notify threshold
-        // amount
-        var items: List<Ingredient>
-        for (notification in notificationList) {
-            items = notification.ingredients.filter { it.amount < it.notifyThreshold }
-            if (items.isNotEmpty()) {
-                validNotifications.add(notification.notification.notificationId)
-            }
-        }
     }
 
     private fun setupDateAge(prevDate: Calendar): String {
