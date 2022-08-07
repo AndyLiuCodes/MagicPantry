@@ -54,7 +54,7 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
                 recipeItemAndIngredientEntry.recipeItem.relatedRecipeId = id
             }
             val recipeItems = addedRecipeItemAndIngredient.value!!.map { it.recipeItem }
-            recipeItemViewModel.insertList(recipeItems)
+            recipeItemViewModel.insertListSync(recipeItems)
             val ids = addedRecipeItemAndIngredient.value!!.map { it.ingredient.ingredientId }
             UpdateDB.postUpdatesAfterModifyIngredient(
                 ids,
@@ -87,6 +87,7 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
         CoroutineScope(Dispatchers.IO).launch {
             // Update Recipe Info
             update(recipe)
+
             val recipeItemsToAdd = mutableListOf<RecipeItem>()
             val recipeItemsToUpdate = mutableListOf<RecipeItem>()
             val recipeItemsToDelete = originalRecipeDataToBeDeletedRecipeItems.values.toList()
@@ -98,30 +99,18 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
                     !originalRecipeDataToBeDeletedRecipeItems.keys.contains(recipeItemAndIngredient.ingredient.ingredientId)
                 ) {
                     recipeItemsToUpdate.add(recipeItemAndIngredient.recipeItem)
-/*
-                    recipeItemViewModel.update(recipeItemAndIngredient.recipeItem)
-*/
                 } else {
                     // if item does not exist in original set, then insert it or if the original
                     // was marked for deletion
                     recipeItemAndIngredient.recipeItem.relatedRecipeId = recipe.recipeId
                     recipeItemsToAdd.add(recipeItemAndIngredient.recipeItem)
-/*
-                    recipeItemViewModel.insert(recipeItemAndIngredient.recipeItem)
-*/
                 }
             }
 
+            recipeItemViewModel.updateListSync(recipeItemsToUpdate)
+            recipeItemViewModel.insertListSync(recipeItemsToAdd)
             // For deleted items that are in the original set, then delete it from DB
-/*
-            for (toDeleteRecipeItem in originalRecipeDataToBeDeletedRecipeItems.values) {
-                recipeItemViewModel.deleteById(toDeleteRecipeItem.recipeItemId)
-            }
-*/
-
-            recipeItemViewModel.updateList(recipeItemsToUpdate)
-            recipeItemViewModel.insertList(recipeItemsToAdd)
-            recipeItemViewModel.deleteList(recipeItemsToDelete)
+            recipeItemViewModel.deleteListSync(recipeItemsToDelete)
 
             val ids = addedRecipeItemAndIngredient.value!!.map { it.ingredient.ingredientId }
             UpdateDB.postUpdatesAfterModifyIngredient(

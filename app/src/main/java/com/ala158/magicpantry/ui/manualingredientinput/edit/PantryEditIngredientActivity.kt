@@ -394,15 +394,17 @@ class PantryEditIngredientActivity : AppCompatActivity() {
         if (item.itemId == R.id.item_menu_manualinput_delete && ingredientId != -1L) {
             // TODO: Update recipe missing ingredients
             CoroutineScope(Dispatchers.IO).launch {
-                pantryEditIngredientViewModel.deleteIngredientEntry(ingredientId)
-                withContext(Dispatchers.Main) {
-                    UpdateDB.postUpdatesAfterModifyIngredient(
-                        arrayListOf(ingredientId),
-                        ingredientViewModel,
-                        recipeItemViewModel,
-                        recipeViewModel
-                    )
+                val ingredientsWithRecipeItems =
+                    ingredientViewModel.findIngredientsWithRecipeItemsById(arrayListOf(ingredientId))
+                val recipeIds = mutableSetOf<Long>()
+                for (ingredientWithRecipeItems in ingredientsWithRecipeItems) {
+                    for (recipeItem in ingredientWithRecipeItems.recipeItems) {
+                        recipeIds.add(recipeItem.relatedRecipeId)
+                    }
                 }
+                pantryEditIngredientViewModel.deleteIngredientEntrySync(ingredientId)
+
+                UpdateDB.updateRecipesMissingIngredients(recipeIds.toList(), recipeViewModel)
             }
             finish()
         }

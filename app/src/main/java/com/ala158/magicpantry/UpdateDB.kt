@@ -86,7 +86,7 @@ object UpdateDB {
         return recipeIdsToUpdate.toList()
     }
 
-    private suspend fun updateRecipesMissingIngredients(
+    suspend fun updateRecipesMissingIngredients(
         recipeIdsToUpdate: List<Long>,
         parentRecipeViewModel: RecipeViewModel
     ) {
