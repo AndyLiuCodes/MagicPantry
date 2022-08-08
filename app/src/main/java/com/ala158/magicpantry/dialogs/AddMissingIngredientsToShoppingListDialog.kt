@@ -6,10 +6,12 @@ import android.content.Context
 import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
+import android.widget.TextView
 import androidx.fragment.app.DialogFragment
 import com.ala158.magicpantry.R
 
-class AddMissingIngredientsToShoppingListDialog : DialogFragment(), DialogInterface.OnClickListener {
+class AddMissingIngredientsToShoppingListDialog(private val isRecipe: Boolean = true) :
+    DialogFragment(), DialogInterface.OnClickListener {
     private lateinit var dialogView: View
     internal lateinit var addMissingIngredientDialogListener: AddMissingIngredientDialogListener
 
@@ -22,6 +24,14 @@ class AddMissingIngredientsToShoppingListDialog : DialogFragment(), DialogInterf
             R.layout.dialog_add_missing_ingredients_to_shopping_list,
             null
         )
+        val questionPrompt = dialogView.findViewById<TextView>(R.id.add_ingredients_shopping_list)
+        if (isRecipe) {
+            questionPrompt.text =
+                getString(R.string.confirm_add_missing_ingredient_to_shopping_list_msg)
+        } else {
+            questionPrompt.text =
+                getString(R.string.confirm_add_low_ingredients_to_shopping_list_msg)
+        }
 
         val dialogBuilder = AlertDialog.Builder(requireActivity())
         dialogBuilder.setView(dialogView)

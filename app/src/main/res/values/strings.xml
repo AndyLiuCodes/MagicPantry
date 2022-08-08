@@ -78,6 +78,11 @@
     <string name="receipt_scanner_scan_btn">Scan</string>
     <string name="receipt_scanner_select_image_btn">Select image</string>
 
+    <!-- Notifications -->
+    <string name="confirm_add_low_ingredients_to_shopping_list_msg">
+        Do you want to add all the low stock ingredients to your shopping list?
+    </string>
+
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 
