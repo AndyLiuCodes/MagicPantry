@@ -50,7 +50,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 app:boxStrokeWidth="0dp"
                 android:layout_marginBottom="5dp"
-                app:boxStrokeWidthFocused="4dp" >
+                app:boxStrokeWidthFocused="4dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/pantry_edit_name"
@@ -91,7 +91,7 @@
                         style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                         app:boxStrokeWidth="0dp"
                         android:layout_marginBottom="5dp"
-                        app:boxStrokeWidthFocused="4dp" >
+                        app:boxStrokeWidthFocused="4dp">
 
                         <com.google.android.material.textfield.TextInputEditText
                             android:id="@+id/pantry_edit_amount"
@@ -155,7 +155,7 @@
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 app:boxStrokeWidth="0dp"
                 android:layout_marginBottom="5dp"
-                app:boxStrokeWidthFocused="4dp" >
+                app:boxStrokeWidthFocused="4dp">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:id="@+id/pantry_edit_price"
@@ -183,7 +183,7 @@
                     android:textSize="20sp"
                     android:textColor="@color/black"
                     android:textStyle="bold"
-                    android:gravity="center_vertical"/>
+                    android:gravity="center_vertical" />
 
                 <CheckBox
                     android:id="@+id/pantry_edit_checkbox_isnotify"
@@ -213,7 +213,7 @@
                 <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:orientation="horizontal" >
+                    android:orientation="horizontal">
 
                     <com.google.android.material.textfield.TextInputLayout
                         android:id="@+id/pantry_edit_threshold_area"
@@ -233,7 +233,7 @@
                             android:padding="10dp"
                             android:inputType="numberDecimal"
                             android:textSize="20sp"
-                            android:maxLength="8"/>
+                            android:maxLength="8" />
 
                     </com.google.android.material.textfield.TextInputLayout>
 

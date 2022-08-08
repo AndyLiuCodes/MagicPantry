@@ -7,6 +7,7 @@ import android.graphics.Matrix
 import android.media.ExifInterface
 import android.net.Uri
 import android.os.Build
+import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
@@ -48,7 +49,7 @@ object Util {
                 return 0f
             }
         } catch (e: Exception) {
-            println(e)
+            Log.d("ROTATE", "getRotationAmount: ERROR: $e")
             // If any issues occur with the viewing the Exif data, then no rotation will occur
             return 0f
         }

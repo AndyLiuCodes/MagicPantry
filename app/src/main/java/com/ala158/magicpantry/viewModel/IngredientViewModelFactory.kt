@@ -7,9 +7,9 @@ import com.ala158.magicpantry.ui.manualingredientinput.ManualIngredientInputView
 import com.ala158.magicpantry.ui.manualingredientinput.edit.PantryEditIngredientViewModel
 import com.ala158.magicpantry.ui.pantry.PantryViewModel
 import com.ala158.magicpantry.ui.reviewingredients.ReviewIngredientsViewModel
-import java.lang.IllegalArgumentException
 
-class IngredientViewModelFactory(private val repository: IngredientRepository) : ViewModelProvider.Factory {
+class IngredientViewModelFactory(private val repository: IngredientRepository) :
+    ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(IngredientViewModel::class.java))
             return IngredientViewModel(repository) as T

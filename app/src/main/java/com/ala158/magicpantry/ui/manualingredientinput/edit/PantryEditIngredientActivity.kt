@@ -17,7 +17,6 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.room.Update
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.UpdateDB
 import com.ala158.magicpantry.Util
@@ -33,7 +32,6 @@ import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.*
 
 class PantryEditIngredientActivity : AppCompatActivity() {
@@ -130,7 +128,7 @@ class PantryEditIngredientActivity : AppCompatActivity() {
             pantryEditIngredientViewModel.getIngredientEntry(ingredientId)
         }
 
-        isNotifyCheckBoxView.setOnCheckedChangeListener() { _, isChecked ->
+        isNotifyCheckBoxView.setOnCheckedChangeListener { _, isChecked ->
 
             if (isChecked) {
                 thresholdSectionLayout.visibility = View.VISIBLE

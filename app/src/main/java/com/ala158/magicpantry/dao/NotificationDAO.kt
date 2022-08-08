@@ -1,7 +1,8 @@
 package com.ala158.magicpantry.dao
 
 import androidx.room.*
-import com.ala158.magicpantry.data.*
+import com.ala158.magicpantry.data.Notification
+import com.ala158.magicpantry.data.NotificationWithIngredients
 import kotlinx.coroutines.flow.Flow
 
 @Dao

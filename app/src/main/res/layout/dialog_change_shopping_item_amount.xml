@@ -35,7 +35,7 @@
                 android:layout_height="match_parent"
                 android:inputType="numberDecimal"
                 android:textSize="20sp"
-                android:maxLength="8"/>
+                android:maxLength="8" />
 
         </com.google.android.material.textfield.TextInputLayout>
 

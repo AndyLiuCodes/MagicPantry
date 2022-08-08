@@ -83,7 +83,7 @@
         <activity
             android:name=".ui.notifications.LowIngredientActivity"
             android:exported="false"
-            android:parentActivityName=".MainActivity"/>
+            android:parentActivityName=".MainActivity" />
 
         <meta-data
             android:name="com.google.android.gms.vision.DEPENDENCIES"

@@ -16,8 +16,7 @@ data class RecipeItemAndIngredient(
     constructor(parcel: Parcel) : this(
         parcel.readParcelable(RecipeItem::class.java.classLoader)!!,
         parcel.readParcelable(Ingredient::class.java.classLoader)!!
-    ) {
-    }
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeParcelable(recipeItem, flags)

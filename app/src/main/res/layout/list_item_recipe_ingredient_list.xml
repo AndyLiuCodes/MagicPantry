@@ -9,7 +9,7 @@
     android:padding="15dp"
     android:paddingBottom="5dp"
     tools:ignore="RtlSymmetry"
-    android:baselineAligned="false" >
+    android:baselineAligned="false">
 
     <TextView
         android:id="@+id/recipe_ingredient_list_item_amount"

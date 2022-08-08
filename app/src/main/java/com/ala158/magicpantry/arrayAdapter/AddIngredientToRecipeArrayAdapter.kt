@@ -26,7 +26,8 @@ class AddIngredientToRecipeArrayAdapter(
     }
 
     override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val view: View = View.inflate(context, R.layout.list_item_add_ingredient_to_recipe_list, null)
+        val view: View =
+            View.inflate(context, R.layout.list_item_add_ingredient_to_recipe_list, null)
 
         val name = view.findViewById<TextView>(R.id.recipe_ingredient_list_item_name)
 

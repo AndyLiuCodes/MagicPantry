@@ -10,8 +10,8 @@ import android.graphics.Bitmap
 import android.net.Uri
 import android.os.Build
 import android.os.Bundle
-import android.os.Parcel
 import android.os.Environment
+import android.os.Parcel
 import android.provider.MediaStore
 import android.text.Editable
 import android.text.TextWatcher
@@ -32,7 +32,6 @@ import com.ala158.magicpantry.data.RecipeItemAndIngredient
 import com.ala158.magicpantry.data.RecipeWithRecipeItems
 import com.ala158.magicpantry.dialogs.ChangeRecipeIngredientAmountDialog
 import com.ala158.magicpantry.ui.ingredientlistadd.IngredientListAddActivity
-import com.ala158.magicpantry.ui.manualingredientinput.edit.ReviewIngredientsEditActivity
 import com.ala158.magicpantry.ui.receiptscanner.ReceiptScannerActivity
 import com.ala158.magicpantry.viewModel.IngredientViewModel
 import com.ala158.magicpantry.viewModel.RecipeItemViewModel
@@ -51,7 +50,7 @@ class EditRecipeActivity :
     private var bitmap: Bitmap? = null
 
     private var isRecipeNameValid = true
-    private lateinit var recipeNameLabel : TextView
+    private lateinit var recipeNameLabel: TextView
 
     private val tag = "MagicPantry"
     private var recipeName = "Recipe"
@@ -309,8 +308,7 @@ class EditRecipeActivity :
                 Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show()
                 recipeNameLabel.setTextColor(resources.getColor(R.color.mp_red, null))
                 isRecipeNameValid = false
-            }
-            else {
+            } else {
                 updateDatabase()
                 edit.remove("edit_recipe_image").apply()
                 Toast.makeText(this, "Recipe Saved!", Toast.LENGTH_SHORT).show()

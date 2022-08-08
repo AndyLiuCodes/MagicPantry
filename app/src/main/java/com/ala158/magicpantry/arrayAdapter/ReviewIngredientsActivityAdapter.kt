@@ -2,7 +2,6 @@ package com.ala158.magicpantry.arrayAdapter
 
 import android.content.Context
 import android.content.Intent
-import android.util.Log
 import android.view.View
 import android.view.ViewGroup
 import android.widget.BaseAdapter
@@ -12,7 +11,6 @@ import androidx.core.os.bundleOf
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.data.Ingredient
 import com.ala158.magicpantry.ui.manualingredientinput.edit.ReviewIngredientsEditActivity
-import com.ala158.magicpantry.ui.reviewingredients.ReviewIngredientsActivity
 import java.text.DecimalFormat
 
 class ReviewIngredientsActivityAdapter(
@@ -43,7 +41,6 @@ class ReviewIngredientsActivityAdapter(
         val ingredient = ingredients[position]
 
         editButton.setOnClickListener {
-            Log.d("REVIEW EDIT", "getView: edit button $position")
             val bundle = bundleOf(ReviewIngredientsEditActivity.BUNDLE_POSITION_KEY to position)
 
             val intent = Intent(context, ReviewIngredientsEditActivity::class.java)
@@ -69,7 +66,6 @@ class ReviewIngredientsActivityAdapter(
         val priceString = numberFormatter.format(ingredient.price)
         priceUnitView.text = "$$priceString/${ingredient.unit}"
 
-        Log.d("myVal", "${ingredient.amount}x ${ingredient.name}")
         return view
     }
 }

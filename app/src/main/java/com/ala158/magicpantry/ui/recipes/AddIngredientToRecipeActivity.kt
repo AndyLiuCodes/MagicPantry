@@ -13,9 +13,9 @@ import com.ala158.magicpantry.data.RecipeWithRecipeItems
 import com.ala158.magicpantry.viewModel.RecipeViewModel
 
 class AddIngredientToRecipeActivity : AppCompatActivity() {
-    private lateinit var ingredients : ListView
+    private lateinit var ingredients: ListView
 
-    private lateinit var recipeViewModel : RecipeViewModel
+    private lateinit var recipeViewModel: RecipeViewModel
 
     private var recipeIngredientArray = arrayOf<RecipeWithRecipeItems>()
 
@@ -45,9 +45,7 @@ class AddIngredientToRecipeActivity : AppCompatActivity() {
         val adapter = AddIngredientToRecipeArrayAdapter(this, recipeIngredientArray)
         ingredients.adapter = adapter
 
-        ingredients.setOnItemClickListener { parent: AdapterView<*>, _: View, _: Int, _: Long->
-            println("debug: $parent")
-        }
+        ingredients.setOnItemClickListener { parent: AdapterView<*>, _: View, _: Int, _: Long -> }
 
         val saveIngredients = findViewById<Button>(R.id.btn_add_all_ingredients_to_recipe)
         saveIngredients.setOnClickListener {

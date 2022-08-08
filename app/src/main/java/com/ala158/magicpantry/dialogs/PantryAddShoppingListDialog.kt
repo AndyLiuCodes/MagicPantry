@@ -65,10 +65,11 @@ class PantryAddShoppingListDialog : DialogFragment(), DialogInterface.OnClickLis
 
     override fun onClick(dialog: DialogInterface?, which: Int) {
         if (which == DialogInterface.BUTTON_POSITIVE) {
-            val amountView = dialogView.findViewById<TextInputEditText>(R.id.add_to_shopping_list_amount)
+            val amountView =
+                dialogView.findViewById<TextInputEditText>(R.id.add_to_shopping_list_amount)
             var amount = 0.0
 
-            if( amountView.text.toString() != "")
+            if (amountView.text.toString() != "")
                 amount = amountView.text.toString().toDouble()
 
             if (pantryAddShoppingListDialogListener != null) {
