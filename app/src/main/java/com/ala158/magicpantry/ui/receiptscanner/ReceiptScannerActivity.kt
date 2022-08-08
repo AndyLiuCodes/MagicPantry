@@ -11,7 +11,6 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.text.method.ScrollingMovementMethod
-import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -29,7 +28,9 @@ import com.google.mlkit.vision.text.TextRecognition
 import com.google.mlkit.vision.text.latin.TextRecognizerOptions
 import java.io.File
 
-
+//scan receipt if successful display results in ReviewIngredientsActivity
+// used google mlkit
+//  https://developers.google.com/ml-kit/vision/text-recognition
 @Suppress("DEPRECATION")
 class ReceiptScannerActivity : AppCompatActivity() {
     private lateinit var imageUri: Uri
@@ -160,7 +161,6 @@ class ReceiptScannerActivity : AppCompatActivity() {
                     // Task completed successfully
                     textView.text = "Success"
                     success(visionText)
-//                  parseResults(visionText)
                 }
                 .addOnFailureListener {
                     // Task failed with an exception
@@ -172,132 +172,6 @@ class ReceiptScannerActivity : AppCompatActivity() {
             ).show()
         }
     }
-
-    /*private fun parseResults(result: Text) {
-        for (block in result.textBlocks) {
-            val blockText = block.text
-            val blockCornerPoints = block.cornerPoints
-            val blockFrame = block.boundingBox
-            if (blockText.lowercase().contains("sub total") || blockText.lowercase()
-                    .contains("subtotal")
-            ) {
-                subTotalBlock = block
-            }
-            for (line in block.lines) {
-                val lineText = line.text
-                val lineCornerPoints = line.cornerPoints
-                val lineFrame = line.boundingBox
-                if (blockText.lowercase().contains("sub total") || blockText.lowercase()
-                        .contains("subtotal")
-                ) {
-                    subTotalLine = line
-                }
-                for (element in line.elements) {
-                    val elementText = element.text
-                    val elementCornerPoints = element.cornerPoints
-                    val elementFrame = element.boundingBox
-                }
-            }
-        }
-
-        if (subTotalBlock != null) {
-            val filteredResultBlocks = mutableListOf<Text.TextBlock>()
-            for (block in result.textBlocks) {
-                if (block.cornerPoints?.get(0)?.y!! < subTotalBlock?.cornerPoints?.get(0)?.y!! && block.cornerPoints?.get(
-                        3
-                    )?.y!! < subTotalBlock!!.cornerPoints?.get(3)?.y!!
-                ) {
-                    filteredResultBlocks.add(block)
-                }
-            }
-            val filteredResultLine = mutableListOf<Text.TextBlock>()
-            for (i in 0 until filteredResultBlocks.size) {
-                for (lines in filteredResultBlocks[i].lines) {
-                    if (lines.cornerPoints?.get(0)?.y!! > subTotalLine.cornerPoints?.get(
-                            0
-                        )?.y!!
-                        || (lines.cornerPoints?.get(3)?.y!! > subTotalLine.cornerPoints?.get(
-                            3
-                        )?.y!!)
-                    ) {
-                        break
-                    }
-                }
-                filteredResultLine.add(filteredResultBlocks[i])
-            }
-            //Looks for prices and ignores phone numbers
-            val filterDecimal = mutableListOf<Text.TextBlock>()
-            for (i in 0 until filteredResultLine.size) {
-                if (filteredResultLine[i].text.contains(Regex("\\d{1,3}(?:[., ]\\d{3})*(?:[., ]\\d{2})"))) {
-                    if (filteredResultLine[i].text.contains(Regex("^(\\+\\d{1,2}\\s?)?1?\\-?\\.?\\s?\\(?\\d{3}\\)?[\\s.-]?\\d{3}[\\s.-]?\\d{4}\$"))
-                        || filteredResultLine[i].text.lowercase().contains("phone")
-                    ) {
-                        continue
-                    }
-                    filterDecimal.add(filteredResultLine[i])
-                }
-            }
-            //Gets all lines that correlate to ingredients
-            var minDecimal: Text.Line = filterDecimal[0].lines[0]
-            for (i in 0 until filterDecimal.size) {
-                for (lines in filterDecimal[i].lines) {
-                    if (lines.text.contains(Regex("\\d{1,3}(?:[., ]\\d{3})*(?:[., ]\\d{2})"))) {
-                        minDecimal = lines
-                        break
-                    }
-                }
-                break
-            }
-            for (i in 0 until filterDecimal.size) {
-                for (lines in filterDecimal[i].lines) {
-                    if (lines.text.contains(Regex("\\d{1,3}(?:[., ]\\d{3})*(?:[., ]\\d{2})"))) {
-                        if (lines.cornerPoints?.get(0)?.y!! < minDecimal.cornerPoints?.get(
-                                0
-                            )?.y!!
-                        ) {
-                            minDecimal = lines
-                        }
-                    }
-                }
-            }
-            val filteredProductt = mutableListOf<Text.Line>()
-            for (i in 0 until filteredResultBlocks.size) {
-                for (lines in filteredResultBlocks[i].lines) {
-                    if (lines.cornerPoints?.get(0)?.y!! >= minDecimal?.cornerPoints?.get(
-                            0
-                        )?.y!! &&
-                        lines.cornerPoints?.get(2)?.y!! >= minDecimal?.cornerPoints?.get(
-                            2
-                        )?.y!!
-                    ) {
-                        filteredProductt.add(lines)
-                        textView.text = "${textView.text} \n add"
-
-                    }
-                }
-            }
-
-            val filteredProduct = mutableListOf<Text.Line>()
-            val filteredPrice = mutableListOf<Text.Line>()
-            val filteredQuantity = ArrayList<Int>()
-            for (i in 0 until filteredProductt.size) {
-                if (filteredProductt[i].text.lowercase()
-                        .contains(Regex("[a-zA-Z]+")) && !filteredProductt[i].text.contains(
-                        Regex("\\d{1,3}(?:[., ]\\d{3})*(?:[., ]\\d{2})")
-                    )
-                ) {
-                    filteredProduct.add(filteredProductt[i])
-                    textView.text = "\n ${filteredProductt[i].text}"
-                    filteredQuantity.add(1)
-                } else if (!(filteredProductt[i].text.lowercase()
-                        .contains("/")) || filteredProductt[i].text.contains(Regex("\\d{1,3}(?:[., ]\\d{3})*(?:[., ]\\d{2})"))
-                ) {
-                    filteredPrice.add(filteredProductt[i])
-                    textView.text = "\n ${filteredProductt[i].text}"
-                }
-            }
-        }
-    }*/
 
     // successfully processed image
     private fun success(result: Text) {
@@ -327,12 +201,18 @@ class ReceiptScannerActivity : AppCompatActivity() {
                 if (resultBlocks[i].lines[0].text.count { it == '.' } == 1) {
                     if (i > 0 && resultBlocks[i - 1].text.count { it.isLetter() } > 1
                     ) {
-                        for (line in resultBlocks[i - 1].lines) {
-                            helperProducts.add(line.text)
+                        if (!resultBlocks[i - 1].text.lowercase().contains("miles")
+                            && !resultBlocks[i - 1].text.lowercase().contains("total")
+                            && !resultBlocks[i - 1].text.lowercase().contains("visa")) {
+                            for (line in resultBlocks[i - 1].lines) {
+                                helperProducts.add(line.text)
+                            }
                         }
                     }
                     for (line in resultBlocks[i].lines) {
-                        helperPrice.add(line.text)
+                        if (!line.text.contains("-") && !line.text.all { it.isLetter() }) {
+                            helperPrice.add(line.text)
+                        }
                     }
                 }
             }
@@ -341,12 +221,17 @@ class ReceiptScannerActivity : AppCompatActivity() {
         // filter through product block lines to get product name and
         //  get amount of product bought if says
         for (i in 0 until helperProducts.size) {
-            if (!(helperProducts[i].lowercase().contains("sav")) && helperProducts[i].contains("$") && helperProducts[i].any { it.isDigit() }) {
+            if ((helperProducts[i].lowercase().contains("sav"))
+                && !(helperProducts[i].lowercase().contains("saving"))
+                && helperProducts[i].contains("$") && helperProducts[i].contains("/")
+                && helperProducts[i].any { it.isDigit() }) {
                 filteredProducts[filteredProducts.size - 1] =
                     filteredProducts[filteredProducts.size - 1] + ";;" + helperProducts[i]
             } else if ((helperProducts[i] != helperProducts[i].uppercase())
                 && !(helperProducts[i].lowercase().contains("gluten free ltem"))
                 && !(helperProducts[i].lowercase().contains("gluten free item"))
+                && !(helperProducts[i].lowercase().contains("saving"))
+                && !(helperProducts[i].lowercase().contains("$"))
             ) {
                 filteredProducts.add(helperProducts[i])
             }
@@ -395,7 +280,6 @@ class ReceiptScannerActivity : AppCompatActivity() {
             // get image uri, convert it to bitmap and rotate if necessary, then
             // set imageBitmap to display it
             // Help from https://developer.android.com/training/data-storage/shared/media
-            // TODO change how we do our URIs since this logic to fetch the image is slow due to db query
             var imagePath = ""
             val projections = arrayOf(MediaStore.Images.Media.DATA)
             this.contentResolver.query(
@@ -478,6 +362,7 @@ class ReceiptScannerActivity : AppCompatActivity() {
         }
     }
 
+    //reload image on activity resumed
     override fun onResume() {
         super.onResume()
 
@@ -491,6 +376,7 @@ class ReceiptScannerActivity : AppCompatActivity() {
         }
     }
 
+    //delete image if back pressed
     override fun onBackPressed() {
         super.onBackPressed()
 
@@ -498,6 +384,7 @@ class ReceiptScannerActivity : AppCompatActivity() {
         deleteImageFromGallery(filePath)
     }
 
+    //delete image if activity destroyed
     override fun onDestroy() {
         super.onDestroy()
 
