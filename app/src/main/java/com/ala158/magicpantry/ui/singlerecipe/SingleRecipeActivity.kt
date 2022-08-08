@@ -251,7 +251,7 @@ class SingleRecipeActivity : AppCompatActivity(),
         val recipeItems = recipe.recipeItems
         for (item in recipeItems) {
             if (item.ingredient.isNotify) {
-                if (item.ingredient.amount < item.ingredient.notifyThreshold) {
+                if (item.ingredient.amount <= item.ingredient.notifyThreshold) {
                     lowIngredients.add(item.ingredient)
                 }
             }

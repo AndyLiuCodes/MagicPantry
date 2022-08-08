@@ -452,7 +452,7 @@ class PantryEditIngredientActivity : AppCompatActivity() {
             ingredientViewModel.findIngredientsWithRecipeItemsById(ingredientIds)
         for (ingredientWithRecipeItem in ingredientsWithRecipeItems) {
             if (ingredientWithRecipeItem.ingredient.isNotify) {
-                if (ingredientWithRecipeItem.ingredient.amount < ingredientWithRecipeItem.ingredient.notifyThreshold) {
+                if (ingredientWithRecipeItem.ingredient.amount <= ingredientWithRecipeItem.ingredient.notifyThreshold) {
                     lowIngredients.add(ingredientWithRecipeItem.ingredient)
                 }
             }
