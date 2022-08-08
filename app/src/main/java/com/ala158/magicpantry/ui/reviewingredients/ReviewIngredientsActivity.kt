@@ -88,9 +88,7 @@ class ReviewIngredientsActivity : AppCompatActivity() {
             finish()
         }
         addAllButton.setOnClickListener {
-            reviewIngredientsViewModel.ingredientList.value?.let { it1 ->
-                reviewIngredientsViewModel.addToIngredientList(it1)
-            }
+            reviewIngredientsViewModel.ingredientList.value = ingredientList
             reviewIngredientsViewModel.insertAll()
             Toast.makeText(this, "Items added!", Toast.LENGTH_SHORT).show()
             finish()
