@@ -56,11 +56,20 @@
   - View single notification [Elaine]
   - Android notifications not complete yet - using mock data currently
 
-<!-- ## 🌟 Final Demo
+## 🌟 Final Demo
 
+- Pantry
+  - Add notification fields for an ingredient [Andy]
+  - Bug fixes with receipt scanner [Andy/Jason]
+- Recipes
+  - Add, edit and delete ingredients from recipe [Andy/Tyler]
+  - Add missing ingredients from a recipe [Andy]
+  - Delete a recipe [Elaine]
+  - UI fixes with adding and editing a recipe [Elaine]
 - Notification
-  - Creates a notification when an ingredient amount falls below it's set threshold value
-  - Generates an Android notification that directs to notification -->
+  - Creates a notification when an ingredient amount falls below it's set threshold value [Jason]
+  - Generates an Android notification that directs to notification [Jason]
+- DB updates to ensure validity of pantry ingredient amounts and cookable recipes [Tyler]
 
 ## 👥 Team
 
