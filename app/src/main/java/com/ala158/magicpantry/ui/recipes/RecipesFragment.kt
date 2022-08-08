@@ -221,7 +221,7 @@ class RecipesFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
 
     private fun setHeaderAllRecipes() {
         recipeHeader.setBackgroundResource(R.drawable.rounded_bg_blue)
-        recipeHeader.setText(R.string.add_recipe)
+        recipeHeader.setText(R.string.all_recipe)
     }
 
     private fun setHeaderCookableRecipes() {

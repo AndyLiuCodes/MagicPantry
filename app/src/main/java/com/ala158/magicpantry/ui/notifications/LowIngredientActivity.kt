@@ -121,7 +121,8 @@ class LowIngredientActivity : AppCompatActivity(),
 
     private fun saveAllToShoppingList() {
         // Open dialog for confirmation to add all missing ingredients to shopping list
-        val addMissingIngredientsToShoppingListDialog = AddMissingIngredientsToShoppingListDialog()
+        val addMissingIngredientsToShoppingListDialog =
+            AddMissingIngredientsToShoppingListDialog(false)
         addMissingIngredientsToShoppingListDialog.show(
             supportFragmentManager,
             "Add Missing Ingredients"

@@ -4,10 +4,11 @@
     android:layout_height="match_parent">
 
     <TextView
+        android:id="@+id/add_ingredients_shopping_list"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:textSize="16sp"
         android:layout_marginHorizontal="20dp"
-        android:text="@string/confirm_add_missing_ingredient_to_shopping_list_msg" />
+        android:text="@string/confirm_add_missing_ingredient_to_shopping_list_msg"
+        android:textSize="16sp" />
 
 </LinearLayout>
