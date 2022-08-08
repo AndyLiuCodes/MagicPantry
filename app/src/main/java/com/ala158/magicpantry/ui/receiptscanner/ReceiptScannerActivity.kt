@@ -203,6 +203,8 @@ class ReceiptScannerActivity : AppCompatActivity() {
                     ) {
                         if (!resultBlocks[i - 1].text.lowercase().contains("miles")
                             && !resultBlocks[i - 1].text.lowercase().contains("total")
+                            && !resultBlocks[i - 1].text.lowercase().contains("debit")
+                            && !resultBlocks[i - 1].text.lowercase().contains("cash")
                             && !resultBlocks[i - 1].text.lowercase().contains("visa")) {
                             for (line in resultBlocks[i - 1].lines) {
                                 helperProducts.add(line.text)
