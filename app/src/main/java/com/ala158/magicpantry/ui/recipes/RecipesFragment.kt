@@ -8,7 +8,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
-import com.ala158.magicpantry.MockData
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.RecipeListArrayAdapter
@@ -123,87 +122,6 @@ class RecipesFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
             startActivity(intent)
         }
 
-        val addIngredientsButton = view.findViewById<Button>(R.id.addIngredients)
-        val addNotifications = view.findViewById<Button>(R.id.addNotifications)
-        val addRecipeItems1 = view.findViewById<Button>(R.id.addRecipeItems1)
-        val addRecipe1 = view.findViewById<Button>(R.id.addRecipe1)
-        val addRecipeItems2 = view.findViewById<Button>(R.id.addRecipeItems2)
-        val addRecipe2 = view.findViewById<Button>(R.id.addRecipe2)
-        val deleteRecipesButton = view.findViewById<Button>(R.id.deleteRecipes)
-        val deleteIngredientsButton = view.findViewById<Button>(R.id.deleteIngredients)
-        val deleteNotificationsButton = view.findViewById<Button>(R.id.deleteNotifications)
-
-        addIngredientsButton.setOnClickListener {
-            Log.d("MOCK_DATA", "onCreateView: ADDING INGREDIENTS...")
-            ingredientViewModel.insertAll(MockData.mockIngredients)
-        }
-
-        addNotifications.setOnClickListener {
-            Log.d("MOCK_DATA", "onCreateView: ADDING NOTIFICATIONS...")
-            if (ingredients.isNotEmpty()) {
-                notificationViewModel.insert(MockData.notifications[0], ingredients.subList(6, 8))
-                notificationViewModel.insert(MockData.notifications[1], listOf(ingredients[1]))
-            }
-        }
-
-        addRecipeItems1.setOnClickListener {
-            Log.d("MOCK_DATA", "onCreateView: ADDING RECIPE ITEMS FOR RECIPE 1 TO VIEW MODEL...")
-            recipeViewModel.addedRecipeItemAndIngredient.value =
-                MockData.generateFrenchToastIngredientList(ingredients.subList(0, 1 + 1))
-        }
-
-        addRecipe1.setOnClickListener {
-            Log.d("MOCK_DATA", "onCreateView: ADDING RECIPE 1...")
-            recipeViewModel.insert(
-                MockData.frenchToastRecipe,
-                recipeItemViewModel,
-                recipeViewModel,
-                ingredientViewModel
-            )
-        }
-
-        addRecipeItems2.setOnClickListener {
-            Log.d("MOCK_DATA", "onCreateView: ADDING RECIPE ITEMS FOR RECIPE 2 TO VIEW MODEL...")
-            recipeViewModel.addedRecipeItemAndIngredient.value =
-                MockData.generateSpaghettiIngredientList(ingredients.subList(2, 4 + 1))
-        }
-
-        addRecipe2.setOnClickListener {
-            Log.d("MOCK_DATA", "onCreateView: ADDING RECIPE 2...")
-            recipeViewModel.insert(
-                MockData.spaghettiRecipe,
-                recipeItemViewModel,
-                recipeViewModel,
-                ingredientViewModel
-            )
-        }
-
-        deleteRecipesButton.setOnClickListener {
-            Log.d("MOCK_DATA", "onCreateView: DELETING ALL RECIPES...")
-            if (recipes.isNotEmpty()) {
-                for (recipeWithRecipeItems in recipes) {
-                    recipeViewModel.delete(recipeWithRecipeItems.recipe)
-                }
-            }
-        }
-
-        deleteIngredientsButton.setOnClickListener {
-            Log.d("MOCK_DATA", "onCreateView: DELETING ALL INGREDIENTS...")
-            if (ingredients.isNotEmpty()) {
-                for (ingredient in ingredients) {
-                    ingredientViewModel.delete(ingredient)
-                }
-            }
-        }
-
-        deleteNotificationsButton.setOnClickListener {
-            Log.d("MOCK_DATA", "onCreateView: DELETING ALL NOTIFICATIONS...")
-            if (notifications.isNotEmpty()) {
-                for (notificationWithIngredients in notifications) {
-                    notificationViewModel.deleteById(notificationWithIngredients.notification.notificationId)
-                }
-            }
-        }
         return view
     }
 
