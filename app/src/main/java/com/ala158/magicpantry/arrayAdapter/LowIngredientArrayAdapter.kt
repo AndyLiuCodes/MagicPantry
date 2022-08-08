@@ -4,7 +4,10 @@ import android.annotation.SuppressLint
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.BaseAdapter
+import android.widget.ImageButton
+import android.widget.TextView
+import android.widget.Toast
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.data.Ingredient
 import com.ala158.magicpantry.viewModel.ShoppingListItemViewModel

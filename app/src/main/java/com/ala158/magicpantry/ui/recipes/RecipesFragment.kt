@@ -2,7 +2,6 @@ package com.ala158.magicpantry.ui.recipes
 
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -11,28 +10,19 @@ import androidx.fragment.app.Fragment
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.RecipeListArrayAdapter
-import com.ala158.magicpantry.data.*
+import com.ala158.magicpantry.data.RecipeWithRecipeItems
 import com.ala158.magicpantry.ui.singlerecipe.SingleRecipeActivity
-import com.ala158.magicpantry.viewModel.IngredientViewModel
-import com.ala158.magicpantry.viewModel.NotificationViewModel
-import com.ala158.magicpantry.viewModel.RecipeItemViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModel
 
 class RecipesFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
     private lateinit var recipeViewModel: RecipeViewModel
-    private lateinit var ingredientViewModel: IngredientViewModel
-    private lateinit var recipeItemViewModel: RecipeItemViewModel
-    private lateinit var notificationViewModel: NotificationViewModel
     private lateinit var recipeListView: ListView
     private lateinit var addRecipeButton: Button
     private lateinit var recipeListArrayAdapter: RecipeListArrayAdapter
     private lateinit var currentCookableCheckBox: CheckBox
     private lateinit var recipeHeader: TextView
 
-    private lateinit var ingredients: List<Ingredient>
     private lateinit var recipes: List<RecipeWithRecipeItems>
-    private lateinit var recipeItems: List<RecipeItem>
-    private lateinit var notifications: List<NotificationWithIngredients>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,21 +33,6 @@ class RecipesFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
             requireActivity(),
             RecipeViewModel::class.java,
             Util.DataType.RECIPE
-        )
-        ingredientViewModel = Util.createViewModel(
-            requireActivity(),
-            IngredientViewModel::class.java,
-            Util.DataType.INGREDIENT
-        )
-        recipeItemViewModel = Util.createViewModel(
-            requireActivity(),
-            RecipeItemViewModel::class.java,
-            Util.DataType.RECIPE_ITEM
-        )
-        notificationViewModel = Util.createViewModel(
-            requireActivity(),
-            NotificationViewModel::class.java,
-            Util.DataType.NOTIFICATION
         )
 
         val view = inflater.inflate(R.layout.fragment_recipes, container, false)
@@ -72,52 +47,31 @@ class RecipesFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
             recipeViewModel.updateCurrentCookable()
             if (!currentCookableCheckBox.isChecked) {
                 recipes = it
-                Log.d("MOCK_DATA", "onCreateView: NUM ${recipes.size} recipes $recipes")
                 recipeListArrayAdapter.replace(it)
                 recipeListArrayAdapter.notifyDataSetChanged()
             }
         }
         recipeViewModel.cookableRecipes.observe(viewLifecycleOwner) {
-            //If the checkBox is checked it will show the list of recipes available to be cooked
+            // If the checkBox is checked it will show the list of recipes available to be cooked
             if (currentCookableCheckBox.isChecked) {
                 recipeListArrayAdapter.replace(it)
                 recipeListArrayAdapter.notifyDataSetChanged()
             }
         }
 
-        ingredientViewModel.allIngredientsLiveData.observe(viewLifecycleOwner) {
-            //If a recipe gets changed i.e gets added/removed/restocked. It will proceed to update the
-            //current cookable list in the viewModel
-            ingredients = it
-            Log.d("MOCK_DATA", "onCreateView: NUM: ${ingredients.size} ingredients $ingredients")
-        }
-
-        recipeItemViewModel.allRecipeItems.observe(viewLifecycleOwner) {
-            recipeItems = it
-            Log.d("MOCK_DATA", "onCreateView: NUM: ${recipeItems.size} recipeItems $recipeItems")
-        }
-
-        notificationViewModel.allNotifications.observe(viewLifecycleOwner) {
-            notifications = it
-            Log.d(
-                "MOCK_DATA",
-                "onCreateView: NUM: ${notifications.size} notifications $notifications"
-            )
-        }
-
         recipeListView.setOnItemClickListener { _, _, position, _ ->
             val intent = Intent(requireActivity(), SingleRecipeActivity::class.java)
             if (currentCookableCheckBox.isChecked) {
-                intent.putExtra("RECIPE_KEY_COOKABLE", position)
+                intent.putExtra(RECIPE_KEY_COOKABLE, position)
             } else {
-                intent.putExtra("RECIPE_KEY", position)
+                intent.putExtra(RECIPE_KEY, position)
             }
             startActivity(intent)
         }
         currentCookableCheckBox.setOnCheckedChangeListener(this)
 
         addRecipeButton.setOnClickListener {
-            //Button to add recipe to recipe list
+            // Button to add recipe to recipe list
             val intent = Intent(requireContext(), AddRecipeActivity::class.java)
             startActivity(intent)
         }
@@ -146,5 +100,10 @@ class RecipesFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
         recipeHeader.setBackgroundResource(R.drawable.rounded_bg_green)
         recipeHeader.setText(R.string.cookable_recipe)
         recipeHeader.textSize = 18f
+    }
+
+    companion object {
+        const val RECIPE_KEY_COOKABLE = "RECIPE_KEY_COOKABLE"
+        const val RECIPE_KEY = "RECIPE_KEY"
     }
 }

@@ -23,11 +23,11 @@ class PantryViewModel(private val repository: IngredientRepository) : ViewModel(
         repository.insertIngredient(ingredient)
     }
 
-    fun delete(ingredient: Ingredient){
+    fun delete(ingredient: Ingredient) {
         repository.deleteIngredient(ingredient)
     }
 
-    fun update(ingredient: Ingredient){
+    fun update(ingredient: Ingredient) {
         repository.updateIngredient(ingredient)
     }
 

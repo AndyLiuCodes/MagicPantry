@@ -14,7 +14,6 @@ import androidx.fragment.app.Fragment
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.ShoppingListArrayAdapter
-import com.ala158.magicpantry.data.ShoppingListItem
 import com.ala158.magicpantry.data.ShoppingListItemAndIngredient
 import com.ala158.magicpantry.database.MagicPantryDatabase
 import com.ala158.magicpantry.dialogs.ShoppingListChangeAmountDialog
@@ -23,7 +22,8 @@ import com.ala158.magicpantry.ui.ingredientlistadd.IngredientListAddActivity
 import com.ala158.magicpantry.viewModel.IngredientViewModel
 import com.ala158.magicpantry.viewModel.ShoppingListItemViewModel
 
-class ShoppingListFragment : Fragment(), ShoppingListArrayAdapter.OnChangeShoppingItemAmountClickListener {
+class ShoppingListFragment : Fragment(),
+    ShoppingListArrayAdapter.OnChangeShoppingItemAmountClickListener {
     private lateinit var shoppingListItemViewModel: ShoppingListItemViewModel
     private lateinit var ingredientViewModel: IngredientViewModel
     private lateinit var shoppingListListView: ListView
@@ -92,25 +92,31 @@ class ShoppingListFragment : Fragment(), ShoppingListArrayAdapter.OnChangeShoppi
         dialogData.putString(DIALOG_INGREDIENT_NAME_KEY, pantryIngredient.name)
         dialogData.putString(DIALOG_INGREDIENT_UNIT_KEY, pantryIngredient.unit)
 
-        val savedShoppingListItemMessageListener = SavedShoppingListItemMessageListener(requireActivity())
-        dialogData.putParcelable(DIALOG_SHOPPING_LIST_LISTENER_KEY, object : ShoppingListChangeAmountDialog.ShoppingListChangeAmountDialogListener {
-            override fun onShoppingListChangeAmountDialogClick(amount: Double) {
-                shoppingListItem.itemAmount = amount
-                shoppingListItemViewModel.update(shoppingListItem)
-                savedShoppingListItemMessageListener.savedSuccessfullyMessage()
-            }
+        val savedShoppingListItemMessageListener =
+            SavedShoppingListItemMessageListener(requireActivity())
+        dialogData.putParcelable(
+            DIALOG_SHOPPING_LIST_LISTENER_KEY,
+            object : ShoppingListChangeAmountDialog.ShoppingListChangeAmountDialogListener {
+                override fun onShoppingListChangeAmountDialogClick(amount: Double) {
+                    shoppingListItem.itemAmount = amount
+                    shoppingListItemViewModel.update(shoppingListItem)
+                    savedShoppingListItemMessageListener.savedSuccessfullyMessage()
+                }
 
-            override fun describeContents(): Int {
-                return 0
-            }
+                override fun describeContents(): Int {
+                    return 0
+                }
 
-            override fun writeToParcel(dest: Parcel?, flags: Int) {
-                return
-            }
-        })
+                override fun writeToParcel(dest: Parcel?, flags: Int) {
+                    return
+                }
+            })
 
         shoppingListChangeAmountDialog.arguments = dialogData
-        shoppingListChangeAmountDialog.show(parentFragmentManager, "Change shopping list item amount")
+        shoppingListChangeAmountDialog.show(
+            parentFragmentManager,
+            "Change shopping list item amount"
+        )
     }
 
     internal class SavedShoppingListItemMessageListener(private val context: Context) {

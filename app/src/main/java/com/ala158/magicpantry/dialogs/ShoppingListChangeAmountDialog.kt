@@ -14,7 +14,8 @@ import com.google.android.material.textfield.TextInputEditText
 
 class ShoppingListChangeAmountDialog : DialogFragment(), DialogInterface.OnClickListener {
     private lateinit var dialogView: View
-    private var shoppingListChangeAmountDialogListener: ShoppingListChangeAmountDialogListener? = null
+    private var shoppingListChangeAmountDialogListener: ShoppingListChangeAmountDialogListener? =
+        null
     private var ingredientName = ""
     private var ingredientUnit = ""
 
@@ -31,7 +32,8 @@ class ShoppingListChangeAmountDialog : DialogFragment(), DialogInterface.OnClick
         if (arg != null) {
             ingredientName = arg.getString(ShoppingListFragment.DIALOG_INGREDIENT_NAME_KEY, "")
             ingredientUnit = arg.getString(ShoppingListFragment.DIALOG_INGREDIENT_UNIT_KEY, "")
-            shoppingListChangeAmountDialogListener = arg.getParcelable(ShoppingListFragment.DIALOG_SHOPPING_LIST_LISTENER_KEY)
+            shoppingListChangeAmountDialogListener =
+                arg.getParcelable(ShoppingListFragment.DIALOG_SHOPPING_LIST_LISTENER_KEY)
 
         }
 
@@ -59,7 +61,8 @@ class ShoppingListChangeAmountDialog : DialogFragment(), DialogInterface.OnClick
 
     override fun onClick(dialog: DialogInterface?, which: Int) {
         if (which == DialogInterface.BUTTON_POSITIVE) {
-            val amountView = dialogView.findViewById<TextInputEditText>(R.id.change_shopping_item_amount)
+            val amountView =
+                dialogView.findViewById<TextInputEditText>(R.id.change_shopping_item_amount)
 
             if (amountView.text.toString() == "") {
                 dismiss()
@@ -67,7 +70,9 @@ class ShoppingListChangeAmountDialog : DialogFragment(), DialogInterface.OnClick
                 val amount = amountView.text.toString().toDouble()
 
                 if (shoppingListChangeAmountDialogListener != null) {
-                    shoppingListChangeAmountDialogListener!!.onShoppingListChangeAmountDialogClick(amount)
+                    shoppingListChangeAmountDialogListener!!.onShoppingListChangeAmountDialogClick(
+                        amount
+                    )
                 }
             }
         } else {

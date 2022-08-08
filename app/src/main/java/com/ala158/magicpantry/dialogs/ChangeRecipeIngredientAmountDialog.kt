@@ -12,7 +12,8 @@ import com.google.android.material.textfield.TextInputEditText
 
 class ChangeRecipeIngredientAmountDialog : DialogFragment(), DialogInterface.OnClickListener {
     private lateinit var dialogView: View
-    private var changeRecipeIngredientAmountDialogListener: ChangeRecipeIngredientAmountDialogListener? = null
+    private var changeRecipeIngredientAmountDialogListener: ChangeRecipeIngredientAmountDialogListener? =
+        null
 
     // Learned how to pass a listener into a dialog via
     // https://stackoverflow.com/questions/26904955/passing-listeners-via-bundle-in-alertdialogfragment-is-it-possible
@@ -48,14 +49,17 @@ class ChangeRecipeIngredientAmountDialog : DialogFragment(), DialogInterface.OnC
 
     override fun onClick(dialog: DialogInterface?, which: Int) {
         if (which == DialogInterface.BUTTON_POSITIVE) {
-            val amountView = dialogView.findViewById<TextInputEditText>(R.id.change_recipe_item_amount)
+            val amountView =
+                dialogView.findViewById<TextInputEditText>(R.id.change_recipe_item_amount)
 
             if (amountView.text.toString() == "") {
                 dismiss()
             } else {
                 val amount = amountView.text.toString().toDouble()
                 if (changeRecipeIngredientAmountDialogListener != null) {
-                    changeRecipeIngredientAmountDialogListener!!.onChangeRecipeIngredientAmountConfirm(amount)
+                    changeRecipeIngredientAmountDialogListener!!.onChangeRecipeIngredientAmountConfirm(
+                        amount
+                    )
                 }
             }
 
@@ -65,6 +69,7 @@ class ChangeRecipeIngredientAmountDialog : DialogFragment(), DialogInterface.OnC
     }
 
     companion object {
-        val DIALOG_CHANGE_RECIPE_INGREDIENT_AMOUNT_LISTENER_KEY = "DIALOG_CHANGE_RECIPE_INGREDIENT_AMOUNT_LISTENER_KEY"
+        val DIALOG_CHANGE_RECIPE_INGREDIENT_AMOUNT_LISTENER_KEY =
+            "DIALOG_CHANGE_RECIPE_INGREDIENT_AMOUNT_LISTENER_KEY"
     }
 }

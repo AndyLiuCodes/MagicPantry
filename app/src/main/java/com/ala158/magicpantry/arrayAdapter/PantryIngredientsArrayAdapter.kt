@@ -3,7 +3,10 @@ package com.ala158.magicpantry.arrayAdapter
 import android.content.Context
 import android.view.View
 import android.view.ViewGroup
-import android.widget.*
+import android.widget.BaseAdapter
+import android.widget.Button
+import android.widget.ImageView
+import android.widget.TextView
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.data.Ingredient
 import java.text.DecimalFormat
@@ -36,7 +39,8 @@ class PantryIngredientsArrayAdapter(
         val amountTextView = view.findViewById<TextView>(R.id.ingredient_amount)
         val ingredientNameTextView = view.findViewById<TextView>(R.id.ingredient_name)
         val ingredientPriceUnitTextView = view.findViewById<TextView>(R.id.ingredient_price_unit)
-        val addToShoppingListBtn = view.findViewById<Button>(R.id.ingredient_add_to_shopping_list_button)
+        val addToShoppingListBtn =
+            view.findViewById<Button>(R.id.ingredient_add_to_shopping_list_button)
         val numberFormatter = DecimalFormat("#.##")
 
         val ingredient = ingredients[position]
@@ -59,7 +63,7 @@ class PantryIngredientsArrayAdapter(
             val priceString = numberFormatter.format(ingredient.price)
             ingredientPriceUnitTextView.text = "$$priceString/${ingredient.unit}"
         }
-        
+
         if (ingredient.amount <= ingredient.notifyThreshold) {
             stockStatusIconView.visibility = View.VISIBLE // Show low stock icon
         }

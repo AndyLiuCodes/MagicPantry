@@ -24,7 +24,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
 
         // https://stackoverflow.com/a/57175501
-        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO);
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
 
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
@@ -64,11 +64,14 @@ class MainActivity : AppCompatActivity() {
             permissionCode -> {
                 // if permission granted, continue
                 if (grantResults.isNotEmpty() && grantResults[0] == PackageManager.PERMISSION_GRANTED && grantResults[1] == PackageManager.PERMISSION_GRANTED) {
-                    Log.d("permission", "granted")
+                    Log.d("PERMISSIONS", "onRequestPermissionsResult: GRANTED")
                 }
                 // if permission not granted, request again
                 else {
-                    Log.d("permission", "denied")
+                    Log.d(
+                        "PERMISSIONS",
+                        "onRequestPermissionsResult: NOT GRANTED - requesting permission..."
+                    )
                     checkMyPermission()
                 }
             }

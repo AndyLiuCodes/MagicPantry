@@ -1,7 +1,6 @@
 package com.ala158.magicpantry.repository
 
 import com.ala158.magicpantry.dao.RecipeItemDAO
-import com.ala158.magicpantry.data.Ingredient
 import com.ala158.magicpantry.data.RecipeItem
 import com.ala158.magicpantry.data.RecipeItemAndRecipe
 import kotlinx.coroutines.CoroutineScope

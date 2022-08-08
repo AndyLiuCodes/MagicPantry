@@ -1,15 +1,12 @@
 package com.ala158.magicpantry.ui.reviewingredients
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.ala158.magicpantry.MainActivity
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.ReviewIngredientsActivityAdapter
@@ -66,7 +63,6 @@ class ReviewIngredientsActivity : AppCompatActivity() {
                 ingredient.price = prices[i].filter { it.isDigit() || it == '.' }.toDouble()
 
                 ingredientList.add(ingredient)
-                Log.d("ingredient", "$ingredient   and   $i")
             }
         }
 

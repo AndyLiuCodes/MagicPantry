@@ -29,7 +29,6 @@ import com.ala158.magicpantry.data.RecipeItem
 import com.ala158.magicpantry.data.RecipeItemAndIngredient
 import com.ala158.magicpantry.dialogs.ChangeRecipeIngredientAmountDialog
 import com.ala158.magicpantry.ui.ingredientlistadd.IngredientListAddActivity
-import com.ala158.magicpantry.ui.manualingredientinput.edit.ReviewIngredientsEditActivity
 import com.ala158.magicpantry.ui.receiptscanner.ReceiptScannerActivity
 import com.ala158.magicpantry.viewModel.IngredientViewModel
 import com.ala158.magicpantry.viewModel.RecipeItemViewModel
@@ -171,7 +170,9 @@ class AddRecipeActivity :
 
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                             val file =
-                                File(Environment.getExternalStorageDirectory().toString() + "/$tag/")
+                                File(
+                                    Environment.getExternalStorageDirectory().toString() + "/$tag/"
+                                )
                             if (!file.exists()) {
                                 file.mkdirs()
                             }
@@ -183,10 +184,12 @@ class AddRecipeActivity :
                                 MediaStore.Images.Media.DESCRIPTION,
                                 "Photo taken on " + System.currentTimeMillis()
                             )
-                        }
-                        else {
+                        } else {
                             values.put(MediaStore.Images.Media.TITLE, recipeName)
-                            values.put(MediaStore.Images.Media.DESCRIPTION, "Photo taken on " + System.currentTimeMillis())
+                            values.put(
+                                MediaStore.Images.Media.DESCRIPTION,
+                                "Photo taken on " + System.currentTimeMillis()
+                            )
                         }
                         imageUri = this.contentResolver.insert(
                             MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values
@@ -252,8 +255,7 @@ class AddRecipeActivity :
                 Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show()
                 recipeNameLabel.setTextColor(resources.getColor(R.color.mp_red, null))
                 isRecipeNameValid = false
-            }
-            else {
+            } else {
                 updateDatabase()
                 edit.remove("recipe_image").apply()
                 Toast.makeText(this, "Recipe Saved!", Toast.LENGTH_SHORT).show()
@@ -314,8 +316,9 @@ class AddRecipeActivity :
 
     override fun onRecipeItemDelete(deleteTarget: RecipeItemAndIngredient) {
         var foundIdx = -1
-        for (idx in  0 until recipeViewModel.addedRecipeItemAndIngredient.value!!.size) {
-            val recipeItemAndIngredientEntry = recipeViewModel.addedRecipeItemAndIngredient.value!![idx]
+        for (idx in 0 until recipeViewModel.addedRecipeItemAndIngredient.value!!.size) {
+            val recipeItemAndIngredientEntry =
+                recipeViewModel.addedRecipeItemAndIngredient.value!![idx]
             if (recipeItemAndIngredientEntry.ingredient.ingredientId == deleteTarget.ingredient.ingredientId) {
                 foundIdx = idx
                 break

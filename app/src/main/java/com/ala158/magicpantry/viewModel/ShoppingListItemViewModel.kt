@@ -1,15 +1,12 @@
 package com.ala158.magicpantry.viewModel
 
-import android.content.Context
-import android.widget.Toast
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import com.ala158.magicpantry.data.Ingredient
 import com.ala158.magicpantry.data.RecipeItemAndIngredient
-import com.ala158.magicpantry.data.ShoppingListItemAndIngredient
 import com.ala158.magicpantry.data.ShoppingListItem
+import com.ala158.magicpantry.data.ShoppingListItemAndIngredient
 import com.ala158.magicpantry.repository.ShoppingListItemRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

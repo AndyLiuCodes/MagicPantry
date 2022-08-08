@@ -19,7 +19,7 @@
         android:textSize="16sp"
         app:cornerRadius="8dp"
         android:backgroundTint="@color/mp_yellow"
-        android:layout_gravity="center_vertical"/>
+        android:layout_gravity="center_vertical" />
 
     <TextView
         android:id="@+id/header_shopping_list"
@@ -41,6 +41,6 @@
         android:layout_marginVertical="5dp"
         android:divider="@android:color/transparent"
         android:dividerHeight="10sp"
-        android:layout_weight="1"/>
+        android:layout_weight="1" />
 
 </LinearLayout>

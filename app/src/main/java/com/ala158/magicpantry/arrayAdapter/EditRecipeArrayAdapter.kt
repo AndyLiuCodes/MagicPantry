@@ -68,7 +68,7 @@ class EditRecipeArrayAdapter(
         return view
     }
 
-    fun replaceRecipeIngredients(newRecipes: List<RecipeItemAndIngredient>){
+    fun replaceRecipeIngredients(newRecipes: List<RecipeItemAndIngredient>) {
         recipeItemAndIngredients = newRecipes as ArrayList<RecipeItemAndIngredient>
     }
 

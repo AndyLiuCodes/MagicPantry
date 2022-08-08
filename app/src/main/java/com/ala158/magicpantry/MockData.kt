@@ -2,7 +2,6 @@ package com.ala158.magicpantry
 
 import com.ala158.magicpantry.data.*
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 object MockData {
