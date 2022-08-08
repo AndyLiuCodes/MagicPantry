@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:text="Cancel"
             android:layout_weight="12"
-            android:textSize="16sp"
+            android:textSize="18sp"
             android:textColor="@color/black"
             app:cornerRadius="8dp"
             android:backgroundTint="@color/mp_grey" />
@@ -37,7 +37,7 @@
             android:layout_weight="12"
             android:backgroundTint="@color/mp_blue"
             android:text="Finish"
-            android:textSize="16sp"
+            android:textSize="18sp"
             app:cornerRadius="8dp" />
     </LinearLayout>
 
@@ -98,7 +98,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Title*"
-                android:textSize="15sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="@color/black"
                 android:id="@+id/edit_recipe_recipe_title" />
@@ -107,7 +107,7 @@
                 android:id="@+id/edit_recipe_edit_recipe_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="15sp"
+                android:textSize="20sp"
                 android:background="@drawable/add_recipe_edit_text_style"
                 android:layout_marginBottom="5dp"
                 android:maxLength="100" />
@@ -128,7 +128,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Time to Cook (mins)"
-                        android:textSize="15sp"
+                        android:textSize="20sp"
                         android:textStyle="bold"
                         android:textColor="@color/black"
                         android:id="@+id/edit_recipe_recipe_cook_time" />
@@ -136,7 +136,7 @@
                     <EditText
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:textSize="15sp"
+                        android:textSize="20sp"
                         android:background="@drawable/add_recipe_edit_text_style"
                         android:inputType="number"
                         android:maxLength="9"
@@ -159,7 +159,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="Servings"
-                        android:textSize="15sp"
+                        android:textSize="20sp"
                         android:textStyle="bold"
                         android:textColor="@color/black"
                         android:id="@+id/edit_recipe_recipe_servings" />
@@ -168,7 +168,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:background="@drawable/add_recipe_edit_text_style"
-                        android:textSize="15sp"
+                        android:textSize="20sp"
                         android:inputType="number"
                         android:maxLength="9"
                         android:id="@+id/edit_recipe_edit_recipe_servings" />
@@ -181,7 +181,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:text="Description"
-                android:textSize="15sp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 android:textColor="@color/black"
                 android:id="@+id/edit_recipe_recipe_description" />
@@ -190,7 +190,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:minHeight="100dp"
-                android:textSize="15sp"
+                android:textSize="20sp"
                 android:inputType="text|textMultiLine"
                 android:background="@drawable/add_recipe_edit_text_style"
                 android:gravity="top"
@@ -209,7 +209,7 @@
                     android:layout_height="wrap_content"
                     android:layout_weight="1"
                     android:text="Ingredient List"
-                    android:textSize="15sp"
+                    android:textSize="20sp"
                     android:textStyle="bold"
                     android:textColor="@color/black"
                     android:id="@+id/edit_recipe_ingredient_list_text" />
@@ -228,7 +228,7 @@
                     android:textStyle="bold"
                     app:iconPadding="0dp"
                     app:iconSize="15sp"
-                    android:textSize="15sp"
+                    android:textSize="18sp"
                     app:iconTint="#000000"
                     android:focusable="false" />
             </LinearLayout>

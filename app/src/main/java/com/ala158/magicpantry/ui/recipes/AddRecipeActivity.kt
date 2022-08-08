@@ -248,14 +248,14 @@ class AddRecipeActivity :
             var errorMsg = ""
 
             if (title.text.toString().trim() == "") {
-                errorMsg += "• The ingredient name cannot be empty"
+                errorMsg += "• The recipe name cannot be empty"
                 Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show()
                 recipeNameLabel.setTextColor(resources.getColor(R.color.mp_red, null))
                 isRecipeNameValid = false
             }
             else {
                 updateDatabase()
-                edit.remove("edit_recipe_image").apply()
+                edit.remove("recipe_image").apply()
                 Toast.makeText(this, "Recipe Saved!", Toast.LENGTH_SHORT).show()
                 finish()
             }
@@ -484,7 +484,7 @@ class AddRecipeActivity :
     override fun onDestroy() {
         super.onDestroy()
 
-        edit.remove("edit_recipe_image").apply()
+        edit.remove("recipe_image").apply()
 
         if (!finishBtnClicked) {
             // Delete image once we are done with it
