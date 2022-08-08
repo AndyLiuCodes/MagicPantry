@@ -248,7 +248,7 @@ class AddRecipeActivity :
             var errorMsg = ""
 
             if (title.text.toString().trim() == "") {
-                errorMsg += "• The recipe name cannot be empty"
+                errorMsg += "• The recipe title cannot be empty"
                 Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show()
                 recipeNameLabel.setTextColor(resources.getColor(R.color.mp_red, null))
                 isRecipeNameValid = false
@@ -445,13 +445,13 @@ class AddRecipeActivity :
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        outState.putBoolean(ReviewIngredientsEditActivity.IS_INGREDIENT_NAME_VALID_KEY, isRecipeNameValid)
+        outState.putBoolean(IS_RECIPE_NAME_VALID_KEY, isRecipeNameValid)
     }
 
     override fun onRestoreInstanceState(savedInstanceState: Bundle) {
         super.onRestoreInstanceState(savedInstanceState)
         if (savedInstanceState != null) {
-            isRecipeNameValid = savedInstanceState.getBoolean(ReviewIngredientsEditActivity.IS_INGREDIENT_NAME_VALID_KEY)
+            isRecipeNameValid = savedInstanceState.getBoolean(IS_RECIPE_NAME_VALID_KEY)
             if (!isRecipeNameValid)
                 recipeNameLabel.setTextColor(resources.getColor(R.color.mp_red, null))
         }
@@ -502,6 +502,7 @@ class AddRecipeActivity :
     }
 
     companion object {
+        const val IS_RECIPE_NAME_VALID_KEY = "IS_RECIPE_NAME_VALID_KEY"
         const val ADDED_INGREDIENTS_KEY = "ADDED_INGREDIENTS_KEY"
         const val IDS_TO_FILTER_KEY = "IDS_TO_FILTER_KEY"
     }
