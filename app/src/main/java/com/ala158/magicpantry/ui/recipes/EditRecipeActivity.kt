@@ -13,6 +13,8 @@ import android.os.Bundle
 import android.os.Parcel
 import android.os.Environment
 import android.provider.MediaStore
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.*
@@ -30,7 +32,9 @@ import com.ala158.magicpantry.data.RecipeItemAndIngredient
 import com.ala158.magicpantry.data.RecipeWithRecipeItems
 import com.ala158.magicpantry.dialogs.ChangeRecipeIngredientAmountDialog
 import com.ala158.magicpantry.ui.ingredientlistadd.IngredientListAddActivity
+import com.ala158.magicpantry.ui.manualingredientinput.edit.ReviewIngredientsEditActivity
 import com.ala158.magicpantry.ui.receiptscanner.ReceiptScannerActivity
+import com.ala158.magicpantry.viewModel.IngredientViewModel
 import com.ala158.magicpantry.viewModel.RecipeItemViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModel
 import kotlinx.coroutines.CoroutineScope
@@ -39,9 +43,15 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import java.io.File
 
-class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeEditAmountChangeClickListener {
+class EditRecipeActivity :
+    AppCompatActivity(),
+    EditRecipeArrayAdapter.OnRecipeEditAmountChangeClickListener,
+    EditRecipeArrayAdapter.OnRecipeItemDeleteClickListener {
     private lateinit var imageUri: Uri
     private var bitmap: Bitmap? = null
+
+    private var isRecipeNameValid = true
+    private lateinit var recipeNameLabel : TextView
 
     private val tag = "MagicPantry"
     private var recipeName = "Recipe"
@@ -51,20 +61,21 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
     private val requestGallery = 2200
     private lateinit var cameraBtn: Button
 
-    private lateinit var sharedPrefFile : SharedPreferences
-    private lateinit var edit : SharedPreferences.Editor
+    private lateinit var sharedPrefFile: SharedPreferences
+    private lateinit var edit: SharedPreferences.Editor
 
     private var recipeImage: File? = null
     private var imageView: ImageView? = null
 
-    private lateinit var title : TextView
-    private lateinit var cookTime : TextView
-    private lateinit var servings : TextView
-    private lateinit var description : TextView
-    private lateinit var ingredients : ListView
+    private lateinit var title: TextView
+    private lateinit var cookTime: TextView
+    private lateinit var servings: TextView
+    private lateinit var description: TextView
+    private lateinit var ingredients: ListView
 
-    private lateinit var recipeViewModel : RecipeViewModel
+    private lateinit var recipeViewModel: RecipeViewModel
     private lateinit var recipeItemViewModel: RecipeItemViewModel
+    private lateinit var ingredientViewModel: IngredientViewModel
     private lateinit var adapter: EditRecipeArrayAdapter
 
     private var recipeArray = arrayOf<RecipeWithRecipeItems>()
@@ -105,6 +116,12 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
             Util.DataType.RECIPE_ITEM
         )
 
+        ingredientViewModel = Util.createViewModel(
+            this,
+            IngredientViewModel::class.java,
+            Util.DataType.INGREDIENT
+        )
+
         imageView = findViewById(R.id.edit_recipe_edit_recipe_img)
         cameraBtn = findViewById(R.id.edit_recipe_btn_edit_recipe_pic)
 
@@ -114,22 +131,30 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
         description = findViewById(R.id.edit_recipe_edit_recipe_description)
         ingredients = findViewById(R.id.edit_recipe_edit_ingredient_listView)
 
+        recipeNameLabel = findViewById(R.id.edit_recipe_recipe_title)
+
         // https://stackoverflow.com/questions/35634023/how-can-i-have-a-listview-inside-a-nestedscrollview
         ingredients.isNestedScrollingEnabled = true
 
-        addIngredientToRecipeLauncher = registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
-            if (it.resultCode == Activity.RESULT_OK && it.data != null) {
-                if (it.data!!.hasExtra(AddRecipeActivity.ADDED_INGREDIENTS_KEY)) {
-                    val newlyAddedIngredients = it.data!!.getSerializableExtra(AddRecipeActivity.ADDED_INGREDIENTS_KEY)
-                    val existingAddedIngredients: ArrayList<RecipeItemAndIngredient> =
-                        recipeViewModel.addedRecipeItemAndIngredient.value!!
-                    existingAddedIngredients.addAll(newlyAddedIngredients as ArrayList<RecipeItemAndIngredient>)
-                    recipeViewModel.addedRecipeItemAndIngredient.value = existingAddedIngredients
+        addIngredientToRecipeLauncher =
+            registerForActivityResult(ActivityResultContracts.StartActivityForResult()) {
+                if (it.resultCode == Activity.RESULT_OK && it.data != null) {
+                    if (it.data!!.hasExtra(AddRecipeActivity.ADDED_INGREDIENTS_KEY)) {
+                        val newlyAddedIngredients =
+                            it.data!!.getSerializableExtra(AddRecipeActivity.ADDED_INGREDIENTS_KEY)
+                        val convertedNewlyAddedIngredients =
+                            newlyAddedIngredients as ArrayList<RecipeItemAndIngredient>
+
+                        val existingAddedIngredients: ArrayList<RecipeItemAndIngredient> =
+                            recipeViewModel.addedRecipeItemAndIngredient.value!!
+                        existingAddedIngredients.addAll(convertedNewlyAddedIngredients)
+                        recipeViewModel.addedRecipeItemAndIngredient.value =
+                            existingAddedIngredients
+                    }
                 }
             }
-        }
 
-        adapter = EditRecipeArrayAdapter(this, ingredientToBeAdded, this)
+        adapter = EditRecipeArrayAdapter(this, ingredientToBeAdded, this, this)
         ingredients.adapter = adapter
 
         // Update ingredient list when user adds new ingredients
@@ -155,8 +180,7 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
                 newUri = recipeArray[pos].recipe.imageUri
                 if (newUri == "") {
                     imageView!!.setImageResource(R.drawable.magic_pantry_app_logo)
-                }
-                else {
+                } else {
                     imageView!!.setImageURI(newUri.toUri())
                 }
                 edit.putString("edit_recipe_image", newUri).apply()
@@ -203,7 +227,9 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
 
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                             val file =
-                                File(Environment.getExternalStorageDirectory().toString() + "/$tag/")
+                                File(
+                                    Environment.getExternalStorageDirectory().toString() + "/$tag/"
+                                )
                             if (!file.exists()) {
                                 file.mkdirs()
                             }
@@ -215,10 +241,12 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
                                 MediaStore.Images.Media.DESCRIPTION,
                                 "Photo taken on " + System.currentTimeMillis()
                             )
-                        }
-                        else {
+                        } else {
                             values.put(MediaStore.Images.Media.TITLE, recipeName)
-                            values.put(MediaStore.Images.Media.DESCRIPTION, "Photo taken on " + System.currentTimeMillis())
+                            values.put(
+                                MediaStore.Images.Media.DESCRIPTION,
+                                "Photo taken on " + System.currentTimeMillis()
+                            )
                         }
                         imageUri = this.contentResolver.insert(
                             MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values
@@ -274,21 +302,38 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
         doneBtn.setOnClickListener {
             finishBtnClicked = true
 
-            val recipeTitle = title.text.toString()
-            if(recipeTitle.trim().isEmpty()) {
-                Toast.makeText(this, "Please enter in a recipe title", Toast.LENGTH_SHORT).show()
-            } else {
+            var errorMsg = ""
+
+            if (title.text.toString().trim() == "") {
+                errorMsg += "• The recipe name cannot be empty"
+                Toast.makeText(this, errorMsg, Toast.LENGTH_SHORT).show()
+                recipeNameLabel.setTextColor(resources.getColor(R.color.mp_red, null))
+                isRecipeNameValid = false
+            }
+            else {
                 updateDatabase()
                 edit.remove("edit_recipe_image").apply()
                 Toast.makeText(this, "Recipe Saved!", Toast.LENGTH_SHORT).show()
                 finish()
             }
         }
-    }
 
-    override fun onSaveInstanceState(outState: Bundle) {
-        super.onSaveInstanceState(outState)
-        outState.putBoolean(IS_FIRST_START_KEY, isFirstStart)
+        title.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                return
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                return
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                recipeNameLabel.setTextColor(resources.getColor(R.color.black, null))
+                isRecipeNameValid = true
+
+                return
+            }
+        })
     }
 
     override fun onRecipeEditAmountChangeClick(recipeItem: RecipeItem) {
@@ -318,7 +363,34 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
                 }
             })
         onRecipeIngredientAmountChangeDialog.arguments = dialogData
-        onRecipeIngredientAmountChangeDialog.show(supportFragmentManager, "Change recipe ingredient amount")
+        onRecipeIngredientAmountChangeDialog.show(
+            supportFragmentManager,
+            "Change recipe ingredient amount"
+        )
+    }
+
+    override fun onRecipeItemDeleteClick(deleteTarget: RecipeItemAndIngredient) {
+        var foundIdx = -1
+        for (idx in 0 until recipeViewModel.addedRecipeItemAndIngredient.value!!.size) {
+            val recipeItemAndIngredientEntry =
+                recipeViewModel.addedRecipeItemAndIngredient.value!![idx]
+            if (recipeItemAndIngredientEntry.ingredient.ingredientId == deleteTarget.ingredient.ingredientId) {
+                foundIdx = idx
+                // If the delete target is in the original set of recipe items thats in the database, then we need
+                // to mark it for db delete
+                if (recipeViewModel.originalRecipeIngredientIdSet.contains(deleteTarget.ingredient.ingredientId)) {
+                    recipeViewModel.originalRecipeDataToBeDeletedRecipeItems[deleteTarget.ingredient.ingredientId] =
+                        deleteTarget.recipeItem
+                }
+                break
+            }
+        }
+
+        if (foundIdx != -1) {
+            recipeViewModel.addedRecipeItemAndIngredient.value!!.removeAt(foundIdx)
+            adapter.notifyDataSetChanged()
+            Toast.makeText(this, "Ingredient deleted", Toast.LENGTH_SHORT).show()
+        }
     }
 
     // when camera or gallery chosen, update photo
@@ -397,8 +469,7 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
         }
         val recipeImageString = if (bitmap != null) {
             imageUri.path.toString()
-        }
-        else {
+        } else {
             ""
         }
         edit.putString("edit_recipe_image", recipeImageString).apply()
@@ -408,24 +479,34 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
     private fun updateDatabase() {
         newUri = if (sharedPrefFile.contains("edit_recipe_image")) {
             sharedPrefFile.getString("edit_recipe_image", "").toString()
-        }
-        else {
+        } else {
             ""
         }
         val newServings = if (servings.text.toString() == "") {
             0
-        }
-        else {
+        } else {
             servings.text.toString().toInt()
         }
         val newCookTime = if (cookTime.text.toString() == "") {
             0
-        }
-        else {
+        } else {
             cookTime.text.toString().toInt()
         }
-        val updatedRecipe = Recipe(id, title.text.toString(), newUri, newServings, newCookTime, description.text.toString(), 0)
-        recipeViewModel.updateRecipeWithRecipeItems(updatedRecipe, recipeItemViewModel)
+        val updatedRecipe = Recipe(
+            id,
+            title.text.toString(),
+            newUri,
+            newServings,
+            newCookTime,
+            description.text.toString(),
+            0
+        )
+        recipeViewModel.updateRecipeWithRecipeItems(
+            updatedRecipe,
+            recipeItemViewModel,
+            recipeViewModel,
+            ingredientViewModel
+        )
     }
 
     //add delete button
@@ -466,6 +547,21 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
         recipeViewModel.delete(recipeViewModel.originalRecipeData!!.recipe)
     }
 
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        outState.putBoolean(ReviewIngredientsEditActivity.IS_INGREDIENT_NAME_VALID_KEY, isRecipeNameValid)
+        outState.putBoolean(IS_FIRST_START_KEY, isFirstStart)
+    }
+
+    override fun onRestoreInstanceState(savedInstanceState: Bundle) {
+        super.onRestoreInstanceState(savedInstanceState)
+        if (savedInstanceState != null) {
+            isRecipeNameValid = savedInstanceState.getBoolean(ReviewIngredientsEditActivity.IS_INGREDIENT_NAME_VALID_KEY)
+            if (!isRecipeNameValid)
+                recipeNameLabel.setTextColor(resources.getColor(R.color.mp_red, null))
+        }
+    }
+
     override fun onResume() {
         super.onResume()
 
@@ -477,8 +573,7 @@ class EditRecipeActivity : AppCompatActivity(), EditRecipeArrayAdapter.OnRecipeE
             val savedUri = sharedPrefFile.getString("edit_recipe_image", "")
             if (savedUri == "") {
                 imageView!!.setImageResource(R.drawable.magic_pantry_app_logo)
-            }
-            else {
+            } else {
                 imageView!!.setImageURI(Uri.parse(savedUri))
             }
         }

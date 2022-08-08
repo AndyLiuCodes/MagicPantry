@@ -96,7 +96,7 @@
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:text="Title"
+                android:text="Title*"
                 android:textSize="15sp"
                 android:textStyle="bold"
                 android:textColor="@color/black"

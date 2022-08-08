@@ -5,6 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
+import com.ala158.magicpantry.UpdateDB
 import com.ala158.magicpantry.data.*
 import com.ala158.magicpantry.repository.RecipeRepository
 import kotlinx.coroutines.CoroutineScope
@@ -27,7 +28,9 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
     // Editing recipe variables
     var originalRecipeData: RecipeWithRecipeItems? = null
     var originalRecipeIngredientIdSet = mutableSetOf<Long>()
-    var originalRecipeDataDeletedIds = mutableSetOf<Long>()
+
+    // Stores <unique ingredient id, recipe item>
+    var originalRecipeDataToBeDeletedRecipeItems = mutableMapOf<Long, RecipeItem>()
 
     init {
         addedRecipeItemAndIngredient.value = ArrayList()
@@ -37,22 +40,36 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
         return repository.getRecipesById(keys)
     }
 
-    fun insert(recipe: Recipe, recipeItemViewModel: RecipeItemViewModel) {
+    fun insert(
+        recipe: Recipe,
+        recipeItemViewModel: RecipeItemViewModel,
+        recipeViewModel: RecipeViewModel,
+        ingredientViewModel: IngredientViewModel
+    ) {
         CoroutineScope(Dispatchers.IO).launch {
             val id = repository.insertRecipe(recipe)
             _newRecipeId.postValue(id)
 
             for (recipeItemAndIngredientEntry in addedRecipeItemAndIngredient.value!!.listIterator()) {
                 recipeItemAndIngredientEntry.recipeItem.relatedRecipeId = id
-                recipeItemViewModel.insert(recipeItemAndIngredientEntry.recipeItem)
             }
+            val recipeItems = addedRecipeItemAndIngredient.value!!.map { it.recipeItem }
+            recipeItemViewModel.insertListSync(recipeItems)
+            val ids = addedRecipeItemAndIngredient.value!!.map { it.ingredient.ingredientId }
+            UpdateDB.postUpdatesAfterModifyIngredient(
+                ids,
+                ingredientViewModel,
+                recipeItemViewModel,
+                recipeViewModel
+            )
         }
     }
 
-    suspend fun updateRecipeItemAmount(recipeItem: RecipeItem, amount: Double) {
+    fun updateRecipeItemAmount(recipeItem: RecipeItem, amount: Double) {
         for (recipeItemAndIngredient in addedRecipeItemAndIngredient.value!!) {
             if (recipeItemAndIngredient.recipeItem.relatedIngredientId == recipeItem.relatedIngredientId) {
                 recipeItemAndIngredient.recipeItem.recipeAmount = amount
+                break
             }
         }
     }
@@ -61,27 +78,47 @@ class RecipeViewModel(private val repository: RecipeRepository) : ViewModel() {
         repository.updateRecipe(recipe)
     }
 
-    fun updateRecipeWithRecipeItems(recipe: Recipe, recipeItemViewModel: RecipeItemViewModel) {
+    fun updateRecipeWithRecipeItems(
+        recipe: Recipe,
+        recipeItemViewModel: RecipeItemViewModel,
+        recipeViewModel: RecipeViewModel,
+        ingredientViewModel: IngredientViewModel
+    ) {
         CoroutineScope(Dispatchers.IO).launch {
             // Update Recipe Info
             update(recipe)
 
+            val recipeItemsToAdd = mutableListOf<RecipeItem>()
+            val recipeItemsToUpdate = mutableListOf<RecipeItem>()
+            val recipeItemsToDelete = originalRecipeDataToBeDeletedRecipeItems.values.toList()
+
             // Update Ingredient List in recipe
             for (recipeItemAndIngredient in addedRecipeItemAndIngredient.value!!.listIterator()) {
                 // If item exists in original set then update it
-                if (originalRecipeIngredientIdSet.contains(recipeItemAndIngredient.ingredient.ingredientId)) {
-                    recipeItemViewModel.update(recipeItemAndIngredient.recipeItem)
+                if (originalRecipeIngredientIdSet.contains(recipeItemAndIngredient.ingredient.ingredientId) &&
+                    !originalRecipeDataToBeDeletedRecipeItems.keys.contains(recipeItemAndIngredient.ingredient.ingredientId)
+                ) {
+                    recipeItemsToUpdate.add(recipeItemAndIngredient.recipeItem)
                 } else {
-                    // if item does not exist in original set, then insert it
+                    // if item does not exist in original set, then insert it or if the original
+                    // was marked for deletion
                     recipeItemAndIngredient.recipeItem.relatedRecipeId = recipe.recipeId
-                    recipeItemViewModel.insert(recipeItemAndIngredient.recipeItem)
+                    recipeItemsToAdd.add(recipeItemAndIngredient.recipeItem)
                 }
             }
 
+            recipeItemViewModel.updateListSync(recipeItemsToUpdate)
+            recipeItemViewModel.insertListSync(recipeItemsToAdd)
             // For deleted items that are in the original set, then delete it from DB
-            for (deletedId in originalRecipeDataDeletedIds) {
-                recipeItemViewModel.deleteById(deletedId)
-            }
+            recipeItemViewModel.deleteListSync(recipeItemsToDelete)
+
+            val ids = addedRecipeItemAndIngredient.value!!.map { it.ingredient.ingredientId }
+            UpdateDB.postUpdatesAfterModifyIngredient(
+                ids,
+                ingredientViewModel,
+                recipeItemViewModel,
+                recipeViewModel
+            )
         }
     }
 

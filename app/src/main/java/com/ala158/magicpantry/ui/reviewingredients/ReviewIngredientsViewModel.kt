@@ -1,10 +1,9 @@
 package com.ala158.magicpantry.ui.reviewingredients
 
-import androidx.lifecycle.LiveData
+import android.util.Log
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.ala158.magicpantry.IngredientEntry
-import com.ala158.magicpantry.MockData
 import com.ala158.magicpantry.data.Ingredient
 import com.ala158.magicpantry.repository.IngredientRepository
 import kotlinx.coroutines.CoroutineScope
@@ -42,7 +41,7 @@ class ReviewIngredientsViewModel(private val repository: IngredientRepository) :
         }
     }
 
-    fun addToIngredientList(ingredient: List<Ingredient>){
+    fun addToIngredientList(ingredient: List<Ingredient>) {
         _ingredientList.value = ingredient
     }
 

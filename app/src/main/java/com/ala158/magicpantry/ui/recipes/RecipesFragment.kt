@@ -154,7 +154,12 @@ class RecipesFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
 
         addRecipe1.setOnClickListener {
             Log.d("MOCK_DATA", "onCreateView: ADDING RECIPE 1...")
-            recipeViewModel.insert(MockData.frenchToastRecipe, recipeItemViewModel)
+            recipeViewModel.insert(
+                MockData.frenchToastRecipe,
+                recipeItemViewModel,
+                recipeViewModel,
+                ingredientViewModel
+            )
         }
 
         addRecipeItems2.setOnClickListener {
@@ -165,7 +170,12 @@ class RecipesFragment : Fragment(), CompoundButton.OnCheckedChangeListener {
 
         addRecipe2.setOnClickListener {
             Log.d("MOCK_DATA", "onCreateView: ADDING RECIPE 2...")
-            recipeViewModel.insert(MockData.spaghettiRecipe, recipeItemViewModel)
+            recipeViewModel.insert(
+                MockData.spaghettiRecipe,
+                recipeItemViewModel,
+                recipeViewModel,
+                ingredientViewModel
+            )
         }
 
         deleteRecipesButton.setOnClickListener {

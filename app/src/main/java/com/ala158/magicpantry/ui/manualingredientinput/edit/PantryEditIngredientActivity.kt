@@ -17,6 +17,7 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import androidx.room.Update
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.UpdateDB
 import com.ala158.magicpantry.Util
@@ -32,6 +33,7 @@ import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import java.util.*
 
 class PantryEditIngredientActivity : AppCompatActivity() {
@@ -64,7 +66,7 @@ class PantryEditIngredientActivity : AppCompatActivity() {
 
     private lateinit var notificationViewModel: NotificationViewModel
     private lateinit var notificationManager: NotificationManager
-    private var lowIngredients:MutableList<Ingredient> = ArrayList()
+    private var lowIngredients: MutableList<Ingredient> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -111,7 +113,7 @@ class PantryEditIngredientActivity : AppCompatActivity() {
             }
         }
         notificationViewModel.newNotificationId.observe(this) {
-            if(it != 0L) {
+            if (it != 0L) {
                 sendNotification(it)
             }
         }
@@ -120,7 +122,7 @@ class PantryEditIngredientActivity : AppCompatActivity() {
             oldAmount = it
         }
 
-        pantryEditIngredientViewModel.oldThreshold.observe(this){
+        pantryEditIngredientViewModel.oldThreshold.observe(this) {
             oldThreshold = it
         }
 
@@ -152,7 +154,8 @@ class PantryEditIngredientActivity : AppCompatActivity() {
                     pantryEditIngredientViewModel.updateIngredientEntry(ingredientId)
                     val newAmount =
                         pantryEditIngredientViewModel.ingredientEntry.value!!.getAmount()
-                    val newThreshold = pantryEditIngredientViewModel.ingredientEntry.value!!.getNotifyThreshold()
+                    val newThreshold =
+                        pantryEditIngredientViewModel.ingredientEntry.value!!.getNotifyThreshold()
                     if (oldAmount != newAmount) {
                         // Update all recipes that use this ingredient
                         val ingredientIds = arrayListOf(ingredientId)
@@ -164,7 +167,7 @@ class PantryEditIngredientActivity : AppCompatActivity() {
                         )
                         prepNotification()
                     }
-                    if(oldThreshold != newThreshold){
+                    if (oldThreshold != newThreshold) {
                         prepNotification()
                     }
                 }
@@ -281,7 +284,7 @@ class PantryEditIngredientActivity : AppCompatActivity() {
         textInputEditIngredientName.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 pantryEditIngredientViewModel.ingredientEntry.value!!.setName(s.toString())
-                ingredientNameLabel.setTextColor(resources.getColor(R.color.mp_textview_grey, null))
+                ingredientNameLabel.setTextColor(resources.getColor(R.color.black, null))
                 isIngredientNameValid = true
                 return
             }
@@ -302,7 +305,7 @@ class PantryEditIngredientActivity : AppCompatActivity() {
                 if (amountString != "")
                     amount = amountString.toDouble()
                 pantryEditIngredientViewModel.ingredientEntry.value!!.setAmount(amount)
-                amountLabel.setTextColor(resources.getColor(R.color.mp_textview_grey, null))
+                amountLabel.setTextColor(resources.getColor(R.color.black, null))
                 isAmountValid = true
                 return
             }
@@ -341,7 +344,7 @@ class PantryEditIngredientActivity : AppCompatActivity() {
                 if (priceString != "" && priceString != ".")
                     price = priceString.toDouble()
                 pantryEditIngredientViewModel.ingredientEntry.value!!.setPrice(price)
-                priceLabel.setTextColor(resources.getColor(R.color.mp_textview_grey, null))
+                priceLabel.setTextColor(resources.getColor(R.color.black, null))
                 isPricePerUnitValid = true
                 return
             }
@@ -389,7 +392,20 @@ class PantryEditIngredientActivity : AppCompatActivity() {
     // detecting when a user presses on an item on the top menu
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.item_menu_manualinput_delete && ingredientId != -1L) {
-            pantryEditIngredientViewModel.deleteIngredientEntry(ingredientId)
+            // TODO: Update recipe missing ingredients
+            CoroutineScope(Dispatchers.IO).launch {
+                val ingredientsWithRecipeItems =
+                    ingredientViewModel.findIngredientsWithRecipeItemsById(arrayListOf(ingredientId))
+                val recipeIds = mutableSetOf<Long>()
+                for (ingredientWithRecipeItems in ingredientsWithRecipeItems) {
+                    for (recipeItem in ingredientWithRecipeItems.recipeItems) {
+                        recipeIds.add(recipeItem.relatedRecipeId)
+                    }
+                }
+                pantryEditIngredientViewModel.deleteIngredientEntrySync(ingredientId)
+
+                UpdateDB.updateRecipesMissingIngredients(recipeIds.toList(), recipeViewModel)
+            }
             finish()
         }
         return super.onOptionsItemSelected(item)
@@ -432,7 +448,8 @@ class PantryEditIngredientActivity : AppCompatActivity() {
         val notification = Notification()
         notification.date = Calendar.getInstance()
         val ingredientIds = arrayListOf(ingredientId)
-        val ingredientsWithRecipeItems = ingredientViewModel.findIngredientsWithRecipeItemsById(ingredientIds)
+        val ingredientsWithRecipeItems =
+            ingredientViewModel.findIngredientsWithRecipeItemsById(ingredientIds)
         for (ingredientWithRecipeItem in ingredientsWithRecipeItems) {
             if (ingredientWithRecipeItem.ingredient.isNotify) {
                 if (ingredientWithRecipeItem.ingredient.amount < ingredientWithRecipeItem.ingredient.notifyThreshold) {
@@ -503,7 +520,6 @@ class PantryEditIngredientActivity : AppCompatActivity() {
             }
         }
     }
-
 
 
     companion object {

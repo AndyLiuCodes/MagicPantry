@@ -10,6 +10,8 @@ import android.content.Intent
 import android.content.IntentFilter
 import android.os.Build
 import android.os.Bundle
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -68,6 +70,8 @@ class SingleRecipeActivity : AppCompatActivity(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_single_recipe)
+
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
 
         recipeViewModel = Util.createViewModel(
             this,
@@ -349,5 +353,18 @@ class SingleRecipeActivity : AppCompatActivity(),
         listViewParams.height = listViewHeight
         listView.layoutParams = listViewParams
         listView.requestLayout()
+    }
+
+    // https://stackoverflow.com/a/27212978 for adding back button in title bar
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == android.R.id.home) {
+            finish()
+            return true
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        return true
     }
 }

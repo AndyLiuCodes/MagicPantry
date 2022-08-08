@@ -1,10 +1,14 @@
 package com.ala158.magicpantry.ui.manualingredientinput.edit
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View
 import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
@@ -44,6 +48,7 @@ class ReviewIngredientsEditActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_review_ingredients_edit)
 
+        sharedPreferences = getSharedPreferences(SHARED_PREFERENCE_KEY, Context.MODE_PRIVATE)
         reviewIngredientsViewModel = Util.createViewModel(
             this,
             ReviewIngredientsViewModel::class.java,
@@ -103,13 +108,17 @@ class ReviewIngredientsEditActivity : AppCompatActivity() {
 
         // Updating the text inside the EditText fields
         ingredientNameTextField.setText(reviewIngredientsViewModel.ingredient.value!!.getName())
-        amountTextField.setText(reviewIngredientsViewModel.ingredient.value!!.getAmount().toString())
+        amountTextField.setText(
+            reviewIngredientsViewModel.ingredient.value!!.getAmount().toString()
+        )
         unitEditDropdown.setSelection(
             UNIT_DROPDOWN_MAPPING[reviewIngredientsViewModel.ingredient.value!!.getUnit()]!!
         )
         lowStockThresholdUnitTextView.text = reviewIngredientsViewModel.ingredient.value!!.getUnit()
         priceTextField.setText(reviewIngredientsViewModel.ingredient.value!!.getPrice().toString())
-        lowStockThresholdField.setText(reviewIngredientsViewModel.ingredient.value!!.getNotifyThreshold().toString())
+        lowStockThresholdField.setText(
+            reviewIngredientsViewModel.ingredient.value!!.getNotifyThreshold().toString()
+        )
         if (reviewIngredientsViewModel.ingredient.value!!.getIsNotify()) {
             isNotifyCheckBoxView.isChecked = true
             thresholdSectionLayout.visibility = View.VISIBLE
@@ -120,8 +129,7 @@ class ReviewIngredientsEditActivity : AppCompatActivity() {
 
         initTextWatchers()
 
-        isNotifyCheckBoxView.setOnCheckedChangeListener() {
-                _, isChecked ->
+        isNotifyCheckBoxView.setOnCheckedChangeListener() { _, isChecked ->
 
             if (isChecked) {
                 thresholdSectionLayout.visibility = View.VISIBLE
@@ -175,10 +183,10 @@ class ReviewIngredientsEditActivity : AppCompatActivity() {
             val isNotify = reviewIngredientsViewModel.ingredient.value!!.getIsNotify()
             val notifyThreshold = reviewIngredientsViewModel.ingredient.value!!.getNotifyThreshold()
 
-            sharedPreferences = getSharedPreferences(SHARED_PREFERENCE_KEY, Context.MODE_PRIVATE)
             val edit = sharedPreferences.edit()
 
             edit.putInt(CURRENT_POSITION_KEY, position)
+            edit.putBoolean(DELETE_INGREDIENT_KEY, false)
             edit.putString(NAME_KEY, name)
             edit.putString(AMOUNT_KEY, amount.toString())
             edit.putString(PRICE_KEY, price.toString())
@@ -224,10 +232,27 @@ class ReviewIngredientsEditActivity : AppCompatActivity() {
         return true
     }
 
+    override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+        menuInflater.inflate(R.menu.manual_ingredient_input_action_menu, menu)
+        return super.onCreateOptionsMenu(menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        if (item.itemId == R.id.item_menu_manualinput_delete) {
+            Log.d("DELETE PLEASE", "onOptionsItemSelected: DELETE FROM INGREDIENT EDIT")
+            val edit = sharedPreferences.edit()
+            edit.putInt(CURRENT_POSITION_KEY, position)
+            edit.putBoolean(DELETE_INGREDIENT_KEY, true)
+            edit.apply()
+            finish()
+        }
+        return super.onOptionsItemSelected(item)
+    }
+
     private fun initTextWatchers() {
         ingredientNameTextField.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                ingredientNameLabel.setTextColor(resources.getColor(R.color.mp_textview_grey, null))
+                ingredientNameLabel.setTextColor(resources.getColor(R.color.black, null))
                 isIngredientNameValid = true
                 reviewIngredientsViewModel.ingredient.value!!.setName(s.toString())
                 return
@@ -249,7 +274,7 @@ class ReviewIngredientsEditActivity : AppCompatActivity() {
                 if (amountString != "")
                     amount = amountString.toDouble()
                 reviewIngredientsViewModel.ingredient.value!!.setAmount(amount)
-                amountLabel.setTextColor(resources.getColor(R.color.mp_textview_grey, null))
+                amountLabel.setTextColor(resources.getColor(R.color.black, null))
                 isAmountValid = true
                 return
             }
@@ -290,7 +315,7 @@ class ReviewIngredientsEditActivity : AppCompatActivity() {
 
                 reviewIngredientsViewModel.ingredient.value!!.setPrice(price)
 
-                priceLabel.setTextColor(resources.getColor(R.color.mp_textview_grey, null))
+                priceLabel.setTextColor(resources.getColor(R.color.black, null))
                 isPricePerUnitValid = true
                 return
             }
@@ -304,7 +329,7 @@ class ReviewIngredientsEditActivity : AppCompatActivity() {
             }
         })
 
-        lowStockThresholdField.addTextChangedListener(object: TextWatcher {
+        lowStockThresholdField.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 val thresholdAmountString = s.toString()
                 var thresholdAmount = 0.0
@@ -327,13 +352,14 @@ class ReviewIngredientsEditActivity : AppCompatActivity() {
 
     companion object {
         val UNIT_DROPDOWN_MAPPING = mapOf<String, Int>(
-            "kg"    to 0,
-            "g"     to 1,
-            "ml"    to 2,
-            "L"     to 3,
-            "unit"  to 4
+            "kg" to 0,
+            "g" to 1,
+            "ml" to 2,
+            "L" to 3,
+            "unit" to 4
         )
 
+        const val DELETE_INGREDIENT_KEY = "DELETE_INGREDIENT_KEY"
         val IS_INGREDIENT_NAME_VALID_KEY = "IS_INGREDIENT_NAME_VALID_KEY"
         val IS_AMOUNT_VALID_KEY = "IS_AMOUNT_VALID_KEY"
         val IS_PRICE_PER_UNIT_VALID_KEY = "IS_PRICE_PER_UNIT_VALID_KEY"
