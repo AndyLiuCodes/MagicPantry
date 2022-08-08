@@ -64,7 +64,7 @@ class LowIngredientArrayAdapter(
 
     private fun updateValidIngredients() {
         for (ingredient in lowIngredientList) {
-            if (ingredient.amount < ingredient.notifyThreshold) {
+            if (ingredient.amount <= ingredient.notifyThreshold) {
                 validIngredientIds.add(ingredient.ingredientId)
                 validIngredients.add(ingredient)
             }
