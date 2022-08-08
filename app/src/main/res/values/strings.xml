@@ -46,7 +46,7 @@
     <!-- Recipe Fragment -->
     <string name="add_recipe">Add recipe</string>
     <string name="filter_cookable_recipes">Filter Cookable Recipes</string>
-    <string name="all_recipe">All Recipe</string>
+    <string name="all_recipe">All Recipes</string>
     <string name="cookable_recipe">Cookable Recipes</string>
     <string name="recipe_name">Recipe Name</string>
     <string name="cookingtime">CookingTime</string>
