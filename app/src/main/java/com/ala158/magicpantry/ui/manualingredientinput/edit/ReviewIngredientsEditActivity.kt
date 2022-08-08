@@ -252,7 +252,7 @@ class ReviewIngredientsEditActivity : AppCompatActivity() {
     private fun initTextWatchers() {
         ingredientNameTextField.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
-                ingredientNameLabel.setTextColor(resources.getColor(R.color.mp_textview_grey, null))
+                ingredientNameLabel.setTextColor(resources.getColor(R.color.black, null))
                 isIngredientNameValid = true
                 reviewIngredientsViewModel.ingredient.value!!.setName(s.toString())
                 return
@@ -274,7 +274,7 @@ class ReviewIngredientsEditActivity : AppCompatActivity() {
                 if (amountString != "")
                     amount = amountString.toDouble()
                 reviewIngredientsViewModel.ingredient.value!!.setAmount(amount)
-                amountLabel.setTextColor(resources.getColor(R.color.mp_textview_grey, null))
+                amountLabel.setTextColor(resources.getColor(R.color.black, null))
                 isAmountValid = true
                 return
             }
@@ -315,7 +315,7 @@ class ReviewIngredientsEditActivity : AppCompatActivity() {
 
                 reviewIngredientsViewModel.ingredient.value!!.setPrice(price)
 
-                priceLabel.setTextColor(resources.getColor(R.color.mp_textview_grey, null))
+                priceLabel.setTextColor(resources.getColor(R.color.black, null))
                 isPricePerUnitValid = true
                 return
             }

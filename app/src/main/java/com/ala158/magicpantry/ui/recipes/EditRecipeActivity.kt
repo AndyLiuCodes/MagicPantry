@@ -13,6 +13,8 @@ import android.os.Bundle
 import android.os.Parcel
 import android.os.Environment
 import android.provider.MediaStore
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.Menu
 import android.view.MenuItem
 import android.widget.*
@@ -315,6 +317,23 @@ class EditRecipeActivity :
                 finish()
             }
         }
+
+        title.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                return
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+                return
+            }
+
+            override fun afterTextChanged(s: Editable?) {
+                recipeNameLabel.setTextColor(resources.getColor(R.color.black, null))
+                isRecipeNameValid = true
+
+                return
+            }
+        })
     }
 
     override fun onRecipeEditAmountChangeClick(recipeItem: RecipeItem) {
