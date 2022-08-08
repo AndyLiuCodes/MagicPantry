@@ -291,7 +291,7 @@ class EditRecipeActivity :
 
         val cancelBtn = findViewById<Button>(R.id.edit_recipe_btn_cancel_recipe)
         cancelBtn.setOnClickListener {
-            edit.remove("recipe_image").apply()
+            edit.remove("edit_recipe_image").apply()
 
             // Delete image once we are done with it
             ReceiptScannerActivity().deleteImageFromGallery(filePath)
