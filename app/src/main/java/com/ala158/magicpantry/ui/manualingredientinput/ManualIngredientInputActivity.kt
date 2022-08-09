@@ -1,11 +1,11 @@
 package com.ala158.magicpantry.ui.manualingredientinput
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
 import android.view.View
 import android.widget.*
+import androidx.appcompat.app.AppCompatActivity
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.google.android.material.textfield.TextInputEditText
@@ -66,8 +66,7 @@ class ManualIngredientInputActivity : AppCompatActivity() {
 
         initTextWatchers()
 
-        isNotifyCheckBoxView.setOnCheckedChangeListener() {
-            _, isChecked ->
+        isNotifyCheckBoxView.setOnCheckedChangeListener { _, isChecked ->
 
             if (isChecked) {
                 thresholdSectionLayout.visibility = View.VISIBLE
@@ -192,14 +191,16 @@ class ManualIngredientInputActivity : AppCompatActivity() {
             }
         })
 
-        lowStockThresholdField.addTextChangedListener(object: TextWatcher {
+        lowStockThresholdField.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable?) {
                 val thresholdAmountString = s.toString()
                 var thresholdAmount = 0.0
                 if (thresholdAmountString != "")
                     thresholdAmount = thresholdAmountString.toDouble()
 
-                manualIngredientsInputViewModel.ingredient.value!!.setNotifyThreshold(thresholdAmount)
+                manualIngredientsInputViewModel.ingredient.value!!.setNotifyThreshold(
+                    thresholdAmount
+                )
                 return
             }
 
@@ -221,7 +222,7 @@ class ManualIngredientInputActivity : AppCompatActivity() {
         }
     }
 
-    private fun validateIngredientInput() : Boolean {
+    private fun validateIngredientInput(): Boolean {
         var errorMsg = ""
 
         if (ingredientNameTextField.text.toString().trim() == "") {
@@ -256,11 +257,11 @@ class ManualIngredientInputActivity : AppCompatActivity() {
 
     companion object {
         val UNIT_DROPDOWN_MAPPING = mapOf<String, Int>(
-            "kg"    to 0,
-            "g"     to 1,
-            "ml"    to 2,
-            "L"     to 3,
-            "unit"  to 4
+            "kg" to 0,
+            "g" to 1,
+            "ml" to 2,
+            "L" to 3,
+            "unit" to 4
         )
 
         val IS_INGREDIENT_NAME_VALID_KEY = "IS_INGREDIENT_NAME_VALID_KEY"

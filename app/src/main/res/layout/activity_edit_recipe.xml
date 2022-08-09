@@ -55,7 +55,7 @@
         android:textSize="22sp"
         android:textStyle="bold"
         tools:ignore="RtlSymmetry"
-        android:layout_alignParentTop="true"/>
+        android:layout_alignParentTop="true" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
@@ -80,7 +80,7 @@
                     app:cornerRadius="8dp"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="15dp"
-                    android:layout_centerInParent="true"/>
+                    android:layout_centerInParent="true" />
 
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/edit_recipe_btn_edit_recipe_pic"
@@ -90,7 +90,7 @@
                     app:icon="@drawable/ic_camera_solid"
                     app:cornerRadius="8dp"
                     android:backgroundTint="@color/mp_yellow"
-                    android:layout_alignParentEnd="true"/>
+                    android:layout_alignParentEnd="true" />
 
             </RelativeLayout>
 
@@ -116,7 +116,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_horizontal"
-                android:orientation="horizontal" >
+                android:orientation="horizontal">
 
                 <LinearLayout
                     android:layout_width="wrap_content"
@@ -202,7 +202,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="horizontal"
-                android:layout_gravity="center_horizontal" >
+                android:layout_gravity="center_horizontal">
 
                 <TextView
                     android:layout_width="0dp"

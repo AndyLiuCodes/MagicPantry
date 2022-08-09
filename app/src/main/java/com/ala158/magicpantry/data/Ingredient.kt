@@ -46,7 +46,13 @@ data class Ingredient(
         this.price = price
     }
 
-    constructor(name: String, amount: Double, unit: String, price: Double, notifyThreshold: Double): this() {
+    constructor(
+        name: String,
+        amount: Double,
+        unit: String,
+        price: Double,
+        notifyThreshold: Double
+    ) : this() {
         this.name = name
         this.amount = amount
         this.unit = unit
@@ -54,7 +60,14 @@ data class Ingredient(
         this.notifyThreshold = notifyThreshold
     }
 
-    constructor(name: String, amount: Double, unit: String, price: Double, isNotify: Boolean, notifyThreshold: Double) : this() {
+    constructor(
+        name: String,
+        amount: Double,
+        unit: String,
+        price: Double,
+        isNotify: Boolean,
+        notifyThreshold: Double
+    ) : this() {
         this.name = name
         this.amount = amount
         this.unit = unit

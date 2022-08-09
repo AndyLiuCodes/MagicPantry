@@ -52,8 +52,7 @@ data class RecipeItem(
         parcel.readByte() != 0.toByte(),
         parcel.readLong(),
         parcel.readLong()
-    ) {
-    }
+    )
 
     override fun writeToParcel(parcel: Parcel, flags: Int) {
         parcel.writeLong(recipeItemId)

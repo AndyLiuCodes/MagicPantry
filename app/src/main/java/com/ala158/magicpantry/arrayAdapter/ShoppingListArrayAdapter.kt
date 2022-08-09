@@ -7,19 +7,24 @@ import android.widget.BaseAdapter
 import android.widget.CheckBox
 import android.widget.TextView
 import com.ala158.magicpantry.R
-import com.ala158.magicpantry.data.Ingredient
-import com.ala158.magicpantry.data.ShoppingListItem
+import com.ala158.magicpantry.UpdateDB
 import com.ala158.magicpantry.data.ShoppingListItemAndIngredient
 import com.ala158.magicpantry.repository.ShoppingListItemRepository
+import com.ala158.magicpantry.viewModel.IngredientViewModel
+import com.ala158.magicpantry.viewModel.RecipeItemViewModel
+import com.ala158.magicpantry.viewModel.RecipeViewModel
 import com.google.android.material.button.MaterialButton
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 
 
 class ShoppingListArrayAdapter(
-            private val context: Context,
-            private var shoppingListItemAndIngredient: List<ShoppingListItemAndIngredient>,
-            private val shoppingListItemRepository: ShoppingListItemRepository,
-            internal val onChangeShoppingItemAmountClickListener: OnChangeShoppingItemAmountClickListener
+    private val context: Context,
+    private var shoppingListItemAndIngredient: List<ShoppingListItemAndIngredient>,
+    private val shoppingListItemRepository: ShoppingListItemRepository,
+    private val onChangeShoppingItemAmountClickListener: OnChangeShoppingItemAmountClickListener,
 ) : BaseAdapter() {
 
     interface OnChangeShoppingItemAmountClickListener {
@@ -55,18 +60,19 @@ class ShoppingListArrayAdapter(
 
         isBoughtCheckbox.isChecked = shoppingListItem.isItemBought
 
-        isBoughtCheckbox.setOnCheckedChangeListener() {
-            _, isChecked ->
+        isBoughtCheckbox.setOnCheckedChangeListener { _, isChecked ->
             shoppingListItem.isItemBought = isChecked
             shoppingListItemRepository.updateShoppingListItem(shoppingListItem)
         }
 
-        deleteButton.setOnClickListener() {
+        deleteButton.setOnClickListener {
             shoppingListItemRepository.deleteShoppingListItemById(shoppingListItem.shoppingListItemId)
         }
 
-        amountTextView.setOnClickListener() {
-            onChangeShoppingItemAmountClickListener.onChangeShoppingItemAmountClick(shoppingListItemAndIngredient[position])
+        amountTextView.setOnClickListener {
+            onChangeShoppingItemAmountClickListener.onChangeShoppingItemAmountClick(
+                shoppingListItemAndIngredient[position]
+            )
         }
 
         return view

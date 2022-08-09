@@ -68,12 +68,19 @@ class IngredientListAddDialog : DialogFragment(), DialogInterface.OnClickListene
             val newIngredientUnit = unitInputSpinner.selectedItem.toString()
 
             if (newIngredientName == "") {
-                Toast.makeText(requireActivity(), "Ingredient is not added: Name cannot be empty", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    requireActivity(),
+                    "Ingredient is not added: Name cannot be empty",
+                    Toast.LENGTH_SHORT
+                ).show()
                 dismiss()
                 return
             }
 
-            ingredientListAddDialogListener.onIngredientListAddDialogClick(newIngredientName, newIngredientUnit)
+            ingredientListAddDialogListener.onIngredientListAddDialogClick(
+                newIngredientName,
+                newIngredientUnit
+            )
         } else {
             dismiss()
         }

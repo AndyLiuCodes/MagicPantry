@@ -1,12 +1,10 @@
 package com.ala158.magicpantry.ui.manualingredientinput.edit
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
@@ -14,11 +12,8 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
-import com.ala158.magicpantry.ui.manualingredientinput.ManualIngredientInputActivity
-import com.ala158.magicpantry.ui.manualingredientinput.ManualIngredientInputViewModel
 import com.ala158.magicpantry.ui.reviewingredients.ReviewIngredientsViewModel
 import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 
 class ReviewIngredientsEditActivity : AppCompatActivity() {
     private lateinit var btnSave: Button
@@ -61,6 +56,8 @@ class ReviewIngredientsEditActivity : AppCompatActivity() {
             val amount = intent.getDoubleExtra(AMOUNT_KEY, 0.0)
             val price = intent.getDoubleExtra(PRICE_KEY, 0.0)
             unit = intent.getStringExtra(UNIT_KEY).toString()
+            val isNotify = intent.getBooleanExtra(IS_NOTIFY_KEY, false)
+            val notifyThreshold = intent.getDoubleExtra(NOTIFY_THRESHOLD_KEY, 0.0)
 
             if (position >= 0) {
                 if (name == null) {
@@ -75,6 +72,10 @@ class ReviewIngredientsEditActivity : AppCompatActivity() {
                 reviewIngredientsViewModel.ingredient.value!!.setUnit(unit)
 
                 reviewIngredientsViewModel.ingredient.value!!.setPrice(price)
+
+                reviewIngredientsViewModel.ingredient.value!!.setIsNotify(isNotify)
+
+                reviewIngredientsViewModel.ingredient.value!!.setNotifyThreshold(notifyThreshold)
             }
 
             isFirstStart = false
@@ -109,15 +110,15 @@ class ReviewIngredientsEditActivity : AppCompatActivity() {
         // Updating the text inside the EditText fields
         ingredientNameTextField.setText(reviewIngredientsViewModel.ingredient.value!!.getName())
         amountTextField.setText(
-            reviewIngredientsViewModel.ingredient.value!!.getAmount().toString()
+            reviewIngredientsViewModel.ingredient.value!!.getAmount().toBigDecimal().toPlainString()
         )
         unitEditDropdown.setSelection(
             UNIT_DROPDOWN_MAPPING[reviewIngredientsViewModel.ingredient.value!!.getUnit()]!!
         )
         lowStockThresholdUnitTextView.text = reviewIngredientsViewModel.ingredient.value!!.getUnit()
-        priceTextField.setText(reviewIngredientsViewModel.ingredient.value!!.getPrice().toString())
+        priceTextField.setText(reviewIngredientsViewModel.ingredient.value!!.getPrice().toBigDecimal().toPlainString())
         lowStockThresholdField.setText(
-            reviewIngredientsViewModel.ingredient.value!!.getNotifyThreshold().toString()
+            reviewIngredientsViewModel.ingredient.value!!.getNotifyThreshold().toBigDecimal().toPlainString()
         )
         if (reviewIngredientsViewModel.ingredient.value!!.getIsNotify()) {
             isNotifyCheckBoxView.isChecked = true
@@ -129,7 +130,7 @@ class ReviewIngredientsEditActivity : AppCompatActivity() {
 
         initTextWatchers()
 
-        isNotifyCheckBoxView.setOnCheckedChangeListener() { _, isChecked ->
+        isNotifyCheckBoxView.setOnCheckedChangeListener { _, isChecked ->
 
             if (isChecked) {
                 thresholdSectionLayout.visibility = View.VISIBLE
@@ -239,7 +240,6 @@ class ReviewIngredientsEditActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.item_menu_manualinput_delete) {
-            Log.d("DELETE PLEASE", "onOptionsItemSelected: DELETE FROM INGREDIENT EDIT")
             val edit = sharedPreferences.edit()
             edit.putInt(CURRENT_POSITION_KEY, position)
             edit.putBoolean(DELETE_INGREDIENT_KEY, true)

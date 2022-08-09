@@ -1,7 +1,6 @@
 package com.ala158.magicpantry.data
 
 import androidx.room.Embedded
-import androidx.room.Junction
 import androidx.room.Relation
 
 data class RecipeWithRecipeItems(

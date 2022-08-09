@@ -63,7 +63,7 @@
         android:textAlignment="textEnd"
         android:textColor="@color/black"
         android:text="Date + Time"
-        android:textSize="12sp"/>
+        android:textSize="12sp" />
 
     <ListView
         android:id="@+id/notifications_list_view"

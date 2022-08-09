@@ -9,14 +9,15 @@ class IngredientEntry {
     private var isNotify: Boolean = false
     private var notifyThreshold: Double = 0.0
 
-    fun getId() : Long {
+    fun getId(): Long {
         return id
     }
 
     fun setId(newId: Long) {
         id = newId
     }
-    fun getName() : String {
+
+    fun getName(): String {
         return name
     }
 
@@ -24,7 +25,7 @@ class IngredientEntry {
         name = newName
     }
 
-    fun getAmount() : Double {
+    fun getAmount(): Double {
         return amount
     }
 
@@ -32,7 +33,7 @@ class IngredientEntry {
         amount = newAmount
     }
 
-    fun getUnit() : String {
+    fun getUnit(): String {
         return unit
     }
 
@@ -48,7 +49,7 @@ class IngredientEntry {
         price = newPrice
     }
 
-    fun getIsNotify() : Boolean {
+    fun getIsNotify(): Boolean {
         return isNotify
     }
 
@@ -56,11 +57,11 @@ class IngredientEntry {
         isNotify = newIsNotify
     }
 
-    fun getNotifyThreshold() : Double {
+    fun getNotifyThreshold(): Double {
         return notifyThreshold
     }
 
-    fun setNotifyThreshold(newNotifyThreshold : Double) {
+    fun setNotifyThreshold(newNotifyThreshold: Double) {
         notifyThreshold = newNotifyThreshold
     }
 }

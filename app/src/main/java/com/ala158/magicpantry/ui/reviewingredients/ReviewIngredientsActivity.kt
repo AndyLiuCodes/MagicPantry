@@ -1,15 +1,12 @@
 package com.ala158.magicpantry.ui.reviewingredients
 
 import android.content.Context
-import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.widget.Button
 import android.widget.ListView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
-import com.ala158.magicpantry.MainActivity
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.ReviewIngredientsActivityAdapter
@@ -66,7 +63,6 @@ class ReviewIngredientsActivity : AppCompatActivity() {
                 ingredient.price = prices[i].filter { it.isDigit() || it == '.' }.toDouble()
 
                 ingredientList.add(ingredient)
-                Log.d("ingredient", "$ingredient   and   $i")
             }
         }
 
@@ -74,17 +70,13 @@ class ReviewIngredientsActivity : AppCompatActivity() {
         reviewIngredientsArrayAdapter = ReviewIngredientsActivityAdapter(this, ingredientList)
         ingredientListView.adapter = reviewIngredientsArrayAdapter
         reviewIngredientsViewModel.ingredientList.observe(this) {
-            ingredientListView.adapter = null
-            reviewIngredientsArrayAdapter = ReviewIngredientsActivityAdapter(this, it)
-            ingredientListView.adapter = reviewIngredientsArrayAdapter
+            reviewIngredientsArrayAdapter.replace(it)
             reviewIngredientsArrayAdapter.notifyDataSetChanged()
         }
         cancelButton = findViewById(R.id.reviewCancelButton)
         addAllButton = findViewById(R.id.reviewAddAllButton)
 
         cancelButton.setOnClickListener {
-            // TODO When receipt scanning API ready
-            // requireActivity().supportFragmentManager.popBackStack()
             finish()
         }
         addAllButton.setOnClickListener {
@@ -151,10 +143,7 @@ class ReviewIngredientsActivity : AppCompatActivity() {
                     ingredient.notifyThreshold = notifyThresholdString!!.toDouble()
                 }
 
-                ingredientList[sharedPreferences.getInt(
-                    ReviewIngredientsEditActivity.CURRENT_POSITION_KEY,
-                    0
-                )] = ingredient
+                ingredientList[position] = ingredient
                 reviewIngredientsViewModel.ingredientList.value = ingredientList
             }
         }

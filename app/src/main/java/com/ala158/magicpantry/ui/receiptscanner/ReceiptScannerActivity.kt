@@ -11,6 +11,7 @@ import android.os.Bundle
 import android.os.Environment
 import android.provider.MediaStore
 import android.text.method.ScrollingMovementMethod
+import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -42,8 +43,8 @@ class ReceiptScannerActivity : AppCompatActivity() {
     private val requestCamera = 1888
     private val requestGallery = 2222
 
-    private lateinit var sharedPrefFile : SharedPreferences
-    private lateinit var edit : SharedPreferences.Editor
+    private lateinit var sharedPrefFile: SharedPreferences
+    private lateinit var edit: SharedPreferences.Editor
 
     private var imageView: ImageView? = null
     private lateinit var textView: TextView
@@ -103,7 +104,9 @@ class ReceiptScannerActivity : AppCompatActivity() {
 
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
                             val file =
-                                File(Environment.getExternalStorageDirectory().toString() + "/$tag/")
+                                File(
+                                    Environment.getExternalStorageDirectory().toString() + "/$tag/"
+                                )
                             if (!file.exists()) {
                                 file.mkdirs()
                             }
@@ -115,10 +118,12 @@ class ReceiptScannerActivity : AppCompatActivity() {
                                 MediaStore.Images.Media.DESCRIPTION,
                                 "Photo taken on " + System.currentTimeMillis()
                             )
-                        }
-                        else {
+                        } else {
                             values.put(MediaStore.Images.Media.TITLE, "Receipt")
-                            values.put(MediaStore.Images.Media.DESCRIPTION, "Photo taken on " + System.currentTimeMillis())
+                            values.put(
+                                MediaStore.Images.Media.DESCRIPTION,
+                                "Photo taken on " + System.currentTimeMillis()
+                            )
                         }
                         imageUri = contentResolver.insert(
                             MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values
@@ -128,8 +133,7 @@ class ReceiptScannerActivity : AppCompatActivity() {
                         cameraIntent.putExtra(MediaStore.EXTRA_OUTPUT, imageUri)
                         isCameraChosen = true
                         startActivityForResult(cameraIntent, requestCamera)
-                    }
-                    else {
+                    } else {
                         // open photo gallery to choose an image
                         val galleryIntent =
                             Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
@@ -226,7 +230,8 @@ class ReceiptScannerActivity : AppCompatActivity() {
             if ((helperProducts[i].lowercase().contains("sav"))
                 && !(helperProducts[i].lowercase().contains("saving"))
                 && helperProducts[i].contains("$") && helperProducts[i].contains("/")
-                && helperProducts[i].any { it.isDigit() }) {
+                && helperProducts[i].any { it.isDigit() }
+            ) {
                 filteredProducts[filteredProducts.size - 1] =
                     filteredProducts[filteredProducts.size - 1] + ";;" + helperProducts[i]
             } else if ((helperProducts[i] != helperProducts[i].uppercase())
@@ -344,8 +349,7 @@ class ReceiptScannerActivity : AppCompatActivity() {
         }
         val imageScanned = if (bitmap != null) {
             imageUri.path.toString()
-        }
-        else {
+        } else {
             ""
         }
         edit.putString("scan_image", imageScanned).apply()
@@ -353,13 +357,13 @@ class ReceiptScannerActivity : AppCompatActivity() {
     }
 
     // Delete image once we are done with it
-    fun deleteImageFromGallery(fPath : String) {
+    fun deleteImageFromGallery(fPath: String) {
         val deleteFile = File(fPath)
         if (deleteFile.exists()) {
             if (deleteFile.delete()) {
-                println("file Deleted :$fPath")
+                Log.d("RECEIPT_SCANNER", "deleteImageFromGallery: File deleted: $fPath ")
             } else {
-                println("file not Deleted :$fPath")
+                Log.d("RECEIPT_SCANNER", "deleteImageFromGallery: File not deleted: $fPath ")
             }
         }
     }

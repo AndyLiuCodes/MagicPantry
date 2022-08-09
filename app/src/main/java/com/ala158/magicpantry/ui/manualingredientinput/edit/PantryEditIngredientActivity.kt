@@ -17,7 +17,6 @@ import android.widget.*
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import androidx.room.Update
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.UpdateDB
 import com.ala158.magicpantry.Util
@@ -33,7 +32,6 @@ import com.google.android.material.textfield.TextInputEditText
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import java.util.*
 
 class PantryEditIngredientActivity : AppCompatActivity() {
@@ -85,7 +83,7 @@ class PantryEditIngredientActivity : AppCompatActivity() {
             unitDropdown.adapter = unitAdapter
 
             textInputEditIngredientName.setText(it.getName())
-            textInputEditAmount.setText(it.getAmount().toString())
+            textInputEditAmount.setText(it.getAmount().toBigDecimal().toPlainString())
             // Had help from https://stackoverflow.com/a/57119977 for setting the dropdown value
             val dropdownMapping = getAppropriateDropdownMapping(it.getUnit())
             unitDropdown.setSelection(dropdownMapping[it.getUnit()]!!)
@@ -98,10 +96,10 @@ class PantryEditIngredientActivity : AppCompatActivity() {
             }
 
             if (it.getPrice() != 0.0)
-                textInputEditPrice.setText(it.getPrice().toString())
+                textInputEditPrice.setText(it.getPrice().toBigDecimal().toPlainString())
 
             if (it.getNotifyThreshold() != 0.0) {
-                lowStockThresholdField.setText(it.getNotifyThreshold().toString())
+                lowStockThresholdField.setText(it.getNotifyThreshold().toBigDecimal().toPlainString())
             }
 
             if (it.getIsNotify()) {
@@ -130,7 +128,7 @@ class PantryEditIngredientActivity : AppCompatActivity() {
             pantryEditIngredientViewModel.getIngredientEntry(ingredientId)
         }
 
-        isNotifyCheckBoxView.setOnCheckedChangeListener() { _, isChecked ->
+        isNotifyCheckBoxView.setOnCheckedChangeListener { _, isChecked ->
 
             if (isChecked) {
                 thresholdSectionLayout.visibility = View.VISIBLE
@@ -392,7 +390,6 @@ class PantryEditIngredientActivity : AppCompatActivity() {
     // detecting when a user presses on an item on the top menu
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.item_menu_manualinput_delete && ingredientId != -1L) {
-            // TODO: Update recipe missing ingredients
             CoroutineScope(Dispatchers.IO).launch {
                 val ingredientsWithRecipeItems =
                     ingredientViewModel.findIngredientsWithRecipeItemsById(arrayListOf(ingredientId))

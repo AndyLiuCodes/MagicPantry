@@ -12,20 +12,28 @@ import android.widget.ListView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.ala158.magicpantry.R
+import com.ala158.magicpantry.UpdateDB
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.ShoppingListArrayAdapter
-import com.ala158.magicpantry.data.ShoppingListItem
 import com.ala158.magicpantry.data.ShoppingListItemAndIngredient
 import com.ala158.magicpantry.database.MagicPantryDatabase
 import com.ala158.magicpantry.dialogs.ShoppingListChangeAmountDialog
 import com.ala158.magicpantry.repository.ShoppingListItemRepository
 import com.ala158.magicpantry.ui.ingredientlistadd.IngredientListAddActivity
 import com.ala158.magicpantry.viewModel.IngredientViewModel
+import com.ala158.magicpantry.viewModel.RecipeItemViewModel
+import com.ala158.magicpantry.viewModel.RecipeViewModel
 import com.ala158.magicpantry.viewModel.ShoppingListItemViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
-class ShoppingListFragment : Fragment(), ShoppingListArrayAdapter.OnChangeShoppingItemAmountClickListener {
+class ShoppingListFragment : Fragment(),
+    ShoppingListArrayAdapter.OnChangeShoppingItemAmountClickListener {
     private lateinit var shoppingListItemViewModel: ShoppingListItemViewModel
     private lateinit var ingredientViewModel: IngredientViewModel
+    private lateinit var recipeViewModel: RecipeViewModel
+    private lateinit var recipeItemViewModel: RecipeItemViewModel
     private lateinit var shoppingListListView: ListView
     private lateinit var shoppingListArrayAdapter: ShoppingListArrayAdapter
     private lateinit var database: MagicPantryDatabase
@@ -54,6 +62,18 @@ class ShoppingListFragment : Fragment(), ShoppingListArrayAdapter.OnChangeShoppi
             Util.DataType.INGREDIENT
         )
 
+        recipeViewModel = Util.createViewModel(
+            requireActivity(),
+            RecipeViewModel::class.java,
+            Util.DataType.RECIPE
+        )
+
+        recipeItemViewModel = Util.createViewModel(
+            requireActivity(),
+            RecipeItemViewModel::class.java,
+            Util.DataType.RECIPE_ITEM
+        )
+
         val view = inflater.inflate(R.layout.fragment_shopping_list, container, false)
         shoppingListListView = view.findViewById(R.id.listview_shopping_list_items)
 
@@ -61,7 +81,7 @@ class ShoppingListFragment : Fragment(), ShoppingListArrayAdapter.OnChangeShoppi
             requireActivity(),
             ArrayList(),
             shoppingListItemRepository,
-            this
+            this,
         )
         shoppingListListView.adapter = shoppingListArrayAdapter
 
@@ -92,25 +112,31 @@ class ShoppingListFragment : Fragment(), ShoppingListArrayAdapter.OnChangeShoppi
         dialogData.putString(DIALOG_INGREDIENT_NAME_KEY, pantryIngredient.name)
         dialogData.putString(DIALOG_INGREDIENT_UNIT_KEY, pantryIngredient.unit)
 
-        val savedShoppingListItemMessageListener = SavedShoppingListItemMessageListener(requireActivity())
-        dialogData.putParcelable(DIALOG_SHOPPING_LIST_LISTENER_KEY, object : ShoppingListChangeAmountDialog.ShoppingListChangeAmountDialogListener {
-            override fun onShoppingListChangeAmountDialogClick(amount: Double) {
-                shoppingListItem.itemAmount = amount
-                shoppingListItemViewModel.update(shoppingListItem)
-                savedShoppingListItemMessageListener.savedSuccessfullyMessage()
-            }
+        val savedShoppingListItemMessageListener =
+            SavedShoppingListItemMessageListener(requireActivity())
+        dialogData.putParcelable(
+            DIALOG_SHOPPING_LIST_LISTENER_KEY,
+            object : ShoppingListChangeAmountDialog.ShoppingListChangeAmountDialogListener {
+                override fun onShoppingListChangeAmountDialogClick(amount: Double) {
+                    shoppingListItem.itemAmount = amount
+                    shoppingListItemViewModel.update(shoppingListItem)
+                    savedShoppingListItemMessageListener.savedSuccessfullyMessage()
+                }
 
-            override fun describeContents(): Int {
-                return 0
-            }
+                override fun describeContents(): Int {
+                    return 0
+                }
 
-            override fun writeToParcel(dest: Parcel?, flags: Int) {
-                return
-            }
-        })
+                override fun writeToParcel(dest: Parcel?, flags: Int) {
+                    return
+                }
+            })
 
         shoppingListChangeAmountDialog.arguments = dialogData
-        shoppingListChangeAmountDialog.show(parentFragmentManager, "Change shopping list item amount")
+        shoppingListChangeAmountDialog.show(
+            parentFragmentManager,
+            "Change shopping list item amount"
+        )
     }
 
     internal class SavedShoppingListItemMessageListener(private val context: Context) {
@@ -121,8 +147,24 @@ class ShoppingListFragment : Fragment(), ShoppingListArrayAdapter.OnChangeShoppi
 
     override fun onDestroy() {
         super.onDestroy()
-        if (!requireActivity().isChangingConfigurations)
-            shoppingListItemViewModel.deleteAlldeleteAllIsBoughtShoppingListItems()
+        if (!requireActivity().isChangingConfigurations) {
+            CoroutineScope(Dispatchers.IO).launch {
+                val boughtItems = shoppingListItemViewModel.getBoughtItems()
+                for (item in boughtItems) {
+                    item.ingredient.amount += item.shoppingListItem.itemAmount
+                    ingredientViewModel.updateSync(item.ingredient)
+                }
+
+                val ingredientIds = boughtItems.map { it.ingredient.ingredientId }
+                UpdateDB.postUpdatesAfterModifyIngredient(
+                    ingredientIds,
+                    ingredientViewModel,
+                    recipeItemViewModel,
+                    recipeViewModel
+                )
+                shoppingListItemViewModel.deleteAlldeleteAllIsBoughtShoppingListItems()
+            }
+        }
     }
 
     companion object {

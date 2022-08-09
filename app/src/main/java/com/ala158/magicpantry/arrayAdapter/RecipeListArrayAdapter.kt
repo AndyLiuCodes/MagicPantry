@@ -10,7 +10,10 @@ import android.widget.TextView
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.data.RecipeWithRecipeItems
 
-class RecipeListArrayAdapter(private val context: Context, private var recipes:List<RecipeWithRecipeItems>):BaseAdapter() {
+class RecipeListArrayAdapter(
+    private val context: Context,
+    private var recipes: List<RecipeWithRecipeItems>
+) : BaseAdapter() {
     override fun getCount(): Int {
         return recipes.size
     }
@@ -33,25 +36,25 @@ class RecipeListArrayAdapter(private val context: Context, private var recipes:L
         val enoughIngredientsView = view.findViewById<TextView>(R.id.EnoughIngredientsText)
 
         val currRecipe = recipes[position]
-        if(currRecipe.recipe.imageUri != ""){
+        if (currRecipe.recipe.imageUri != "") {
             val uri = Uri.parse(currRecipe.recipe.imageUri)
             recipeImageView.setImageURI(uri)
         }
         recipeTitleView.text = currRecipe.recipe.title
         cookingTimeView.text = "${currRecipe.recipe.timeToCook} minutes"
-        numOfServingsView.text ="${currRecipe.recipe.servings} servings"
-        if(currRecipe.recipe.numMissingIngredients == 0){
+        numOfServingsView.text = "${currRecipe.recipe.servings} servings"
+        if (currRecipe.recipe.numMissingIngredients == 0) {
             enoughIngredientsImageView.setImageResource(R.drawable.ic_baseline_check_box_24)
             enoughIngredientsView.text = "Ready to cook!"
-        }
-        else{
+        } else {
             enoughIngredientsImageView.setImageResource(R.drawable.low_stock)
-            enoughIngredientsView.text = "Missing ${currRecipe.recipe.numMissingIngredients} ingredients"
+            enoughIngredientsView.text =
+                "Missing ${currRecipe.recipe.numMissingIngredients} ingredients"
         }
         return view
     }
 
-    fun replace(newRecipes:List<RecipeWithRecipeItems>){
+    fun replace(newRecipes: List<RecipeWithRecipeItems>) {
         recipes = newRecipes.toList()
     }
 }

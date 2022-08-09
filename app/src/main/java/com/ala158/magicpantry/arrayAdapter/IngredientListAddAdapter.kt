@@ -21,6 +21,7 @@ class IngredientListAddAdapter(
     private var shoppingListItems: List<ShoppingListItemAndIngredient> = ArrayList()
     private var recipeItems: List<RecipeItemAndIngredient> = ArrayList()
     private var filterIngredientIds = ArrayList<Int>()
+
     // Holds the IDs of which ingredients to be added to the shopping list or recipe
     var ingredientsToAdd: MutableMap<Long, Ingredient> = mutableMapOf()
 

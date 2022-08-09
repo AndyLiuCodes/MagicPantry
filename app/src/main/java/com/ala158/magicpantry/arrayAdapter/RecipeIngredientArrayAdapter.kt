@@ -8,12 +8,13 @@ import android.widget.ImageView
 import android.widget.TextView
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
-import com.ala158.magicpantry.data.Ingredient
 import com.ala158.magicpantry.data.RecipeItemAndIngredient
-import com.ala158.magicpantry.data.RecipeWithRecipeItems
 import java.text.DecimalFormat
 
-class RecipeIngredientArrayAdapter(private val context: Context, private var recipeIngredients:List<RecipeItemAndIngredient>): BaseAdapter() {
+class RecipeIngredientArrayAdapter(
+    private val context: Context,
+    private var recipeIngredients: List<RecipeItemAndIngredient>
+) : BaseAdapter() {
     override fun getCount(): Int {
         return recipeIngredients.size
     }
@@ -30,7 +31,8 @@ class RecipeIngredientArrayAdapter(private val context: Context, private var rec
         val view: View = View.inflate(context, R.layout.list_item_recipe_ingredients, null)
         val ingredientAmount: TextView = view.findViewById<TextView>(R.id.recipe_ingredient_amount)
         val ingredientName: TextView = view.findViewById<TextView>(R.id.recipe_ingredient_name)
-        val alertSymbol: ImageView = view.findViewById<ImageView>(R.id.recipeIngredient_low_stock_icon)
+        val alertSymbol: ImageView =
+            view.findViewById<ImageView>(R.id.recipeIngredient_low_stock_icon)
         val numberFormatter = DecimalFormat("#.##")
         val ingredient = recipeIngredients[position]
 
@@ -38,7 +40,8 @@ class RecipeIngredientArrayAdapter(private val context: Context, private var rec
         if (ingredient.recipeItem.recipeUnit != "unit") {
             unitString = ingredient.recipeItem.recipeUnit
         }
-        ingredientAmount.text = "${numberFormatter.format(ingredient.recipeItem.recipeAmount)} $unitString"
+        ingredientAmount.text =
+            "${numberFormatter.format(ingredient.recipeItem.recipeAmount)} $unitString"
         ingredientName.text = ingredient.ingredient.name
 
         val convertedUnitAmount = Util.unitConversion(
@@ -47,16 +50,15 @@ class RecipeIngredientArrayAdapter(private val context: Context, private var rec
             ingredient.recipeItem.recipeUnit
         )
 
-        if(convertedUnitAmount > ingredient.ingredient.amount){
+        if (convertedUnitAmount > ingredient.ingredient.amount) {
             alertSymbol.visibility = View.VISIBLE
-        }
-        else{
+        } else {
             alertSymbol.visibility = View.INVISIBLE
         }
         return view
     }
 
-    fun replaceRecipeIngredients(newRecipes: List<RecipeItemAndIngredient>){
+    fun replaceRecipeIngredients(newRecipes: List<RecipeItemAndIngredient>) {
         recipeIngredients = newRecipes.toList()
     }
 

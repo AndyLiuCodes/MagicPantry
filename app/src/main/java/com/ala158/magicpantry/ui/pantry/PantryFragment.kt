@@ -10,8 +10,6 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.*
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.lifecycle.ViewModelStoreOwner
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.PantryIngredientsArrayAdapter
@@ -23,7 +21,6 @@ import com.ala158.magicpantry.repository.ShoppingListItemRepository
 import com.ala158.magicpantry.ui.manualingredientinput.ManualIngredientInputActivity
 import com.ala158.magicpantry.ui.manualingredientinput.edit.PantryEditIngredientActivity
 import com.ala158.magicpantry.ui.receiptscanner.ReceiptScannerActivity
-import com.ala158.magicpantry.viewModel.ShoppingListItemViewModelFactory
 
 class PantryFragment : Fragment(),
     CompoundButton.OnCheckedChangeListener,

@@ -35,7 +35,7 @@
             android:layout_width="match_parent"
             android:layout_height="0dp"
             android:layout_weight="1"
-            android:gravity="center|bottom" >
+            android:gravity="center|bottom">
 
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btn_add_all_ingredients_to_recipe"

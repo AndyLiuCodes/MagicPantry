@@ -1,6 +1,5 @@
 package com.ala158.magicpantry.ui.ingredientlistadd
 
-import android.app.Activity
 import android.content.Intent
 import android.os.Bundle
 import android.view.Menu
@@ -13,7 +12,10 @@ import androidx.appcompat.app.AppCompatActivity
 import com.ala158.magicpantry.R
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.IngredientListAddAdapter
-import com.ala158.magicpantry.data.*
+import com.ala158.magicpantry.data.Ingredient
+import com.ala158.magicpantry.data.RecipeItem
+import com.ala158.magicpantry.data.RecipeItemAndIngredient
+import com.ala158.magicpantry.data.ShoppingListItem
 import com.ala158.magicpantry.dialogs.IngredientListAddDialog
 import com.ala158.magicpantry.ui.recipes.AddRecipeActivity.Companion.ADDED_INGREDIENTS_KEY
 import com.ala158.magicpantry.ui.recipes.AddRecipeActivity.Companion.IDS_TO_FILTER_KEY
@@ -26,7 +28,8 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 
-class IngredientListAddActivity : AppCompatActivity(), IngredientListAddDialog.IngredientListAddDialogListener {
+class IngredientListAddActivity : AppCompatActivity(),
+    IngredientListAddDialog.IngredientListAddDialogListener {
     private lateinit var header: TextView
     private lateinit var ingredientListView: ListView
     private lateinit var ingredientListAddAdapter: IngredientListAddAdapter
@@ -90,7 +93,8 @@ class IngredientListAddActivity : AppCompatActivity(), IngredientListAddDialog.I
             var ingredientsIdToFilter = ArrayList<Int>()
             if (intent.extras != null) {
                 val extraData = intent.extras?.getIntegerArrayList(IDS_TO_FILTER_KEY)
-                ingredientsIdToFilter = extraData as ArrayList<Int> /* = java.util.ArrayList<kotlin.Int> */
+                ingredientsIdToFilter =
+                    extraData as ArrayList<Int> /* = java.util.ArrayList<kotlin.Int> */
             }
             ingredientListAddAdapter = IngredientListAddAdapter(
                 this,
@@ -143,7 +147,8 @@ class IngredientListAddActivity : AppCompatActivity(), IngredientListAddDialog.I
             }
 
             if (isIngredientAddShoppingList && ingredients.isNotEmpty()) {
-                Toast.makeText(this, "Ingredients added to Shopping List!", Toast.LENGTH_SHORT).show()
+                Toast.makeText(this, "Ingredients added to Shopping List!", Toast.LENGTH_SHORT)
+                    .show()
             } else if (!isIngredientAddShoppingList && ingredients.isNotEmpty()) {
                 Toast.makeText(this, "Ingredients added to Recipe!", Toast.LENGTH_SHORT).show()
                 val resultIntent = Intent()
@@ -158,7 +163,8 @@ class IngredientListAddActivity : AppCompatActivity(), IngredientListAddDialog.I
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
         if (isIngredientAddShoppingList) {
-            shoppingListItemViewModel.toBeAddedToShoppingListItems = ingredientListAddAdapter.ingredientsToAdd
+            shoppingListItemViewModel.toBeAddedToShoppingListItems =
+                ingredientListAddAdapter.ingredientsToAdd
         } else {
             recipeViewModel.toBeAddedToRecipeIngredients = ingredientListAddAdapter.ingredientsToAdd
         }
@@ -181,7 +187,10 @@ class IngredientListAddActivity : AppCompatActivity(), IngredientListAddDialog.I
         return super.onOptionsItemSelected(item)
     }
 
-    override fun onIngredientListAddDialogClick(newIngredientName: String, newIngredientUnit: String) {
+    override fun onIngredientListAddDialogClick(
+        newIngredientName: String,
+        newIngredientUnit: String
+    ) {
         val newIngredient = Ingredient(
             newIngredientName,
             0.0,
@@ -198,7 +207,8 @@ class IngredientListAddActivity : AppCompatActivity(), IngredientListAddDialog.I
         val successToast = Toast.makeText(this, "Ingredient added!", Toast.LENGTH_SHORT)
 
         CoroutineScope(Dispatchers.IO).launch {
-            val existingIngredient = ingredientViewModel.getIngredientByNameAndUnit(newIngredientName, newIngredientUnit)
+            val existingIngredient =
+                ingredientViewModel.getIngredientByNameAndUnit(newIngredientName, newIngredientUnit)
             if (existingIngredient != null) {
                 withContext(Dispatchers.Main) {
                     failedToast.show()

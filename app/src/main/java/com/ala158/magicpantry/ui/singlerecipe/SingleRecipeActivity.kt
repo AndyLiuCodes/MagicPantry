@@ -29,15 +29,10 @@ import com.ala158.magicpantry.dialogs.AddMissingIngredientsToShoppingListDialog
 import com.ala158.magicpantry.ui.notifications.LowIngredientActivity
 import com.ala158.magicpantry.ui.recipes.EditRecipeActivity
 import com.ala158.magicpantry.viewModel.*
-import com.ala158.magicpantry.viewModel.IngredientViewModel
-import com.ala158.magicpantry.viewModel.RecipeItemViewModel
-import com.ala158.magicpantry.viewModel.RecipeViewModel
-import com.ala158.magicpantry.viewModel.ShoppingListItemViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import java.util.*
-import kotlin.collections.ArrayList
 
 class SingleRecipeActivity : AppCompatActivity(),
     AddMissingIngredientsToShoppingListDialog.AddMissingIngredientDialogListener {
