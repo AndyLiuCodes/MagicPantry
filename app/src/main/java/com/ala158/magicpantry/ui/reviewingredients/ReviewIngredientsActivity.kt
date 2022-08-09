@@ -70,17 +70,13 @@ class ReviewIngredientsActivity : AppCompatActivity() {
         reviewIngredientsArrayAdapter = ReviewIngredientsActivityAdapter(this, ingredientList)
         ingredientListView.adapter = reviewIngredientsArrayAdapter
         reviewIngredientsViewModel.ingredientList.observe(this) {
-            ingredientListView.adapter = null
-            reviewIngredientsArrayAdapter = ReviewIngredientsActivityAdapter(this, it)
-            ingredientListView.adapter = reviewIngredientsArrayAdapter
+            reviewIngredientsArrayAdapter.replace(it)
             reviewIngredientsArrayAdapter.notifyDataSetChanged()
         }
         cancelButton = findViewById(R.id.reviewCancelButton)
         addAllButton = findViewById(R.id.reviewAddAllButton)
 
         cancelButton.setOnClickListener {
-            // TODO When receipt scanning API ready
-            // requireActivity().supportFragmentManager.popBackStack()
             finish()
         }
         addAllButton.setOnClickListener {
@@ -147,10 +143,7 @@ class ReviewIngredientsActivity : AppCompatActivity() {
                     ingredient.notifyThreshold = notifyThresholdString!!.toDouble()
                 }
 
-                ingredientList[sharedPreferences.getInt(
-                    ReviewIngredientsEditActivity.CURRENT_POSITION_KEY,
-                    0
-                )] = ingredient
+                ingredientList[position] = ingredient
                 reviewIngredientsViewModel.ingredientList.value = ingredientList
             }
         }

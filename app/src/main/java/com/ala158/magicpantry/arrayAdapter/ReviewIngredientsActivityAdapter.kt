@@ -49,6 +49,11 @@ class ReviewIngredientsActivityAdapter(
             intent.putExtra(ReviewIngredientsEditActivity.AMOUNT_KEY, ingredient.amount)
             intent.putExtra(ReviewIngredientsEditActivity.PRICE_KEY, ingredient.price)
             intent.putExtra(ReviewIngredientsEditActivity.UNIT_KEY, ingredient.unit)
+            intent.putExtra(ReviewIngredientsEditActivity.IS_NOTIFY_KEY, ingredient.isNotify)
+            intent.putExtra(
+                ReviewIngredientsEditActivity.NOTIFY_THRESHOLD_KEY,
+                ingredient.notifyThreshold
+            )
 
             context.startActivity(intent)
         }
@@ -67,5 +72,9 @@ class ReviewIngredientsActivityAdapter(
         priceUnitView.text = "$$priceString/${ingredient.unit}"
 
         return view
+    }
+
+    fun replace(newIngredients: List<Ingredient>) {
+        ingredients = newIngredients
     }
 }

@@ -56,6 +56,8 @@ class ReviewIngredientsEditActivity : AppCompatActivity() {
             val amount = intent.getDoubleExtra(AMOUNT_KEY, 0.0)
             val price = intent.getDoubleExtra(PRICE_KEY, 0.0)
             unit = intent.getStringExtra(UNIT_KEY).toString()
+            val isNotify = intent.getBooleanExtra(IS_NOTIFY_KEY, false)
+            val notifyThreshold = intent.getDoubleExtra(NOTIFY_THRESHOLD_KEY, 0.0)
 
             if (position >= 0) {
                 if (name == null) {
@@ -70,6 +72,10 @@ class ReviewIngredientsEditActivity : AppCompatActivity() {
                 reviewIngredientsViewModel.ingredient.value!!.setUnit(unit)
 
                 reviewIngredientsViewModel.ingredient.value!!.setPrice(price)
+
+                reviewIngredientsViewModel.ingredient.value!!.setIsNotify(isNotify)
+
+                reviewIngredientsViewModel.ingredient.value!!.setNotifyThreshold(notifyThreshold)
             }
 
             isFirstStart = false
