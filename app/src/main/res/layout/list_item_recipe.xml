@@ -27,7 +27,7 @@
                 app:srcCompat="@drawable/magic_pantry_app_logo"></ImageView>
 
             <LinearLayout
-                android:layout_width="264dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical">
 
