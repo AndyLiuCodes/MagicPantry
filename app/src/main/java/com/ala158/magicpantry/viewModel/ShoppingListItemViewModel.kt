@@ -23,8 +23,8 @@ class ShoppingListItemViewModel(private val repository: ShoppingListItemReposito
         repository.insertShoppingListItem(shoppingListItem)
     }
 
-    fun deleteById(key: Long) {
-        repository.deleteShoppingListItemById(key)
+    fun getBoughtItems(): List<ShoppingListItemAndIngredient> {
+        return repository.getBoughtShoppingListItemsSync()
     }
 
     fun deleteAlldeleteAllIsBoughtShoppingListItems() {
@@ -35,7 +35,7 @@ class ShoppingListItemViewModel(private val repository: ShoppingListItemReposito
         repository.updateShoppingListItem(shoppingListItem)
     }
 
-    suspend fun getShoppingListItemByIngredientId(id: Long): ShoppingListItem? {
+    private suspend fun getShoppingListItemByIngredientId(id: Long): ShoppingListItem? {
         return repository.getShoppingListItemByIngredientId(id)
     }
 

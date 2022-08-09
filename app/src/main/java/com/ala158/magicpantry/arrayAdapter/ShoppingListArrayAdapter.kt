@@ -25,9 +25,6 @@ class ShoppingListArrayAdapter(
     private var shoppingListItemAndIngredient: List<ShoppingListItemAndIngredient>,
     private val shoppingListItemRepository: ShoppingListItemRepository,
     private val onChangeShoppingItemAmountClickListener: OnChangeShoppingItemAmountClickListener,
-    private val parentIngredientViewModel: IngredientViewModel,
-    private val parentRecipeItemViewModel: RecipeItemViewModel,
-    private val parentRecipeViewModel: RecipeViewModel,
 ) : BaseAdapter() {
 
     interface OnChangeShoppingItemAmountClickListener {
@@ -66,17 +63,6 @@ class ShoppingListArrayAdapter(
         isBoughtCheckbox.setOnCheckedChangeListener { _, isChecked ->
             shoppingListItem.isItemBought = isChecked
             shoppingListItemRepository.updateShoppingListItem(shoppingListItem)
-            CoroutineScope(Dispatchers.IO).launch {
-                ingredient.amount += shoppingListItem.itemAmount
-                parentIngredientViewModel.updateSync(ingredient)
-                val ingredientIds = arrayListOf(ingredient.ingredientId)
-                UpdateDB.postUpdatesAfterModifyIngredient(
-                    ingredientIds,
-                    parentIngredientViewModel,
-                    parentRecipeItemViewModel,
-                    parentRecipeViewModel
-                )
-            }
         }
 
         deleteButton.setOnClickListener {

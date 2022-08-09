@@ -11,11 +11,14 @@ interface ShoppingListItemDAO {
     @Query("SELECT * FROM shopping_list_item, ingredient WHERE related_ingredient_id = ingredientId")
     fun getAllShoppingListItems(): Flow<List<ShoppingListItemAndIngredient>>
 
-    @Query("SELECT * FROM shopping_list_item, ingredient where related_ingredient_id = :ingredientId")
+    @Query("SELECT * FROM shopping_list_item, ingredient WHERE related_ingredient_id = :ingredientId")
     suspend fun getShoppingListItemAndIngredientByIngredientId(ingredientId: Long): ShoppingListItemAndIngredient
 
-    @Query("SELECT * FROM shopping_list_item where related_ingredient_id = :ingredientId")
+    @Query("SELECT * FROM shopping_list_item WHERE related_ingredient_id = :ingredientId")
     suspend fun getShoppingListItemByIngredientId(ingredientId: Long): ShoppingListItem?
+
+    @Query("SELECT * FROM shopping_list_item, ingredient WHERE related_ingredient_id = ingredientId AND  is_item_bought = 1")
+    fun getBoughtShoppingListItemsSync(): List<ShoppingListItemAndIngredient>
 
     @Insert
     suspend fun insertShoppingListItem(item: ShoppingListItem)

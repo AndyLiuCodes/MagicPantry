@@ -32,7 +32,6 @@ class AddIngredientToRecipeActivity : AppCompatActivity() {
 
         ingredients = findViewById(R.id.recipe_add_ingredient_listView)
 
-        //TODO: fetch from db and onclick
         recipeViewModel.allRecipes.observe(this) {
             val myList = it.toTypedArray()
 

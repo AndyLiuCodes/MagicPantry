@@ -18,6 +18,10 @@ class ShoppingListItemRepository(private val shoppingListItemDAO: ShoppingListIt
         }
     }
 
+    fun getBoughtShoppingListItemsSync(): List<ShoppingListItemAndIngredient> {
+        return shoppingListItemDAO.getBoughtShoppingListItemsSync()
+    }
+
     fun deleteShoppingListItemById(id: Long) {
         CoroutineScope(Dispatchers.IO).launch {
             shoppingListItemDAO.deleteShoppingListItemById(id)

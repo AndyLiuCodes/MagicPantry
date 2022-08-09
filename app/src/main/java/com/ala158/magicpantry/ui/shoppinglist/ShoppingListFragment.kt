@@ -12,6 +12,7 @@ import android.widget.ListView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.ala158.magicpantry.R
+import com.ala158.magicpantry.UpdateDB
 import com.ala158.magicpantry.Util
 import com.ala158.magicpantry.arrayAdapter.ShoppingListArrayAdapter
 import com.ala158.magicpantry.data.ShoppingListItemAndIngredient
@@ -23,6 +24,9 @@ import com.ala158.magicpantry.viewModel.IngredientViewModel
 import com.ala158.magicpantry.viewModel.RecipeItemViewModel
 import com.ala158.magicpantry.viewModel.RecipeViewModel
 import com.ala158.magicpantry.viewModel.ShoppingListItemViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 class ShoppingListFragment : Fragment(),
     ShoppingListArrayAdapter.OnChangeShoppingItemAmountClickListener {
@@ -78,9 +82,6 @@ class ShoppingListFragment : Fragment(),
             ArrayList(),
             shoppingListItemRepository,
             this,
-            ingredientViewModel,
-            recipeItemViewModel,
-            recipeViewModel
         )
         shoppingListListView.adapter = shoppingListArrayAdapter
 
@@ -146,8 +147,24 @@ class ShoppingListFragment : Fragment(),
 
     override fun onDestroy() {
         super.onDestroy()
-        if (!requireActivity().isChangingConfigurations)
-            shoppingListItemViewModel.deleteAlldeleteAllIsBoughtShoppingListItems()
+        if (!requireActivity().isChangingConfigurations) {
+            CoroutineScope(Dispatchers.IO).launch {
+                val boughtItems = shoppingListItemViewModel.getBoughtItems()
+                for (item in boughtItems) {
+                    item.ingredient.amount += item.shoppingListItem.itemAmount
+                    ingredientViewModel.updateSync(item.ingredient)
+                }
+
+                val ingredientIds = boughtItems.map { it.ingredient.ingredientId }
+                UpdateDB.postUpdatesAfterModifyIngredient(
+                    ingredientIds,
+                    ingredientViewModel,
+                    recipeItemViewModel,
+                    recipeViewModel
+                )
+                shoppingListItemViewModel.deleteAlldeleteAllIsBoughtShoppingListItems()
+            }
+        }
     }
 
     companion object {
