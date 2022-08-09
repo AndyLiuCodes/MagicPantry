@@ -83,7 +83,7 @@ class PantryEditIngredientActivity : AppCompatActivity() {
             unitDropdown.adapter = unitAdapter
 
             textInputEditIngredientName.setText(it.getName())
-            textInputEditAmount.setText(it.getAmount().toString())
+            textInputEditAmount.setText(it.getAmount().toBigDecimal().toPlainString())
             // Had help from https://stackoverflow.com/a/57119977 for setting the dropdown value
             val dropdownMapping = getAppropriateDropdownMapping(it.getUnit())
             unitDropdown.setSelection(dropdownMapping[it.getUnit()]!!)
@@ -96,10 +96,10 @@ class PantryEditIngredientActivity : AppCompatActivity() {
             }
 
             if (it.getPrice() != 0.0)
-                textInputEditPrice.setText(it.getPrice().toString())
+                textInputEditPrice.setText(it.getPrice().toBigDecimal().toPlainString())
 
             if (it.getNotifyThreshold() != 0.0) {
-                lowStockThresholdField.setText(it.getNotifyThreshold().toString())
+                lowStockThresholdField.setText(it.getNotifyThreshold().toBigDecimal().toPlainString())
             }
 
             if (it.getIsNotify()) {

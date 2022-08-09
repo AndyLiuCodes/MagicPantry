@@ -104,15 +104,15 @@ class ReviewIngredientsEditActivity : AppCompatActivity() {
         // Updating the text inside the EditText fields
         ingredientNameTextField.setText(reviewIngredientsViewModel.ingredient.value!!.getName())
         amountTextField.setText(
-            reviewIngredientsViewModel.ingredient.value!!.getAmount().toString()
+            reviewIngredientsViewModel.ingredient.value!!.getAmount().toBigDecimal().toPlainString()
         )
         unitEditDropdown.setSelection(
             UNIT_DROPDOWN_MAPPING[reviewIngredientsViewModel.ingredient.value!!.getUnit()]!!
         )
         lowStockThresholdUnitTextView.text = reviewIngredientsViewModel.ingredient.value!!.getUnit()
-        priceTextField.setText(reviewIngredientsViewModel.ingredient.value!!.getPrice().toString())
+        priceTextField.setText(reviewIngredientsViewModel.ingredient.value!!.getPrice().toBigDecimal().toPlainString())
         lowStockThresholdField.setText(
-            reviewIngredientsViewModel.ingredient.value!!.getNotifyThreshold().toString()
+            reviewIngredientsViewModel.ingredient.value!!.getNotifyThreshold().toBigDecimal().toPlainString()
         )
         if (reviewIngredientsViewModel.ingredient.value!!.getIsNotify()) {
             isNotifyCheckBoxView.isChecked = true
