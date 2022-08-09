@@ -390,7 +390,6 @@ class PantryEditIngredientActivity : AppCompatActivity() {
     // detecting when a user presses on an item on the top menu
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item.itemId == R.id.item_menu_manualinput_delete && ingredientId != -1L) {
-            // TODO: Update recipe missing ingredients
             CoroutineScope(Dispatchers.IO).launch {
                 val ingredientsWithRecipeItems =
                     ingredientViewModel.findIngredientsWithRecipeItemsById(arrayListOf(ingredientId))

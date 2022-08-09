@@ -7,9 +7,16 @@ import android.widget.BaseAdapter
 import android.widget.CheckBox
 import android.widget.TextView
 import com.ala158.magicpantry.R
+import com.ala158.magicpantry.UpdateDB
 import com.ala158.magicpantry.data.ShoppingListItemAndIngredient
 import com.ala158.magicpantry.repository.ShoppingListItemRepository
+import com.ala158.magicpantry.viewModel.IngredientViewModel
+import com.ala158.magicpantry.viewModel.RecipeItemViewModel
+import com.ala158.magicpantry.viewModel.RecipeViewModel
 import com.google.android.material.button.MaterialButton
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 import java.text.DecimalFormat
 
 
@@ -17,7 +24,10 @@ class ShoppingListArrayAdapter(
     private val context: Context,
     private var shoppingListItemAndIngredient: List<ShoppingListItemAndIngredient>,
     private val shoppingListItemRepository: ShoppingListItemRepository,
-    internal val onChangeShoppingItemAmountClickListener: OnChangeShoppingItemAmountClickListener
+    private val onChangeShoppingItemAmountClickListener: OnChangeShoppingItemAmountClickListener,
+    private val parentIngredientViewModel: IngredientViewModel,
+    private val parentRecipeItemViewModel: RecipeItemViewModel,
+    private val parentRecipeViewModel: RecipeViewModel,
 ) : BaseAdapter() {
 
     interface OnChangeShoppingItemAmountClickListener {
@@ -56,6 +66,17 @@ class ShoppingListArrayAdapter(
         isBoughtCheckbox.setOnCheckedChangeListener { _, isChecked ->
             shoppingListItem.isItemBought = isChecked
             shoppingListItemRepository.updateShoppingListItem(shoppingListItem)
+            CoroutineScope(Dispatchers.IO).launch {
+                ingredient.amount += shoppingListItem.itemAmount
+                parentIngredientViewModel.updateSync(ingredient)
+                val ingredientIds = arrayListOf(ingredient.ingredientId)
+                UpdateDB.postUpdatesAfterModifyIngredient(
+                    ingredientIds,
+                    parentIngredientViewModel,
+                    parentRecipeItemViewModel,
+                    parentRecipeViewModel
+                )
+            }
         }
 
         deleteButton.setOnClickListener {

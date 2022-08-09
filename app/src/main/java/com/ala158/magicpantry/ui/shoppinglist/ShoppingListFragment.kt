@@ -20,12 +20,16 @@ import com.ala158.magicpantry.dialogs.ShoppingListChangeAmountDialog
 import com.ala158.magicpantry.repository.ShoppingListItemRepository
 import com.ala158.magicpantry.ui.ingredientlistadd.IngredientListAddActivity
 import com.ala158.magicpantry.viewModel.IngredientViewModel
+import com.ala158.magicpantry.viewModel.RecipeItemViewModel
+import com.ala158.magicpantry.viewModel.RecipeViewModel
 import com.ala158.magicpantry.viewModel.ShoppingListItemViewModel
 
 class ShoppingListFragment : Fragment(),
     ShoppingListArrayAdapter.OnChangeShoppingItemAmountClickListener {
     private lateinit var shoppingListItemViewModel: ShoppingListItemViewModel
     private lateinit var ingredientViewModel: IngredientViewModel
+    private lateinit var recipeViewModel: RecipeViewModel
+    private lateinit var recipeItemViewModel: RecipeItemViewModel
     private lateinit var shoppingListListView: ListView
     private lateinit var shoppingListArrayAdapter: ShoppingListArrayAdapter
     private lateinit var database: MagicPantryDatabase
@@ -54,6 +58,18 @@ class ShoppingListFragment : Fragment(),
             Util.DataType.INGREDIENT
         )
 
+        recipeViewModel = Util.createViewModel(
+            requireActivity(),
+            RecipeViewModel::class.java,
+            Util.DataType.RECIPE
+        )
+
+        recipeItemViewModel = Util.createViewModel(
+            requireActivity(),
+            RecipeItemViewModel::class.java,
+            Util.DataType.RECIPE_ITEM
+        )
+
         val view = inflater.inflate(R.layout.fragment_shopping_list, container, false)
         shoppingListListView = view.findViewById(R.id.listview_shopping_list_items)
 
@@ -61,7 +77,10 @@ class ShoppingListFragment : Fragment(),
             requireActivity(),
             ArrayList(),
             shoppingListItemRepository,
-            this
+            this,
+            ingredientViewModel,
+            recipeItemViewModel,
+            recipeViewModel
         )
         shoppingListListView.adapter = shoppingListArrayAdapter
 
